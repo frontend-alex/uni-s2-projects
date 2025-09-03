@@ -5,11 +5,9 @@ using Xunit;
 
 namespace CircusProject.Tests;
 
-public class PackingServiceTests
-{
+public class PackingServiceTests {
     [Fact]
-    public void Packs_Within_Capacity_And_Safety()
-    {
+    public void Packs_Within_Capacity_And_Safety() {
         var animals = new List<Animal>
         {
             new() { Diet = Diet.Carnivore, Size = Size.Large },
@@ -23,21 +21,18 @@ public class PackingServiceTests
         var wagons = svc.Pack(animals);
 
         Assert.NotEmpty(wagons);
-        foreach (var w in wagons)
-        {
+        foreach (var w in wagons) {
             var used = w.Animals.Sum(PackingService.Points);
             Assert.True(used <= 10);
             // safety: if there is a carnivore, ensure no equal/smaller herbivore in same wagon
-            foreach (var c in w.Animals.Where(a => a.Diet == Diet.Carnivore))
-            {
+            foreach (var c in w.Animals.Where(a => a.Diet == Diet.Carnivore)) {
                 Assert.DoesNotContain(w.Animals, a => a.Diet == Diet.Herbivore && PackingService.Points(a) <= PackingService.Points(c));
             }
         }
     }
 
     [Fact]
-    public void Experimental_Allows_SmallMedium_Pairings()
-    {
+    public void Experimental_Allows_SmallMedium_Pairings() {
         var animals = new List<Animal>
         {
             new() { Diet = Diet.Carnivore, Size = Size.Medium },
