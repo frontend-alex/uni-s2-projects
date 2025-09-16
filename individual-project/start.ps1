@@ -9,7 +9,7 @@ if (-not (Test-Path $clientDir)) { throw "Client directory not found: $clientDir
 if (-not (Test-Path $serverDir)) { throw "Server directory not found: $serverDir" }
 
 $clientCmd = if ($env:CLIENT_START_COMMAND) { $env:CLIENT_START_COMMAND } else { 'pnpm dev' }
-$serverCmd = if ($env:SERVER_START_COMMAND) { $env:SERVER_START_COMMAND } else { 'dotnet run' }
+$serverCmd = if ($env:SERVER_START_COMMAND) { $env:SERVER_START_COMMAND } else { 'dotnet watch run' }
 
 Write-Host "Starting client in: $clientDir" -ForegroundColor Cyan
 Write-Host "Command: $clientCmd" -ForegroundColor DarkCyan
