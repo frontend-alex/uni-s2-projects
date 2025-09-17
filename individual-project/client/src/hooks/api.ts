@@ -1,10 +1,10 @@
+import { API } from "@/lib/config";
 import axios, { type AxiosInstance } from "axios";
 import { redirect } from "react-router-dom";
 
-export const API_URL = `${import.meta.env.VITE_API_URL}`|| "http://localhost:3000/api/v1/";
 
 const api: AxiosInstance = axios.create({
-  baseURL: API_URL,
+  baseURL: API.BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },

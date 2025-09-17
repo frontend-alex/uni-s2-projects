@@ -1,32 +1,30 @@
 import { Button } from "@/components/ui/button";
-import { API_URL } from "@/hooks/api";
-
- export type Providers = {
-  name: string;
-  label: string;
-};
+import { API } from "@/lib/config";
 
 interface ProviderButtonsProps {
-  providers: Providers[];
+  providers: string[];
   isPending: boolean;
 }
 
 export const ProviderButtons: React.FC<ProviderButtonsProps> = ({ providers, isPending }) => {
+
+  if(providers.length === 0) return <p className="text-xs text-center text-stone-400">No providers to load...</p>
+
   const showText = providers?.length <= 2;
 
   return (
     <div className={`grid gap-3 grid-cols-${Math.min(providers?.length || 1, 5)}`}>
-      {providers?.map(({ name, label }) => (
+      {providers?.map((provider) => (
         <Button
-          key={name}
+          key={provider}
           type="button"
           variant="outline"
           disabled={isPending}
           className="flex-1 items-center justify-center gap-2 cursor-pointer"
-          onClick={() => window.open(`${API_URL}auth/${name}`, '_blank', 'noopener,noreferrer')}
+          onClick={() => window.open(`${API.BASE_URL}/Auth/oauth/${provider}`, '_blank', 'noopener,noreferrer')}
         >
-          <img loading="lazy" className="w-4 h-4" src={`/images/providers/${name}.webp`}/>
-          {showText && <span>{`${label}`}</span>}
+          <img loading="lazy" className="w-4 h-4" src={`/images/providers/${provider}.webp`}/>
+          {showText && <span>{`${provider}`}</span>}
         </Button>
       ))}
     </div>

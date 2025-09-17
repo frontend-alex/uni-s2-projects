@@ -27,6 +27,8 @@ public static class ErrorCatalog
             "Please provide your email address."),
         ["PASSWORD_MISSING"] = new("Password is required.", 400, "AUTH_008",
             "Please enter your password."),
+        ["INVALID_PASSWORD_FORMAT"] = new("Password does not meet requirements.", 400, "AUTH_019",
+            "Password must be at least 8 characters long and contain uppercase, lowercase, and numeric characters."),
         ["EMAIL_ALREADY_VERIFIED"] = new("Email is already verified.", 400, "AUTH_009",
             "Your email is already verified."),
         ["REGISTRATION_FAILED"] = new("Failed to register user.", 500, "AUTH_010",
@@ -48,6 +50,8 @@ public static class ErrorCatalog
     public static readonly IReadOnlyDictionary<string, ErrorMessage> JWT_ERRORS =
         new Dictionary<string, ErrorMessage>
     {
+        ["MISSING_TOKEN"] = new("Authorization token is missing.", 401, "JWT_000",
+            "Please provide a valid authorization token."),
         ["INVALID_TOKEN"] = new("Invalid or expired token.", 401, "JWT_001",
             "Your session has expired. Please log in again."),
         ["INVALID_REFRESH_TOKEN"] = new("Invalid or expired refresh token.", 401, "JWT_002",

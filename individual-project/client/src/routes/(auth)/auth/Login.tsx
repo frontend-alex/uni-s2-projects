@@ -5,14 +5,14 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useApiMutation, useApiQuery } from "@/hooks/hook";
+import { useApiMutation } from "@/hooks/hook";
 import { LoginForm } from "@/components/auth/forms/login/login-form-02";
-import type { Providers } from "@/components/auth/forms/buttons/provider-buttons";
 
 import {
   loginSchema,
   type LoginSchemaType,
 } from "@/utils/schemas/auth/auth.schema";
+import { API } from "@/lib/config";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const Login = () => {
 
   const { mutate: login, isPending } = useApiMutation<LoginSchemaType>(
     "POST",
-    "/auth/login",
+    API.ENDPOINTS.AUTH.LOGIN,
     {
       onSuccess: () => {
         refetch();
@@ -41,9 +41,7 @@ const Login = () => {
     }
   );
 
-  const { data: providersRes } = useApiQuery<{
-    publicProviders: Providers[];
-  }>(["providers"], "/auth/providers");
+  // const { data: providers } = useApiQuery<string[]>(["providers"], "/auth/providers");
 
   const handleLogin = (data: LoginSchemaType) => login(data);
 
@@ -56,7 +54,7 @@ const Login = () => {
         loginForm={form}
         handleSubmit={handleLogin}
         isPending={isPending}
-        providers={providersRes?.data?.publicProviders ?? []}
+        providers={[]}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 export enum AccountProviders {
-  Credentials = 'Credentials',
+  Local = 'Local',
   Google = 'Google',
   Github = 'Github',
   Facebook = 'Facebook',
