@@ -1,6 +1,6 @@
 export const config = {
     app: {
-        name: "MonoMERN",
+        name: "PeerLearn",
     },
     user: {
         allowedUpdates: ['username', 'email', 'password', 'emailVerified'],

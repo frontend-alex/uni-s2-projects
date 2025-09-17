@@ -43,6 +43,9 @@ public static class SecurityExtensions {
     }
 
     private static IServiceCollection AddJwtAuth(this IServiceCollection services) {
+
+       var jwt = services.BuildServiceProvider().GetRequiredService<IOptions<JwtOptions>>().Value;
+
         services.AddAuthentication(o => {
             o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -55,7 +58,7 @@ public static class SecurityExtensions {
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = "PeerLearn",
                 ValidAudience = "PeerLearnUsers",
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_jwt_secret_key_here_make_it_long_and_secure_at_least_32_characters"))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key))
             };
         });
         return services;

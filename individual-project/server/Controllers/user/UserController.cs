@@ -5,62 +5,114 @@ using server.Services;
 using server.Controllers;
 using server.Contracts.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using server.Services.user;
+using Microsoft.AspNetCore.Authorization;
 
 /// <summary>
 /// User controller for managing user/s
 /// </summary>
+[Authorize]
 public class UserController : BaseApiController {
 
     private readonly UserService _userService;
 
     public UserController(UserService userService) {
         _userService = userService;
-    }
+    }   
+
 
     /// <summary>
-    /// Create a new user
+    /// Get the current user
     /// </summary>
-    /// <param name="createUserDto">The user to create</param>
-    /// <returns>The created user</returns>
-    /// <response code="201">User created successfully</response>
-    /// <response code="400">Invalid request body</response>
-    /// <response code="409">User already exists</response>
+    /// <returns>The current user</returns>
+    /// <response code="200">User found</response>
+    /// <response code="404">User not found</response>
     /// <response code="500">Internal server error</response>
-    [HttpPost]
-    [ProducesResponseType(typeof(UserDTO), 201)]
-    public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO createUserDto) {
+    [HttpGet("me")]
+    [ProducesResponseType(typeof(UserDTO), 200)]
+    public async Task<IActionResult> GetCurrentUser() {
         try {
-            await _userService.CreateUserAsync(createUserDto);
-            return Ok(new {
-                success = true,
-                message = "User created successfully",
-                data = createUserDto
-            });
-        } catch{
-            // The service will throw the error
+            var userId = GetCurrentUserId();
+            var user = await _userService.FindUserByQuery("id", userId);
+            return Ok(new ResponseDTO<UserDTO>(true, "User found", user));
+        }
+        catch {
+            throw;
+        }
+    }
+
+
+    
+    /// <summary>
+    /// Update the current user
+    /// </summary>
+    /// <param name="updateUserDto">The user data to update</param>
+    /// <returns>The success and the message</returns>
+    /// <response code="200">User updated successfully</response>
+    /// <response code="404">User not found</response>
+    /// <response code="500">Internal server error</response>
+    [HttpPut("me")]
+    [ProducesResponseType(typeof(ResponseDTO<UpdateUserDTO>), 200)]
+    public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateUserDTO updateUserDto) {
+        try {
+            var userId = GetCurrentUserId();
+            var updatedUser = await _userService.UpdateUser(userId, updateUserDto);
+            return Ok(new ResponseDTO<UserDTO>(true, "User updated successfully", updatedUser));
+        }
+        catch {
             throw;
         }
     }
 
     /// <summary>
-    /// Get a user by id
+    /// Delete the current user
     /// </summary>
-    /// <param name="id">The id of the user</param>
-    /// <returns>The user</returns>
-    /// <response code="200">User found</response>
+    /// <returns>Success message</returns>
+    /// <response code="200">User deleted successfully</response>
     /// <response code="404">User not found</response>
     /// <response code="500">Internal server error</response>
-    [HttpGet("{id}")]
+    [HttpDelete("me")]
+    [ProducesResponseType(typeof(ResponseDTO<object>), 200)]
+    public async Task<IActionResult> DeleteCurrentUser() {
+        try {
+            var userId = GetCurrentUserId();
+            var deleted = await _userService.DeleteUser(userId);
+            if (!deleted)
+                return NotFound(new ResponseDTO<object>(false, "User not found", null));
+                
+            return Ok(new ResponseDTO<object>(true, "User deleted successfully", null));
+        }
+        catch {
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Find a user by any field using flexible query
+    /// </summary>
+    /// <param name="fieldName">The field name to search by (e.g., "email", "username", "id")</param>
+    /// <param name="value">The value to search for</param>
+    /// <returns>The user if found</returns>
+    /// <response code="200">User found</response>
+    /// <response code="404">User not found</response>
+    /// <response code="400">Invalid field name or value</response>
+    /// <response code="500">Internal server error</response>
+    [HttpGet("find")]
     [ProducesResponseType(typeof(UserDTO), 200)]
-    public async Task<IActionResult> GetUserById(ObjectId id){
-        try{
-            var user = await _userService.GetUserByIdAsync(id);
-            return Ok( new {
-                success = true,
-                message = "User found",
-                data = user
-            });
-        } catch {
+    public async Task<IActionResult> FindUserByQuery([FromQuery] string fieldName, [FromQuery] string value) {
+        try {
+            if (string.IsNullOrEmpty(fieldName) || string.IsNullOrEmpty(value)) {
+                return BadRequest(new ResponseDTO<object>(false, "Field name and value are required", null));
+            }
+
+            var user = await _userService.FindUserByQuery(fieldName, value);
+            if (user == null) {
+                return NotFound(new ResponseDTO<object>(false, "User not found", null));
+            }
+
+            return Ok(new ResponseDTO<UserDTO>(true, "User found", user));
+        }
+        catch {
             throw;
         }
     }
