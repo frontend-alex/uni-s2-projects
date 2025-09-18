@@ -5,7 +5,10 @@ using server.Services.user;
 using server.Shared.Utils.JWT;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+<<<<<<< HEAD
 using MongoDB.Bson;
+=======
+>>>>>>> 25aaa14651c70165fc01cc5a3dd48ebe116ea0c0
 
 namespace server.Controllers.auth;
 
@@ -55,7 +58,11 @@ public class AuthController : BaseApiController {
     [ProducesResponseType(typeof(ResponseDTO<string>), 200)]
     public async Task<IActionResult> Login([FromBody] LoginDTO loginDto) {
         try {
+<<<<<<< HEAD
             UserDTO user = await _authService.Login(loginDto.Email, loginDto.Password);
+=======
+            var user = await _authService.Login(loginDto.Email, loginDto.Password);
+>>>>>>> 25aaa14651c70165fc01cc5a3dd48ebe116ea0c0
 
             var claims = new List<Claim>
             {
@@ -153,6 +160,10 @@ public class AuthController : BaseApiController {
     /// <response code="200">Logout successful</response>
     /// <response code="500">Internal server error</response>
     [HttpPost("logout")]
+<<<<<<< HEAD
+=======
+    [Authorize]
+>>>>>>> 25aaa14651c70165fc01cc5a3dd48ebe116ea0c0
     [ProducesResponseType(typeof(ResponseDTO<object>), 200)]
     public IActionResult Logout() {
         try {

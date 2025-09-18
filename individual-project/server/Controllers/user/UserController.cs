@@ -77,8 +77,15 @@ public class UserController : BaseApiController {
     [ProducesResponseType(typeof(ResponseDTO<object>), 200)]
     public async Task<IActionResult> DeleteCurrentUser() {
         try {
+<<<<<<< HEAD
             ObjectId userId = GetCurrentUserId();
             var deleted = await _userService.DeleteUser(userId);
+=======
+            var userId = GetCurrentUserId();
+            var deleted = await _userService.DeleteUser(userId);
+            if (!deleted)
+                return NotFound(new ResponseDTO<object>(false, "User not found", null));
+>>>>>>> 25aaa14651c70165fc01cc5a3dd48ebe116ea0c0
                 
             return Ok(new ResponseDTO<object>(true, "User deleted successfully", null));
         }
@@ -98,14 +105,25 @@ public class UserController : BaseApiController {
     /// <response code="400">Invalid field name or value</response>
     /// <response code="500">Internal server error</response>
     [HttpGet("find")]
+<<<<<<< HEAD
     [ProducesResponseType(typeof(ResponseDTO<UserDTO>), 200)]
+=======
+    [ProducesResponseType(typeof(UserDTO), 200)]
+>>>>>>> 25aaa14651c70165fc01cc5a3dd48ebe116ea0c0
     public async Task<IActionResult> FindUserByQuery([FromQuery] string fieldName, [FromQuery] string value) {
         try {
             if (string.IsNullOrEmpty(fieldName) || string.IsNullOrEmpty(value)) {
                 return BadRequest(new ResponseDTO<object>(false, "Field name and value are required", null));
             }
 
+<<<<<<< HEAD
             UserDTO? user = await _userService.FindUserByQuery(fieldName, value);
+=======
+            var user = await _userService.FindUserByQuery(fieldName, value);
+            if (user == null) {
+                return NotFound(new ResponseDTO<object>(false, "User not found", null));
+            }
+>>>>>>> 25aaa14651c70165fc01cc5a3dd48ebe116ea0c0
 
             return Ok(new ResponseDTO<UserDTO>(true, "User found", user));
         }
