@@ -28,8 +28,7 @@ app.UseApiDocumentation(app.Environment);
 
 app.UseRouting();
 
-app.MapGet("/health", async (IMongoDatabase db, CancellationToken ct) =>
-{
+app.MapGet("/health", async (IMongoDatabase db, CancellationToken ct) => {
     await db.RunCommandAsync((Command<BsonDocument>)"{ ping: 1 }", cancellationToken: ct);
     return Results.Ok(new { mongo = "ok" });
 }).AllowAnonymous();

@@ -29,11 +29,12 @@ public class UserController : BaseApiController {
     /// <response code="404">User not found</response>
     /// <response code="500">Internal server error</response>
     [HttpGet("me")]
-    [ProducesResponseType(typeof(UserDTO), 200)]
+    [ProducesResponseType(typeof(ResponseDTO<UserDTO>), 200)]
     public async Task<IActionResult> GetCurrentUser() {
         try {
-            var userId = GetCurrentUserId();
-            var user = await _userService.FindUserByQuery("id", userId);
+            ObjectId userId = GetCurrentUserId();
+            UserDTO? user = await _userService.FindUserByQuery("id", userId);
+
             return Ok(new ResponseDTO<UserDTO>(true, "User found", user));
         }
         catch {
@@ -55,8 +56,9 @@ public class UserController : BaseApiController {
     [ProducesResponseType(typeof(ResponseDTO<UpdateUserDTO>), 200)]
     public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateUserDTO updateUserDto) {
         try {
-            var userId = GetCurrentUserId();
-            var updatedUser = await _userService.UpdateUser(userId, updateUserDto);
+            ObjectId userId = GetCurrentUserId();
+
+            UserDTO updatedUser = await _userService.UpdateUser(userId, updateUserDto);
             return Ok(new ResponseDTO<UserDTO>(true, "User updated successfully", updatedUser));
         }
         catch {
@@ -75,10 +77,8 @@ public class UserController : BaseApiController {
     [ProducesResponseType(typeof(ResponseDTO<object>), 200)]
     public async Task<IActionResult> DeleteCurrentUser() {
         try {
-            var userId = GetCurrentUserId();
+            ObjectId userId = GetCurrentUserId();
             var deleted = await _userService.DeleteUser(userId);
-            if (!deleted)
-                return NotFound(new ResponseDTO<object>(false, "User not found", null));
                 
             return Ok(new ResponseDTO<object>(true, "User deleted successfully", null));
         }
@@ -98,17 +98,14 @@ public class UserController : BaseApiController {
     /// <response code="400">Invalid field name or value</response>
     /// <response code="500">Internal server error</response>
     [HttpGet("find")]
-    [ProducesResponseType(typeof(UserDTO), 200)]
+    [ProducesResponseType(typeof(ResponseDTO<UserDTO>), 200)]
     public async Task<IActionResult> FindUserByQuery([FromQuery] string fieldName, [FromQuery] string value) {
         try {
             if (string.IsNullOrEmpty(fieldName) || string.IsNullOrEmpty(value)) {
                 return BadRequest(new ResponseDTO<object>(false, "Field name and value are required", null));
             }
 
-            var user = await _userService.FindUserByQuery(fieldName, value);
-            if (user == null) {
-                return NotFound(new ResponseDTO<object>(false, "User not found", null));
-            }
+            UserDTO? user = await _userService.FindUserByQuery(fieldName, value);
 
             return Ok(new ResponseDTO<UserDTO>(true, "User found", user));
         }

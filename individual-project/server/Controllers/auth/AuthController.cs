@@ -5,6 +5,7 @@ using server.Services.user;
 using server.Shared.Utils.JWT;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using MongoDB.Bson;
 
 namespace server.Controllers.auth;
 
@@ -54,7 +55,7 @@ public class AuthController : BaseApiController {
     [ProducesResponseType(typeof(ResponseDTO<string>), 200)]
     public async Task<IActionResult> Login([FromBody] LoginDTO loginDto) {
         try {
-            var user = await _authService.Login(loginDto.Email, loginDto.Password);
+            UserDTO user = await _authService.Login(loginDto.Email, loginDto.Password);
 
             var claims = new List<Claim>
             {
@@ -93,11 +94,10 @@ public class AuthController : BaseApiController {
     /// <response code="404">User not found</response>
     /// <response code="500">Internal server error</response>
     [HttpPost("change-password")]
-    [Authorize]
     [ProducesResponseType(typeof(ResponseDTO<object>), 200)]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDto) {
         try {
-            var userId = GetCurrentUserId();
+            ObjectId userId = GetCurrentUserId();
             await _authService.ChangePassword(userId, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
             return Ok(new ResponseDTO<object>(true, "Password changed successfully", null));
         }
@@ -153,7 +153,6 @@ public class AuthController : BaseApiController {
     /// <response code="200">Logout successful</response>
     /// <response code="500">Internal server error</response>
     [HttpPost("logout")]
-    [Authorize]
     [ProducesResponseType(typeof(ResponseDTO<object>), 200)]
     public IActionResult Logout() {
         try {
