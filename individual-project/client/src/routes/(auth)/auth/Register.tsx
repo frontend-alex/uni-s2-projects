@@ -5,12 +5,12 @@ import { toast } from "sonner";
 
 import AppLogo from "@/components/AppLogo";
 import { RegisterForm } from "@/components/auth/forms/register/register-form-02";
-import { useApiMutation, useApiQuery } from "@/hooks/hook";
+import { useApiMutation } from "@/hooks/hook";
 import {
   registrationSchema,
   type RegistrationSchemaType,
 } from "@/utils/schemas/auth/auth.schema";
-import type { Providers } from "@/components/auth/forms/buttons/provider-buttons";
+import { API } from "@/lib/config";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -24,21 +24,22 @@ const Register = () => {
     },
   });
 
-  const { mutateAsync: sendOtp } = useApiMutation("POST", "/auth/send-otp", {
-    onSuccess: (data) => toast.success(data.message),
-    onError: (err) => toast.success(err.message),
-  });
+  // const { mutateAsync: sendOtp } = useApiMutation("POST", "/auth/send-otp", {
+  //   onSuccess: (data) => toast.success(data.message),
+  //   onError: (err) => toast.success(err.message),
+  // });
 
   const { mutateAsync: register, isPending } = useApiMutation<
     { email: string },
     RegistrationSchemaType
-  >("POST", "/auth/register", {
+  >("POST", API.ENDPOINTS.AUTH.REGISTER, {
     onSuccess: ({ data, message }) => {
       const email = data?.email;
       if (email) {
         toast.success(message);
-        sendOtp({ email });
-        navigate(`/verify-email?email=${email}`);
+        // sendOtp({ email });
+        // navigate(`/verify-email?email=${email}`);
+        navigate("/login");
       }
     },
     onError: (err) => {
@@ -47,13 +48,13 @@ const Register = () => {
         navigate(`/verify-email?email=${error.email}`);
         return;
       }
-      toast.error(error?.userMessage || error?.message || "Something went wrong");
+      toast.error(
+        error?.userMessage || error?.message || "Something went wrong"
+      );
     },
   });
 
-  const { data: providerRes } = useApiQuery<{
-    publicProviders: Providers[];
-  }>(["providers"], "/auth/providers");
+  // const { data: providers } = useApiQuery<string[]>(["providers"], API.ENDPOINTS.AUTH.PROVIDERS);
 
   const handleRegister = (data: RegistrationSchemaType) => register(data);
 
@@ -66,7 +67,7 @@ const Register = () => {
         registerForm={form}
         handleSubmit={handleRegister}
         isPending={isPending}
-        providers={providerRes?.data?.publicProviders ?? []}
+        providers={[]}
       />
     </div>
   );

@@ -2,6 +2,7 @@ import type { User } from "@/types/user";
 import type { ApiError } from "@/types/api";
 
 import { toast } from "sonner";
+import { API } from "@/lib/config";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useApiMutation, useApiQuery } from "@/hooks/hook";
@@ -22,20 +23,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-
   const { data, isLoading, error, refetch } = useApiQuery<{ user: User }>(
     ["auth", "me"],
-    "/auth/me",
+    API.ENDPOINTS.USER.ME,
     {
-      staleTime: 1000 * 60 * 10, 
-      cacheTime: 1000 * 60 * 15, 
-      enabled: true, 
+      staleTime: 1000 * 60 * 10,
+      cacheTime: 1000 * 60 * 15,
+      enabled: true,
     }
   );
 
   const { mutateAsync: logoutMutation } = useApiMutation(
     "POST",
-    "/auth/logout",
+    API.ENDPOINTS.AUTH.LOGOUT,
     {
       onSuccess: (data) => {
         toast.success(data.message);
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [data, isLoading, error, refetch, logout]);
 
   return (
-      <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
 

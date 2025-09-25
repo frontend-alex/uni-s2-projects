@@ -5,20 +5,19 @@ import type {
   RegistrationSchemaType,
   resetPasswordSchemaType,
 } from "@/utils/schemas/auth/auth.schema";
-import type { Providers } from "@/components/auth/forms/buttons/provider-buttons";
 
 export interface LoginFormProps {
   loginForm: UseFormReturn<LoginSchemaType>;
   handleSubmit: (data: LoginSchemaType) => void;
   isPending: boolean;
-  providers: Providers[] | undefined;
+  providers?: string[] | undefined;
 }
 
 export interface RegisterFormProps {
   registerForm: UseFormReturn<RegistrationSchemaType>;
   handleSubmit: (data: RegistrationSchemaType) => void;
   isPending: boolean;
-  providers: Providers[] | undefined;
+  providers?: string[] | undefined;
 }
 
 export interface OtpFormProps {

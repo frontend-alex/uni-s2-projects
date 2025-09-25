@@ -50,15 +50,21 @@ app.UseApiDocumentation(app.Environment);
 
 app.UseRouting();
 
+<<<<<<< HEAD
 app.MapGet("/health", async (IMongoDatabase mongoDb, ApplicationDbContext sqlDb, CancellationToken ct) =>
 {
     await mongoDb.RunCommandAsync((Command<BsonDocument>)"{ ping: 1 }", cancellationToken: ct);
     await sqlDb.Database.CanConnectAsync(ct);
     return Results.Ok(new { mongo = "ok", mssql = "ok" });
+=======
+app.MapGet("/health", async (IMongoDatabase db, CancellationToken ct) => {
+    await db.RunCommandAsync((Command<BsonDocument>)"{ ping: 1 }", cancellationToken: ct);
+    return Results.Ok(new { mongo = "ok" });
+>>>>>>> 253f1d13a8f7b094140c60d20113fb0036068ca9
 }).AllowAnonymous();
 
-app.UseAppSecurity();  
-
+app.UseAppSecurity();
+app.UseMiddleware<JwtHandlerMiddleware>(); // Run after routing but before authorization
 app.MapControllers().RequireAuthorization(); // secure by default
 
 app.Run();

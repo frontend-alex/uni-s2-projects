@@ -2,6 +2,7 @@ using MongoDB.Bson;
 using server.Contracts.DTOs;
 using server.Errors;
 using server.Mappers;
+using server.Models;
 using server.Repositories;
 using server.Shared.Utils.Auth;
 
@@ -22,39 +23,13 @@ public class UserService {
     /// <param name="value">The value to search for</param>
     /// <returns>User DTO if found, null otherwise</returns>
     public async Task<UserDTO?> FindUserByQuery(string fieldName, object value) {
-        var user = await _userRepo.FindByQuery(fieldName, value);
-        return user != null ? UserMapper.ToUserDto(user) : null;
+        User? user = await _userRepo.FindByQuery(fieldName, value);
+        if(user == null)
+            throw ErrorFactory.CreateError("USER_NOT_FOUND");
+
+        return UserMapper.ToUserDto(user);
     }
 
-    /// <summary>
-    /// Gets a user by ID
-    /// </summary>
-    /// <param name="id">User ID</param>
-    /// <returns>User DTO if found, null otherwise</returns>
-    public async Task<UserDTO?> GetUserById(string id) {
-        return await FindUserByQuery("id", id);
-    }
-
-    /// <summary>
-    /// Gets a user by email
-    /// </summary>
-    /// <param name="email">User email</param>
-    /// <returns>User DTO if found, null otherwise</returns>
-    public async Task<UserDTO?> GetUserByEmail(string email) {
-        return await FindUserByQuery("email", email);
-    }
-
-    /// <summary>
-    /// Gets a user by username
-    /// </summary>
-    /// <param name="username">Username</param>
-    /// <returns>User DTO if found, null otherwise</returns>
-    public async Task<UserDTO?> GetUserByUsername(string username) {
-        return await FindUserByQuery("username", username);
-    }
-    #endregion
-
-    #region User Management
     /// <summary>
     /// Creates a new user (internal use for registration)
     /// </summary>
@@ -68,8 +43,8 @@ public class UserService {
             throw ErrorFactory.CreateError("USERNAME_ALREADY_TAKEN");
 
         string hashedPassword = PasswordUtils.HashPassword(createUserDto.Password);
-        var user = UserMapper.ToUser(createUserDto, hashedPassword);
-        var createdUser = await _userRepo.Create(user);
+        User user = UserMapper.ToUser(createUserDto, hashedPassword);
+        User createdUser = await _userRepo.Create(user);
 
         return UserMapper.ToUserDto(createdUser);
     }
@@ -84,7 +59,7 @@ public class UserService {
         if (updateUserDto == null)
             throw ErrorFactory.CreateError("MISSING_TOKEN");
 
-        var user = await _userRepo.FindByQuery("id", id);
+        User? user = await _userRepo.FindByQuery("id", id);
         if (user == null)
             throw ErrorFactory.CreateError("USER_NOT_FOUND");
 
@@ -98,8 +73,8 @@ public class UserService {
                 throw ErrorFactory.CreateError("USERNAME_ALREADY_TAKEN");
         }
 
-        var updatedUser = UserMapper.UpdateUser(user, updateUserDto);
-        var savedUser = await _userRepo.Update(updatedUser);
+        User? updatedUser = UserMapper.UpdateUser(user, updateUserDto);
+        User? savedUser = await _userRepo.Update(updatedUser);
 
         return UserMapper.ToUserDto(savedUser);
     }
