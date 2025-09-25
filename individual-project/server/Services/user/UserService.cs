@@ -8,9 +8,9 @@ using server.Shared.Utils.Auth;
 namespace server.Services.user;
 
 public class UserService {
-    private readonly IUserRepo _userRepo;
+    private readonly IUserRepository _userRepo;
 
-    public UserService(IUserRepo userRepo) {
+    public UserService(IUserRepository userRepo) {
         _userRepo = userRepo;
     }
 
@@ -31,7 +31,7 @@ public class UserService {
     /// </summary>
     /// <param name="id">User ID</param>
     /// <returns>User DTO if found, null otherwise</returns>
-    public async Task<UserDTO?> GetUserById(ObjectId id) {
+    public async Task<UserDTO?> GetUserById(string id) {
         return await FindUserByQuery("id", id);
     }
 
@@ -80,7 +80,7 @@ public class UserService {
     /// <param name="id">User ID</param>
     /// <param name="updateUserDto">Update data</param>
     /// <returns>Updated user DTO</returns>
-    public async Task<UserDTO> UpdateUser(ObjectId id, UpdateUserDTO updateUserDto) {
+    public async Task<UserDTO> UpdateUser(string id, UpdateUserDTO updateUserDto) {
         if (updateUserDto == null)
             throw ErrorFactory.CreateError("MISSING_TOKEN");
 
@@ -109,7 +109,7 @@ public class UserService {
     /// </summary>
     /// <param name="id">User ID</param>
     /// <returns>True if deleted successfully</returns>
-    public async Task<bool> DeleteUser(ObjectId id) {
+    public async Task<bool> DeleteUser(string id) {
         return await _userRepo.Delete(id);
     }
     #endregion

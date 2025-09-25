@@ -1,6 +1,5 @@
 namespace server.Controllers.user;
 
-using MongoDB.Bson;
 using server.Services;
 using server.Controllers;
 using server.Contracts.DTOs;
