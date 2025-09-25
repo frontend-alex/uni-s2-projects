@@ -3,24 +3,25 @@ using PeerLearn.API.Shared.Utils.JWT;
 
 namespace PeerLearn.API.Middlewares;
 
-public sealed class JwtHandlerMiddleware(RequestDelegate next) {
+public sealed class JwtHandlerMiddleware(RequestDelegate next)
+{
 
     private readonly RequestDelegate _next = next;
 
-    public async Task Invoke(HttpContext context) {
+    public async Task Invoke(HttpContext context)
+    {
         var token = context.Request.Cookies["authCookie"];
 
-        if (token == null)
-            throw ErrorFactory.CreateError("INVALID_TOKEN");
+        if (token != null)
+        {
+            var principal = JWTUtils.ValidateToken(token, context.RequestServices.GetRequiredService<IConfiguration>());
 
-        var principal = JWTUtils.ValidateToken(token, context.RequestServices.GetRequiredService<IConfiguration>());
-
-        if (principal == null)
-            throw ErrorFactory.CreateError("INVALID_TOKEN");
-
-        context.User = principal;
+            if (principal != null)
+            {
+                context.User = principal;
+            }
+        }
 
         await _next(context);
-
     }
 }

@@ -2,9 +2,10 @@ import Loading from "@/components/Loading";
 import TitleWrapper from "@/components/TitleWrapper";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import RootLayout from "@/components/layouts/RootLayout";
+import AppLayout from "@/components/layouts/AppLayout";
 
 import { Suspense } from "react";
-import { Dashboard, Profile, Settings } from "@/routes/(root)";
+import { Dashboard, Profile, Settings, OnboardingPage } from "@/routes/(root)";
 import { Route, Routes } from "react-router-dom";
 import {
   AuthCallback,
@@ -77,32 +78,42 @@ const App = () => {
               </TitleWrapper>
             }
           />
-        </Route>
-        <Route element={<RootLayout />}>
-          <Route
-            path="/dashboard"
-            element={
-              <TitleWrapper title="Dashboard Page">
-                <Dashboard />
-              </TitleWrapper>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <TitleWrapper title="Dashboard Page">
-                <Profile />
-              </TitleWrapper>
-            }
-          />
            <Route
-            path="/settings"
-            element={
-              <TitleWrapper title="Settings Page">
-                <Settings />
-              </TitleWrapper>
-            }
-          />
+              path="/onboarding"
+              element={
+                <TitleWrapper title="Onboarding">
+                  <OnboardingPage />
+                </TitleWrapper>
+              }
+            />
+        </Route>
+        <Route element={<AppLayout />}>
+          <Route element={<RootLayout />}>
+            <Route
+              path="/dashboard"
+              element={
+                <TitleWrapper title="Dashboard Page">
+                  <Dashboard />
+                </TitleWrapper>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <TitleWrapper title="Profile Page">
+                  <Profile />
+                </TitleWrapper>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <TitleWrapper title="Settings Page">
+                  <Settings />
+                </TitleWrapper>
+              }
+            />
+          </Route>
         </Route>
       </Routes>
     </Suspense>

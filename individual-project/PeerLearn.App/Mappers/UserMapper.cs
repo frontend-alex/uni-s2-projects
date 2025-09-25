@@ -52,30 +52,30 @@ public static class UserMapper
     {
         if (!string.IsNullOrEmpty(updateUserDto.Username))
             user.Username = updateUserDto.Username;
-        
+
         if (!string.IsNullOrEmpty(updateUserDto.Email))
             user.Email = updateUserDto.Email;
-        
+
         if (updateUserDto.Xp.HasValue)
             user.Xp = updateUserDto.Xp.Value;
-        
+
         if (updateUserDto.OnBoardingCompleted.HasValue)
             user.OnBoardingCompleted = updateUserDto.OnBoardingCompleted.Value;
-        
+
         if (!string.IsNullOrEmpty(updateUserDto.Password))
             user.Password = updateUserDto.Password;
-        
+
         if (!string.IsNullOrEmpty(updateUserDto.ProfilePicture))
             user.ProfilePicture = updateUserDto.ProfilePicture;
-        
+
         if (updateUserDto.HasPassword.HasValue)
             user.HasPassword = updateUserDto.HasPassword.Value;
-        
+
         if (updateUserDto.Role.HasValue)
             user.Role = updateUserDto.Role.Value;
-        
+
         user.UpdatedAt = DateTime.UtcNow;
-        
+
         return user;
     }
 }

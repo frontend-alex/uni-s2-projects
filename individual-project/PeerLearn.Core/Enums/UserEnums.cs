@@ -1,12 +1,14 @@
 namespace PeerLearn.Core.Enums;
 
-public enum Role {
+public enum Role
+{
     Student,
     Admin,
     Moderator,
 }
 
-public enum Provider {
+public enum Provider
+{
     Local,
     Google,
     Facebook,

@@ -23,11 +23,11 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.ProfilePicture).IsRequired().HasMaxLength(500);
             entity.Property(e => e.Email).IsRequired().HasMaxLength(255);
             entity.Property(e => e.Password).IsRequired().HasMaxLength(255);
-            
+
             // Create unique indexes
             entity.HasIndex(e => e.Email).IsUnique();
             entity.HasIndex(e => e.Username).IsUnique();
-            
+
             // Configure enums
             entity.Property(e => e.Role).HasConversion<string>();
             entity.Property(e => e.Provider).HasConversion<string>();

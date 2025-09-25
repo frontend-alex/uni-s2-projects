@@ -7,10 +7,12 @@ using PeerLearn.App.Utils;
 
 namespace PeerLearn.App.Services;
 
-public class UserService {
+public class UserService
+{
     private readonly IUserRepository _userRepo;
 
-    public UserService(IUserRepository userRepo) {
+    public UserService(IUserRepository userRepo)
+    {
         _userRepo = userRepo;
     }
 
@@ -21,9 +23,10 @@ public class UserService {
     /// <param name="fieldName">The field name to search by (e.g., "email", "username", "id")</param>
     /// <param name="value">The value to search for</param>
     /// <returns>User DTO if found, null otherwise</returns>
-    public async Task<UserDTO?> FindUserByQuery(string fieldName, object value) {
+    public async Task<UserDTO?> FindUserByQuery(string fieldName, object value)
+    {
         User? user = await _userRepo.FindByQuery(fieldName, value);
-        if(user == null)
+        if (user == null)
             throw ErrorFactory.CreateError("USER_NOT_FOUND");
 
         return UserMapper.ToUserDto(user);
@@ -34,7 +37,8 @@ public class UserService {
     /// </summary>
     /// <param name="createUserDto">User creation data</param>
     /// <returns>Created user as DTO</returns>
-    public async Task<UserDTO> CreateUser(CreateUserDTO createUserDto) {
+    public async Task<UserDTO> CreateUser(CreateUserDTO createUserDto)
+    {
         if (await _userRepo.ExistsByEmail(createUserDto.Email))
             throw ErrorFactory.CreateError("EMAIL_ALREADY_TAKEN");
 
@@ -54,7 +58,8 @@ public class UserService {
     /// <param name="id">User ID</param>
     /// <param name="updateUserDto">Update data</param>
     /// <returns>Updated user DTO</returns>
-    public async Task<UserDTO> UpdateUser(string id, UpdateUserDTO updateUserDto) {
+    public async Task<UserDTO> UpdateUser(string id, UpdateUserDTO updateUserDto)
+    {
         if (updateUserDto == null)
             throw ErrorFactory.CreateError("MISSING_TOKEN");
 
@@ -62,12 +67,14 @@ public class UserService {
         if (user == null)
             throw ErrorFactory.CreateError("USER_NOT_FOUND");
 
-        if (!string.IsNullOrEmpty(updateUserDto.Email) && updateUserDto.Email != user.Email) {
+        if (!string.IsNullOrEmpty(updateUserDto.Email) && updateUserDto.Email != user.Email)
+        {
             if (await _userRepo.ExistsByEmail(updateUserDto.Email))
                 throw ErrorFactory.CreateError("EMAIL_ALREADY_TAKEN");
         }
 
-        if (!string.IsNullOrEmpty(updateUserDto.Username) && updateUserDto.Username != user.Username) {
+        if (!string.IsNullOrEmpty(updateUserDto.Username) && updateUserDto.Username != user.Username)
+        {
             if (await _userRepo.ExistsByUsername(updateUserDto.Username))
                 throw ErrorFactory.CreateError("USERNAME_ALREADY_TAKEN");
         }
@@ -83,7 +90,8 @@ public class UserService {
     /// </summary>
     /// <param name="id">User ID</param>
     /// <returns>True if deleted successfully</returns>
-    public async Task<bool> DeleteUser(string id) {
+    public async Task<bool> DeleteUser(string id)
+    {
         return await _userRepo.Delete(id);
     }
     #endregion

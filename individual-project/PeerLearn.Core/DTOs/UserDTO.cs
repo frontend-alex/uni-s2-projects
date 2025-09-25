@@ -3,7 +3,8 @@ namespace PeerLearn.Core.DTOs;
 using MongoDB.Bson;
 using PeerLearn.Core.Enums;
 
-public sealed class UserDTO() {
+public sealed class UserDTO()
+{
     public ObjectId Id { get; set; }
     public string ProfilePicture { get; set; }
     public bool EmailVerified { get; set; }
@@ -20,13 +21,15 @@ public sealed class UserDTO() {
 }
 
 
-public sealed class CreateUserDTO() {
+public sealed class CreateUserDTO()
+{
     public string Username { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
 }
 
-public sealed class UpdateUserDTO() {
+public sealed class UpdateUserDTO()
+{
     public string? Username { get; set; }
     public string? Email { get; set; }
     public int? Xp { get; set; }

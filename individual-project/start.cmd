@@ -1,7 +1,7 @@
 @echo off
 setlocal ENABLEDELAYEDEXPANSION
 
-REM Run the PowerShell launcher; keep this window open if it fails
+REM 
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0start.ps1"
 if errorlevel 1 (
 	echo.

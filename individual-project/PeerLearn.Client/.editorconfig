@@ -1,0 +1,25 @@
+root = true
+
+[*.{js,jsx,ts,tsx,json}]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{js,jsx,ts,tsx}]
+# Prettier configuration
+prettier.semi = true
+prettier.singleQuote = false
+prettier.tabWidth = 2
+prettier.trailingComma = "es5"
+prettier.printWidth = 80
+prettier.bracketSpacing = true
+prettier.arrowParens = "avoid"
+
+[*.json]
+indent_style = space
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false

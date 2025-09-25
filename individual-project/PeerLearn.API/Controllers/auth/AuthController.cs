@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PeerLearn.API.Shared.Utils.JWT;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using PeerLearn.API.Attributes;
 
 namespace PeerLearn.API.Controllers.auth;
 
@@ -11,11 +12,13 @@ namespace PeerLearn.API.Controllers.auth;
 /// Authentication controller for handling login, registration, and password operations
 /// </summary>
 [AllowAnonymous]
-public class AuthController : BaseApiController {
+public class AuthController : BaseApiController
+{
     private readonly AuthService _authService;
     private readonly UserService _userService;
 
-    public AuthController(AuthService authService, UserService userService) {
+    public AuthController(AuthService authService, UserService userService)
+    {
         _authService = authService;
         _userService = userService;
     }
@@ -31,12 +34,16 @@ public class AuthController : BaseApiController {
     /// <response code="500">Internal server error</response>
     [HttpPost("register")]
     [ProducesResponseType(typeof(ResponseDTO<UserDTO>), 201)]
-    public async Task<IActionResult> Register([FromBody] CreateUserDTO createUserDto) {
-        try {
+    [ValidateModel]
+    public async Task<IActionResult> Register([FromBody] CreateUserDTO createUserDto)
+    {
+        try
+        {
             await _userService.CreateUser(createUserDto);
             return Ok(new ResponseDTO<object>(true, "User registered successfully", null));
         }
-        catch {
+        catch
+        {
             throw;
         }
     }
@@ -51,8 +58,11 @@ public class AuthController : BaseApiController {
     /// <response code="500">Internal server error</response>
     [HttpPost("login")]
     [ProducesResponseType(typeof(ResponseDTO<string>), 200)]
-    public async Task<IActionResult> Login([FromBody] LoginDTO loginDto) {
-        try {
+    [ValidateModel]
+    public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
+    {
+        try
+        {
             var user = await _authService.Login(loginDto.Email, loginDto.Password);
 
             var claims = new List<Claim>
@@ -66,7 +76,8 @@ public class AuthController : BaseApiController {
 
             var token = JWTUtils.GenerateToken(claims, HttpContext.RequestServices.GetRequiredService<IConfiguration>(), TimeSpan.FromDays(7));
 
-            var cookieOptions = new CookieOptions {
+            var cookieOptions = new CookieOptions
+            {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
@@ -77,7 +88,8 @@ public class AuthController : BaseApiController {
 
             return Ok(new ResponseDTO<object>(true, "Login successful", null));
         }
-        catch {
+        catch
+        {
             throw;
         }
     }
@@ -93,13 +105,17 @@ public class AuthController : BaseApiController {
     /// <response code="500">Internal server error</response>
     [HttpPost("change-password")]
     [ProducesResponseType(typeof(ResponseDTO<object>), 200)]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDto) {
-        try {
+    [ValidateModel]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDto)
+    {
+        try
+        {
             var userId = GetCurrentUserId();
             await _authService.ChangePassword(userId, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
             return Ok(new ResponseDTO<object>(true, "Password changed successfully", null));
         }
-        catch {
+        catch
+        {
             throw;
         }
     }
@@ -114,12 +130,16 @@ public class AuthController : BaseApiController {
     /// <response code="500">Internal server error</response>
     [HttpPost("reset-password")]
     [ProducesResponseType(typeof(ResponseDTO<object>), 200)]
-    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordDto) {
-        try {
+    [ValidateModel]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordDto)
+    {
+        try
+        {
             await _authService.ResetPassword(resetPasswordDto.UserId, resetPasswordDto.NewPassword);
             return Ok(new ResponseDTO<object>(true, "Password reset successfully", null));
         }
-        catch {
+        catch
+        {
             throw;
         }
     }
@@ -134,12 +154,16 @@ public class AuthController : BaseApiController {
     /// <response code="500">Internal server error</response>
     [HttpPost("forgot-password")]
     [ProducesResponseType(typeof(ResponseDTO<object>), 200)]
-    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO forgotPasswordDto) {
-        try {
+    [ValidateModel]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO forgotPasswordDto)
+    {
+        try
+        {
             await _authService.ForgotPassword(forgotPasswordDto.Email);
             return Ok(new ResponseDTO<object>(true, "Password reset email sent", null));
         }
-        catch {
+        catch
+        {
             throw;
         }
     }
@@ -153,13 +177,16 @@ public class AuthController : BaseApiController {
     [HttpPost("logout")]
     [Authorize]
     [ProducesResponseType(typeof(ResponseDTO<object>), 200)]
-    public IActionResult Logout() {
-        try {
+    public IActionResult Logout()
+    {
+        try
+        {
             // Clear the auth cookie
             Response.Cookies.Delete("authCookie");
             return Ok(new ResponseDTO<object>(true, "Logout successful", null));
         }
-        catch {
+        catch
+        {
             throw;
         }
     }

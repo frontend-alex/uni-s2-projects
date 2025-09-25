@@ -5,8 +5,10 @@ using MongoDB.Bson.Serialization.Conventions;
 
 namespace PeerLearn.API.Infrastructure.Security;
 
-public static class MongoExtensions {
-    public static IServiceCollection AddMongo(this IServiceCollection services, IConfiguration config) {
+public static class MongoExtensions
+{
+    public static IServiceCollection AddMongo(this IServiceCollection services, IConfiguration config)
+    {
         services.Configure<MongoDbOptions>(config.GetSection(MongoDbOptions.SectionName));
 
         // Global conventions such as camelCase, ignore extra, nulls as defaults, 
@@ -19,7 +21,8 @@ public static class MongoExtensions {
         };
         ConventionRegistry.Register("app-conventions", pack, _ => true);
 
-        services.AddSingleton<IMongoClient>(sp => {
+        services.AddSingleton<IMongoClient>(sp =>
+        {
             var opt = sp.GetRequiredService<IOptions<MongoDbOptions>>().Value;
             var settings = MongoClientSettings.FromConnectionString(opt.ConnectionString);
             settings.RetryWrites = opt.RetryWrites;
@@ -30,7 +33,8 @@ public static class MongoExtensions {
             return new MongoClient(settings);
         });
 
-        services.AddSingleton(sp => {
+        services.AddSingleton(sp =>
+        {
             var opt = sp.GetRequiredService<IOptions<MongoDbOptions>>().Value;
             var client = sp.GetRequiredService<IMongoClient>();
             return client.GetDatabase(opt.DatabaseName);

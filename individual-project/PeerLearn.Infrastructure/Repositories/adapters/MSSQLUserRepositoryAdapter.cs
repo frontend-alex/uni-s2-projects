@@ -107,7 +107,7 @@ public class MSSQLUserRepositoryAdapter : IUserRepository
     {
         return new User
         {
-            Id = MongoDB.Bson.ObjectId.GenerateNewId(), 
+            Id = MongoDB.Bson.ObjectId.GenerateNewId(),
             Username = mssqlUser.Username,
             ProfilePicture = mssqlUser.ProfilePicture,
             Email = mssqlUser.Email,

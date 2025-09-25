@@ -4,7 +4,8 @@ using MongoDB.Bson;
 using PeerLearn.Core.Enums;
 using MongoDB.Bson.Serialization.Attributes;
 
-public sealed class User {
+public sealed class User
+{
     [BsonId] public required ObjectId Id { get; set; }
     [BsonElement("username")] public required string Username { get; set; }
     [BsonElement("profilePicture")] public required string ProfilePicture { get; set; }

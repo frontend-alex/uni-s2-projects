@@ -7,7 +7,7 @@ public sealed class AppError : Exception
     public int StatusCode { get; }
     public string ErrorCode { get; }
     public string? UserMessage { get; }
-    [JsonIgnore] 
+    [JsonIgnore]
     public IReadOnlyDictionary<string, object?>? Extra { get; }
 
     public AppError(
@@ -42,7 +42,7 @@ public static class ErrorFactory
         var baseMsg = ErrorCatalog.ERROR_MESSAGES.TryGetValue(type, out var found)
             ? found
             : fallback;
-            
+
 
         return new AppError(
             message: baseMsg.Message,
