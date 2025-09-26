@@ -49,12 +49,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     await logoutMutation(undefined);
   };
 
+
+  console.log(data)
+
   const contextValue = useMemo<AuthContextType>(() => {
     return {
       user: data?.data?.user ?? null,
       isLoading,
       error,
-      isAuthenticated: Boolean(data?.data?.user) && !error,
+      isAuthenticated: Boolean(data?.data) && !error,
       logout,
       refetch,
     };

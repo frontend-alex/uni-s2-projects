@@ -17,7 +17,7 @@ public class AuthController : BaseApiController
     private readonly AuthService _authService;
     private readonly UserService _userService;
 
-    public AuthController(AuthService authService, UserService userService)
+    public AuthController(AuthService authService, UserService userService, ILogger<AuthController> logger) : base(logger)
     {
         _authService = authService;
         _userService = userService;

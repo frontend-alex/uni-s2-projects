@@ -37,3 +37,5 @@ csharp_style_expression_bodied_accessors = true
 # Using directives
 csharp_using_directive_placement = outside_namespace
 dotnet_sort_system_directives_first = true
+
+

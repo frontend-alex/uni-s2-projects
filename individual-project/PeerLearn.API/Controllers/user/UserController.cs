@@ -10,13 +10,11 @@ using Microsoft.AspNetCore.Authorization;
 /// User controller for managing user/s
 /// </summary>
 [Authorize]
-public class UserController : BaseApiController
-{
+public class UserController : BaseApiController {
 
     private readonly UserService _userService;
 
-    public UserController(UserService userService)
-    {
+    public UserController(UserService userService, ILogger<UserController> logger) : base(logger) {
         _userService = userService;
     }
 
@@ -30,17 +28,14 @@ public class UserController : BaseApiController
     /// <response code="500">Internal server error</response>
     [HttpGet("me")]
     [ProducesResponseType(typeof(ResponseDTO<UserDTO>), 200)]
-    public async Task<IActionResult> GetCurrentUser()
-    {
-        try
-        {
+    public async Task<IActionResult> GetCurrentUser() {
+        try {
             var userId = GetCurrentUserId();
             var user = await _userService.FindUserByQuery("id", userId);
 
             return Ok(new ResponseDTO<UserDTO>(true, "User found", user));
         }
-        catch
-        {
+        catch {
             throw;
         }
     }
@@ -57,17 +52,14 @@ public class UserController : BaseApiController
     /// <response code="500">Internal server error</response>
     [HttpPut("me")]
     [ProducesResponseType(typeof(ResponseDTO<UpdateUserDTO>), 200)]
-    public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateUserDTO updateUserDto)
-    {
-        try
-        {
+    public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateUserDTO updateUserDto) {
+        try {
             var userId = GetCurrentUserId();
 
             var updatedUser = await _userService.UpdateUser(userId, updateUserDto);
             return Ok(new ResponseDTO<UserDTO>(true, "User updated successfully", updatedUser));
         }
-        catch
-        {
+        catch {
             throw;
         }
     }
@@ -81,10 +73,8 @@ public class UserController : BaseApiController
     /// <response code="500">Internal server error</response>
     [HttpDelete("me")]
     [ProducesResponseType(typeof(ResponseDTO<object>), 200)]
-    public async Task<IActionResult> DeleteCurrentUser()
-    {
-        try
-        {
+    public async Task<IActionResult> DeleteCurrentUser() {
+        try {
             var userId = GetCurrentUserId();
             var deleted = await _userService.DeleteUser(userId);
             if (!deleted)
@@ -92,8 +82,7 @@ public class UserController : BaseApiController
 
             return Ok(new ResponseDTO<object>(true, "User deleted successfully", null));
         }
-        catch
-        {
+        catch {
             throw;
         }
     }
@@ -110,25 +99,20 @@ public class UserController : BaseApiController
     /// <response code="500">Internal server error</response>
     [HttpGet("find")]
     [ProducesResponseType(typeof(ResponseDTO<UserDTO>), 200)]
-    public async Task<IActionResult> FindUserByQuery([FromQuery] string fieldName, [FromQuery] string value)
-    {
-        try
-        {
-            if (string.IsNullOrEmpty(fieldName) || string.IsNullOrEmpty(value))
-            {
+    public async Task<IActionResult> FindUserByQuery([FromQuery] string fieldName, [FromQuery] string value) {
+        try {
+            if (string.IsNullOrEmpty(fieldName) || string.IsNullOrEmpty(value)) {
                 return BadRequest(new ResponseDTO<object>(false, "Field name and value are required", null));
             }
 
             var user = await _userService.FindUserByQuery(fieldName, value);
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound(new ResponseDTO<object>(false, "User not found", null));
             }
 
             return Ok(new ResponseDTO<UserDTO>(true, "User found", user));
         }
-        catch
-        {
+        catch {
             throw;
         }
     }

@@ -76,7 +76,7 @@ public static class SecurityExtensions
     /// </summary>
     /// <param name="services">The services to add the authorization policies to.</param>
     /// <returns>The services with the authorization policies added.</returns>
-    private static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services)
+    public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services)
     {
         services.AddAuthorization(options =>
         {
@@ -96,7 +96,7 @@ public static class SecurityExtensions
     /// <param name="services">The services to add the cors policies to.</param>
     /// <param name="config">The configuration to use.</param>
     /// <returns>The services with the cors policies added.</returns>
-    private static IServiceCollection AddCorsPolicies(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddCorsPolicies(this IServiceCollection services, IConfiguration config)
     {
         var origins = config.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
         services.AddCors(o =>
@@ -116,7 +116,7 @@ public static class SecurityExtensions
     /// </summary>
     /// <param name="services">The services to add the rate limiting policies to.</param>
     /// <returns>The services with the rate limiting policies added.</returns>
-    private static IServiceCollection AddRateLimitingPolicies(this IServiceCollection services)
+    public static IServiceCollection AddRateLimitingPolicies(this IServiceCollection services)
     {
         services.AddRateLimiter(o =>
         {

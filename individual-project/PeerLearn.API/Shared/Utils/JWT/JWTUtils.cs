@@ -6,8 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace PeerLearn.API.Shared.Utils.JWT;
 
-public static class JWTUtils
-{
+public static class JWTUtils {
 
     /// <summary>
     /// GenerateToken is a method that generates a JWT token.
@@ -16,8 +15,7 @@ public static class JWTUtils
     /// <param name="config">The configuration to use.</param>
     /// <param name="tokenLifespan">The lifespan of the token. Default is 1 hour.</param>
     /// <returns>The generated token as a string.</returns>
-    public static string GenerateToken(IEnumerable<Claim> claims, IConfiguration config, TimeSpan? tokenLifespan = null)
-    {
+    public static string GenerateToken(IEnumerable<Claim> claims, IConfiguration config, TimeSpan? tokenLifespan = null) {
         var issuer = config["PeerLearnJwt:Issuer"];
         var audience = config["PeerLearnJwt:Audience"];
         var keyRaw = config["PeerLearnJwt:Key"];
@@ -46,8 +44,7 @@ public static class JWTUtils
     /// <param name="token">The token to validate.</param>
     /// <param name="config">The configuration to use.</param>
     /// <param name="validateLifetime">Whether to validate the token's lifetime. Default is true.</param>
-    public static ClaimsPrincipal? ValidateToken(string token, IConfiguration config, bool validateLifetime = true)
-    {
+    public static ClaimsPrincipal? ValidateToken(string token, IConfiguration config, bool validateLifetime = true) {
         var issuer = config["PeerLearnJwt:Issuer"];
         var audience = config["PeerLearnJwt:Audience"];
         var keyRaw = config["PeerLearnJwt:Key"];
@@ -55,8 +52,7 @@ public static class JWTUtils
         if (string.IsNullOrWhiteSpace(keyRaw)) return null;
 
         var handler = new JwtSecurityTokenHandler();
-        var parameters = new TokenValidationParameters
-        {
+        var parameters = new TokenValidationParameters {
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
@@ -67,13 +63,11 @@ public static class JWTUtils
             ClockSkew = TimeSpan.FromMinutes(1)
         };
 
-        try
-        {
+        try {
             var principal = handler.ValidateToken(token, parameters, out _);
             return principal;
         }
-        catch
-        {
+        catch {
             return null;
         }
     }

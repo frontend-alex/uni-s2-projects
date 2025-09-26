@@ -6,6 +6,7 @@ const AppLayout = () => {
   const location = useLocation();
   const { isAuthenticated, isLoading } = useAuth();
 
+
   if (isLoading) return <Loading />;
 
   if (!isAuthenticated) {
