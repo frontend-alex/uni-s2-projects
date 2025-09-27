@@ -1,0 +1,78 @@
+# Build output
+bin/
+obj/
+out/
+artifacts/
+
+# VS user files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# IDE folders
+.vs/
+.idea/
+*.sw?
+
+# Rider / JetBrains cache
+*.DotSettings.user
+
+# Mac junk
+.DS_Store
+
+# Logs
+*.log
+
+# Temp
+*.tmp
+*.temp
+
+# Test results
+TestResult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# Generated files
+*.ncrunchsolution
+*.ncrunchproject
+*.ncrunchsnapshot
+
+# Resharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuget.props
+*.nuget.targets
+packages/
+.nuget/
+
+# Azure artifacts
+*.azurecr
+*.azurepubxml
+PublishProfiles/
+
+# Rider / VS Code
+.vscode/
+*.code-workspace
+
+# Local environment files
+.env
+.env.*
+
+# Dotnet tools
+.dotnet-tools.json
+
+# Coverage tools
+coverage/
+.coverage/
+lcov.info
+
+# docker
+docker-compose.override.yml
+*.pid
