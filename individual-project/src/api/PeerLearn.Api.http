@@ -1,6 +1,0 @@
-@PeerLearn.Api_HostAddress = http://localhost:5260
-
-GET {{PeerLearn.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
