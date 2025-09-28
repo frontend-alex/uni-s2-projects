@@ -2,8 +2,8 @@ using AutoMapper;
 using Core.Entities;
 using Core.DTO.Auth;
 using Core.Exceptions;
-using Core.Services;
 using App.Contracts.Persistence;
+using App.Contracts.Security;
 
 namespace App.Services.Auth;
 
@@ -30,7 +30,6 @@ public class AuthService {
 
         var user = _mapper.Map<User>(request);
         
-        // Hash the password before storing
         user.PasswordHash = _passwordService.HashPassword(request.Password);
 
         await _userRepository.CreateAsync(user);

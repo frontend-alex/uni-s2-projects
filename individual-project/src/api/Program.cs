@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.SQL;
 using App.Contracts.Persistence;
 using App.Services.Auth;
+using App.Contracts.Security;
 using Infrastructure.Repositories;
 using Core.Mappings;
-using Core.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,10 +22,12 @@ builder.Services.AddAutoMapper(typeof(UserMappingProfile));
 
 // Register repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IOtpRepository, OtpRepository>();
 
 // Register services
-builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<App.Contracts.Security.IPasswordService, App.Services.Security.PasswordService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<OtpService>();
 
 builder.Services.AddSwaggerServices();
 

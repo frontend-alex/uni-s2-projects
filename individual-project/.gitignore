@@ -76,3 +76,5 @@ lcov.info
 # docker
 docker-compose.override.yml
 *.pid
+
+Migrations

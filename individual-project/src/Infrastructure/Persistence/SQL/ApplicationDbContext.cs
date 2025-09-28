@@ -9,6 +9,7 @@ public class ApplicationDbContext : DbContext {
     }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<Otp> Otps { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
@@ -26,8 +27,18 @@ public class ApplicationDbContext : DbContext {
             entity.Property(e => e.Xp).IsRequired().HasDefaultValue(0);
             entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-            
+
             entity.HasIndex(e => e.Email).IsUnique();
+        });
+
+        // Configure Otp entity
+        modelBuilder.Entity<Otp>(entity => {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Email).IsRequired().HasMaxLength(320);
+            entity.Property(e => e.Code).IsRequired().HasMaxLength(6);
+            entity.Property(e => e.ExpirationTime).IsRequired();
+
+            entity.HasIndex(e => e.Email);
         });
     }
 }
