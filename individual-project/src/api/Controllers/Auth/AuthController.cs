@@ -37,15 +37,24 @@ public class AuthController : ControllerBase {
         }
     }
 
+    [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request) {
-        var response = await _authService.LoginAsync(request);
-        
-        return Ok(new ResponseDto<object> {
+            string token = await _authService.LoginAsync(request);
+            
+            Response.Cookies.Append("auth-token", token, new CookieOptions {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+            
+
+            Console.WriteLine("Token set in cookie: " + token);
+            
+            return Ok(new ResponseDto<object> {
             Success = true,
             Message = "User has successfully logged in.",
-            Data = response
+            Data = null
         });
-
-
     }
 }

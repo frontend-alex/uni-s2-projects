@@ -11,11 +11,13 @@ public class AuthService {
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
     private readonly IPasswordService _passwordService;
+    private readonly IJwtService _jwtService;
 
-    public AuthService(IUserRepository userRepository, IMapper mapper, IPasswordService passwordService) {
+    public AuthService(IUserRepository userRepository, IMapper mapper, IPasswordService passwordService, IJwtService jwtService) {
         _userRepository = userRepository;
         _mapper = mapper;
         _passwordService = passwordService;
+        _jwtService = jwtService;
     }
 
     public async Task<string> RegisterAsync(RegisterRequest request) {
@@ -41,7 +43,7 @@ public class AuthService {
 
         return user.Email;
     }
-    
+
 
     public async Task<string> LoginAsync(LoginRequest request) {
         var user = await _userRepository.GetByEmailAsync(request.Email);
@@ -54,6 +56,8 @@ public class AuthService {
             throw AppException.CreateError("EMAIL_NOT_VERIFIED", extra: new Dictionary<string, object> { { "email", request.Email }, { "otpRedirect", true } });
         }
 
-        return user.Email;
+        var token = _jwtService.GenerateToken(user);
+
+        return token;
     }
 }

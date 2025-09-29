@@ -18,7 +18,7 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 
 // Add security services (CORS, JWT, etc.)
-builder.Services.AddSecurityServices();
+builder.Services.AddSecurityServices(builder.Configuration);
 
 // Add database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -42,6 +42,10 @@ var app = builder.Build();
 
 // Add security middleware (CORS, JWT, etc.)
 app.UseSecurityMiddleware();
+
+// Add authentication and authorization
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Add error handling middleware
 app.UseMiddleware<ErrorHandler>();
