@@ -49,7 +49,7 @@ export function OtpForm({
 
                     <FormField
                       control={otpForm.control}
-                      name="pin"
+                      name="code"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>One-Time Password</FormLabel>

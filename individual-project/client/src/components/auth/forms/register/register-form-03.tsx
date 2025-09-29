@@ -14,6 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import AppLogo from "@/components/AppLogo";
 
 const PasswordStrengthChecks = lazy(
   () => import("@/components/PasswordChecker")
@@ -44,6 +45,44 @@ export function RegisterForm({
                   </p>
                 </div>
                 <div className="grid gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <FormField
+                      control={registerForm.control}
+                      name="firstName"
+                      render={({ field }) => (
+                        <FormItem className="grid gap-3">
+                          <FormLabel>First Name</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="text"
+                              placeholder="John"
+                              {...field}
+                              className="input no-ring"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={registerForm.control}
+                      name="lastName"
+                      render={({ field }) => (
+                        <FormItem className="grid gap-3">
+                          <FormLabel>Last Name</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="text"
+                              placeholder="Doe"
+                              {...field}
+                              className="input no-ring"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   <FormField
                     control={registerForm.control}
                     name="username"
@@ -54,7 +93,7 @@ export function RegisterForm({
                           <Input
                             type="username"
                             className="input no-ring"
-                            placeholder="John Doe"
+                            placeholder="johndoe"
                             {...field}
                           />
                         </FormControl>
@@ -141,11 +180,10 @@ export function RegisterForm({
         </div>
       </div>
       <div className="bg-muted relative hidden lg:block">
-        <img
-          src="https://ui.shadcn.com/placeholder.svg"
-          alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-        />
+          <div className="flex items-center justify-center h-full">
+            <AppLogo />
+
+          </div>
       </div>
     </div>
   );

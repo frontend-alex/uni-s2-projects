@@ -35,6 +35,13 @@ public static class ErrorMessages
             ErrorCode = "USER_001",
             UserFriendlyMessage = "An account with this email already exists. Please log in or use a different email."
         },
+        ["EMAIL_EXISTS_NOT_VERIFIED"] = new()
+        {
+            Message = "This email is already registered but not verified.",
+            StatusCode = 400,
+            ErrorCode = "USER_001A",
+            UserFriendlyMessage = "An account with this email already exists but is not verified. Please verify your email to continue."
+        },
         ["USER_NOT_FOUND"] = new()
         {
             Message = "User account not found.",

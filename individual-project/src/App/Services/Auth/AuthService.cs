@@ -18,9 +18,14 @@ public class AuthService {
         _passwordService = passwordService;
     }
 
-    public async Task<bool> RegisterAsync(RegisterRequest request) {
+    public async Task<string> RegisterAsync(RegisterRequest request) {
 
-        if (await _userRepository.ExistsByEmailAsync(request.Email)) {
+        var existingUser = await _userRepository.GetByEmailAsync(request.Email);
+
+        if (existingUser != null) {
+            if (!existingUser.EmailVerified) {
+                throw AppException.CreateError("EMAIL_EXISTS_NOT_VERIFIED", extra: new Dictionary<string, object> { { "email", request.Email } });
+            }
             throw AppException.CreateError("EMAIL_EXISTS");
         }
 
@@ -29,11 +34,26 @@ public class AuthService {
         }
 
         var user = _mapper.Map<User>(request);
-        
+
         user.PasswordHash = _passwordService.HashPassword(request.Password);
 
         await _userRepository.CreateAsync(user);
 
-        return true;
+        return user.Email;
+    }
+    
+
+    public async Task<string> LoginAsync(LoginRequest request) {
+        var user = await _userRepository.GetByEmailAsync(request.Email);
+
+        if (user == null || !_passwordService.VerifyPassword(request.Password, user.PasswordHash)) {
+            throw AppException.CreateError("INVALID_CREDENTIALS");
+        }
+
+        if (!user.EmailVerified) {
+            throw AppException.CreateError("EMAIL_NOT_VERIFIED", extra: new Dictionary<string, object> { { "email", request.Email }, { "otpRedirect", true } });
+        }
+
+        return user.Email;
     }
 }

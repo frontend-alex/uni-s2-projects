@@ -16,12 +16,36 @@ public class AuthController : ControllerBase {
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request) {
-        await _authService.RegisterAsync(request);
+        try {
+            string email = await _authService.RegisterAsync(request);
 
+            return Ok(new ResponseDto<object> {
+                Success = true,
+                Message = "User has successfully registered.",
+                Data = new { email }
+            });
+        }
+        catch (Core.Exceptions.AppException ex) when (ex.ErrorCode == "USER_001A") {
+            return BadRequest(new ErrorResponseDto {
+                Message = ex.Message,
+                Success = false,
+                StatusCode = ex.StatusCode,
+                ErrorCode = ex.ErrorCode,
+                UserFriendlyMessage = ex.UserFriendlyMessage,
+                Extra = new Dictionary<string, object> { { "email", request.Email }, { "otpRedirect", true } }
+            });
+        }
+    }
+
+    public async Task<IActionResult> Login([FromBody] LoginRequest request) {
+        var response = await _authService.LoginAsync(request);
+        
         return Ok(new ResponseDto<object> {
             Success = true,
-            Message = "User has successfully registered.",
-            Data = null
+            Message = "User has successfully logged in.",
+            Data = response
         });
+
+
     }
 }

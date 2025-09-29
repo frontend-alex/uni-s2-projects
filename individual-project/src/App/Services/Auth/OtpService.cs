@@ -1,6 +1,6 @@
 using Core.DTO.Auth;
 using Core.Exceptions;
-using Core.Utils;
+using Core.Utils.Email;
 using App.Contracts.Persistence;
 
 namespace App.Services.Auth;

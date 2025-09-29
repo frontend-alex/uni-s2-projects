@@ -43,7 +43,7 @@ export function OtpForm({
             <div className="grid gap-6">
               <FormField
                 control={otpForm.control}
-                name="pin"
+                name="code"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>One-Time Password</FormLabel>

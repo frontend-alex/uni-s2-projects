@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import AppLogo from "@/components/AppLogo";
-import { RegisterForm } from "@/components/auth/forms/register/register-form-02";
+import { RegisterForm } from "@/components/auth/forms/register/register-form-03";
 import { useApiMutation } from "@/hooks/hook";
 import {
   registrationSchema,
@@ -21,35 +21,47 @@ const Register = () => {
       username: "",
       email: "",
       password: "",
+      firstName: "",
+      lastName: "",
     },
   });
 
-  // const { mutateAsync: sendOtp } = useApiMutation("POST", "/auth/send-otp", {
-  //   onSuccess: (data) => toast.success(data.message),
-  //   onError: (err) => toast.success(err.message),
-  // });
+  const { mutateAsync: sendOtp } = useApiMutation(
+    "POST",
+    API.ENDPOINTS.AUTH.OTP.GENERATE,
+    {
+      onSuccess: (data) => toast.success(data.message),
+      onError: (err) => toast.success(err.message),
+    }
+  );
 
   const { mutateAsync: register, isPending } = useApiMutation<
     { email: string },
     RegistrationSchemaType
   >("POST", API.ENDPOINTS.AUTH.REGISTER, {
-    onSuccess: ({ data, message }) => {
+    onSuccess: ({ message, data }) => {
       const email = data?.email;
       if (email) {
         toast.success(message);
-        // sendOtp({ email });
-        // navigate(`/verify-email?email=${email}`);
-        navigate("/login");
+        sendOtp({ email });
+        navigate(`/verify-email?email=${email}`);
       }
     },
     onError: (err) => {
-      const error = err.response?.data;
-      if (error?.otpRedirect && error?.email) {
-        navigate(`/verify-email?email=${error.email}`);
+      const extra = err.response?.data?.extra as {
+        otpRedirect?: boolean;
+        email?: string;
+        userMessage?: string;
+      };
+      if (extra.otpRedirect && extra.email) {
+        navigate(`/verify-email?email=${extra.email}`);
         return;
       }
       toast.error(
-        error?.userMessage || error?.message || "Something went wrong"
+        err.response?.data?.userMessage ||
+          err.response?.data?.message ||
+          "Something went wrong",
+        { description: extra.userMessage }
       );
     },
   });

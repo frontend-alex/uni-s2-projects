@@ -25,7 +25,7 @@ public class OtpController : BaseController {
         });
     }
 
-    [HttpPost("verify")]
+    [HttpPut("verify")]
     public async Task<IActionResult> VerifyOtp([FromBody] OtpVerifyRequest request) {
         var result = await _otpService.VerifyOtpAsync(request);
         return Ok(new ResponseDto<OtpResponse> {

@@ -12,7 +12,7 @@ export type ApiErrorResponse<T = unknown> = {
   statusCode: number;
   message: string;
   userMessage: string;
-  data?: T;
+  extra?: T;
   [key: string]: unknown;
 } & Record<string, unknown>;
 

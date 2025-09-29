@@ -5,12 +5,13 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
 import AppLogo from "@/components/AppLogo";
-import { OtpForm } from "@/components/auth/forms/otp/otp-form-02";
+import { OtpForm } from "@/components/auth/forms/otp/otp-form-03";
 import { useApiMutation } from "@/hooks/hook";
 import {
   otpSchema,
   type OtpSchemaType,
 } from "@/utils/schemas/auth/auth.schema";
+import { API } from "@/lib/config";
 
 const COOLDOWN_DURATION = 60;
 const STORAGE_KEY = "otp_last_sent_at";
@@ -18,16 +19,17 @@ const STORAGE_KEY = "otp_last_sent_at";
 const Otp = () => {
   const navigate = useNavigate();
   const email = new URLSearchParams(location.search).get("email") ?? "";
+  
   const [cooldown, setCooldown] = useState(0);
 
   const otpForm = useForm<OtpSchemaType>({
     resolver: zodResolver(otpSchema),
-    defaultValues: { pin: "", email },
+    defaultValues: { code: "", email },
   });
 
   const { mutateAsync: sendOtp, isPending: isOtpPending } = useApiMutation(
     "POST",
-    "/auth/send-otp",
+    API.ENDPOINTS.AUTH.OTP.GENERATE,
     {
       onSuccess: (data) => toast.success(data.message),
       onError: (err) => {
@@ -38,7 +40,7 @@ const Otp = () => {
 
   const { mutateAsync: verifyEmail, isPending: isOtpverifying } = useApiMutation(
     "PUT",
-    "/auth/validate-otp",
+    API.ENDPOINTS.AUTH.OTP.VERIFY,
     {
       onSuccess: () => navigate("/login"),
       onError: (err) => {

@@ -15,6 +15,7 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import AppLogo from "@/components/AppLogo";
 
 export function OtpForm({
   otpForm,
@@ -41,9 +42,10 @@ export function OtpForm({
                   </p>
                 </div>
                 <div className="grid gap-6">
+                  
                   <FormField
                     control={otpForm.control}
-                    name="pin"
+                    name="code"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>One-Time Password</FormLabel>
@@ -126,11 +128,9 @@ export function OtpForm({
         </div>
       </div>
       <div className="bg-muted relative hidden lg:block">
-        <img
-          src="https://ui.shadcn.com/placeholder.svg"
-          alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-        />
+        <div className="flex items-center justify-center h-full">
+          <AppLogo />
+        </div>
       </div>
     </div>
   );

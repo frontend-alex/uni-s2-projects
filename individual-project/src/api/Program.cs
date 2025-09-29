@@ -1,17 +1,24 @@
 using API.Setup.Swagger;
+using Core.Mappings;
 using API.Middleware;
+using API.Setup.Security;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.SQL;
 using App.Contracts.Persistence;
 using App.Services.Auth;
-using App.Contracts.Security;
 using Infrastructure.Repositories;
-using Core.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
 builder.Services.AddEndpointsApiExplorer();
+
+// Add security services (CORS, JWT, etc.)
+builder.Services.AddSecurityServices();
 
 // Add database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -33,6 +40,9 @@ builder.Services.AddSwaggerServices();
 
 var app = builder.Build();
 
+// Add security middleware (CORS, JWT, etc.)
+app.UseSecurityMiddleware();
+
 // Add error handling middleware
 app.UseMiddleware<ErrorHandler>();
 
@@ -47,7 +57,6 @@ if (app.Environment.IsDevelopment()) {
 
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseAuthorization();
 
 app.MapControllers();
 

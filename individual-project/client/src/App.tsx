@@ -29,14 +29,6 @@ const App = () => {
             </TitleWrapper>
           }
         />
-        <Route
-          path="/verify-email"
-          element={
-            <TitleWrapper title="Verify Email">
-              <Otp />
-            </TitleWrapper>
-          }
-        />
         <Route element={<AuthLayout />}>
           <Route
             path="/login"
@@ -54,7 +46,15 @@ const App = () => {
               </TitleWrapper>
             }
           />
-           <Route
+          <Route
+            path="/verify-email"
+            element={
+              <TitleWrapper title="Verify Email">
+                <Otp />
+              </TitleWrapper>
+            }
+          />
+          <Route
             path="/forgot-password"
             element={
               <TitleWrapper title="Recover Page">
@@ -78,14 +78,14 @@ const App = () => {
               </TitleWrapper>
             }
           />
-           <Route
-              path="/onboarding"
-              element={
-                <TitleWrapper title="Onboarding">
-                  <OnboardingPage />
-                </TitleWrapper>
-              }
-            />
+          <Route
+            path="/onboarding"
+            element={
+              <TitleWrapper title="Onboarding">
+                <OnboardingPage />
+              </TitleWrapper>
+            }
+          />
         </Route>
         <Route element={<AppLayout />}>
           <Route element={<RootLayout />}>

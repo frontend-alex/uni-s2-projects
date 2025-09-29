@@ -13,6 +13,7 @@ import {
 import { LoaderCircle } from "lucide-react";
 import type { LoginFormProps } from "@/types/types";
 import { ProviderButtons } from "../buttons/provider-buttons";
+import AppLogo from "@/components/AppLogo";
 
 export function LoginForm({
   loginForm,
@@ -118,11 +119,9 @@ export function LoginForm({
         </div>
       </div>
       <div className="bg-muted relative hidden lg:block">
-        <img
-          src="https://ui.shadcn.com/placeholder.svg"
-          alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-        />
+        <div className="flex items-center justify-center h-full">
+          <AppLogo />
+        </div>
       </div>
     </div>
   );
