@@ -2,12 +2,13 @@ using Core.DTO;
 using Core.DTO.Auth;
 using App.Services.Auth;
 using Microsoft.AspNetCore.Mvc;
+using API.Controllers.Base;
 
 namespace API.Controllers.Auth;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController : ControllerBase {
+public class AuthController : BaseController {
     private readonly AuthService _authService;
 
     public AuthController(AuthService authService) {
@@ -40,21 +41,19 @@ public class AuthController : ControllerBase {
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request) {
             string token = await _authService.LoginAsync(request);
-            
-            Response.Cookies.Append("auth-token", token, new CookieOptions {
+
+            // Set JWT token as HTTP-only cookie
+            Response.Cookies.Append("access_token", token, new CookieOptions {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = DateTimeOffset.UtcNow.AddDays(7)
+                Expires = DateTimeOffset.UtcNow.AddHours(1) 
             });
             
-
-            Console.WriteLine("Token set in cookie: " + token);
-            
             return Ok(new ResponseDto<object> {
-            Success = true,
-            Message = "User has successfully logged in.",
-            Data = null
-        });
+                Success = true,
+                Message = "User has successfully logged in.",
+                Data = null
+            });
     }
 }
