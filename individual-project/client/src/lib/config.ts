@@ -31,7 +31,7 @@ export const API = {
       LOGIN: "/Auth/login",
 
       OTP: {
-        GENERATE: "/Otp/send-otp",
+        GENERATE: "/Otp/send",
         VERIFY: "/Otp/verify",
       },
 

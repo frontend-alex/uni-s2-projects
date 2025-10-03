@@ -3,13 +3,13 @@ $ErrorActionPreference = 'Stop'
 Set-Location -Path $PSScriptRoot
 
 $clientDir = Join-Path $PSScriptRoot 'client'
-$serverDir = Join-Path $PSScriptRoot 'src/api'
+$serverDir = Join-Path $PSScriptRoot 'src'
 
 if (-not (Test-Path $clientDir)) { throw "Client directory not found: $clientDir" }
 if (-not (Test-Path $serverDir)) { throw "Server directory not found: $serverDir" }
 
 $clientCmd = if ($env:CLIENT_START_COMMAND) { $env:CLIENT_START_COMMAND } else { 'pnpm dev' }
-$serverCmd = if ($env:SERVER_START_COMMAND) { $env:SERVER_START_COMMAND } else { 'dotnet watch run' }
+$serverCmd = if ($env:SERVER_START_COMMAND) { $env:SERVER_START_COMMAND } else { 'dotnet watch run --project api' }
 
 Write-Host "Starting client in: $clientDir" -ForegroundColor Cyan
 Write-Host "Command: $clientCmd" -ForegroundColor DarkCyan

@@ -1,6 +1,6 @@
+using Core.Models;
+using Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Core.Entities;
-using App.Contracts.Persistence;
 using Infrastructure.Persistence.SQL;
 
 namespace Infrastructure.Repositories;

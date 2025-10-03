@@ -1,37 +1,35 @@
-using API.Controllers.Base;
-using Core.DTO;
-using Core.DTO.Auth;
-using App.Services.Auth;
+using API.DTOs;
+using API.DTOs.Auth;
+using Core.Services.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.Auth;
 
 [ApiController]
 [Route("api/[controller]")]
-public class OtpController : BaseController {
+public class OtpController : ControllerBase {
     private readonly OtpService _otpService;
 
     public OtpController(OtpService otpService) {
         _otpService = otpService;
     }
 
-    [HttpPost("send-otp")]
+    [HttpPost("send")]
     public async Task<IActionResult> SendOtp([FromBody] SendOtpRequest request) {
-        var result = await _otpService.SendOtpAsync(request);
-        return Ok(new ResponseDto<OtpResponse> {
-            Success = true, 
-            Message = result.Message,
-            Data = result
+        var (success, message, expiresAt) = await _otpService.SendOtpAsync(request.Email);
+        return Ok(new OtpResponse {
+            Success = success,
+            Message = message,
+            ExpiresAt = expiresAt
         });
     }
 
     [HttpPut("verify")]
     public async Task<IActionResult> VerifyOtp([FromBody] OtpVerifyRequest request) {
-        var result = await _otpService.VerifyOtpAsync(request);
-        return Ok(new ResponseDto<OtpResponse> {
-            Success = true,
-            Message = result.Message,
-            Data = result
+        var (success, message) = await _otpService.VerifyOtpAsync(request.Email, request.Code);
+        return Ok(new OtpResponse {
+            Success = success,
+            Message = message
         });
     }
-}   
+}

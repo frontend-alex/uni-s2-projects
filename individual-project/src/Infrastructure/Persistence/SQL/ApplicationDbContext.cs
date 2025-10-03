@@ -1,6 +1,5 @@
+using Core.Models;
 using Microsoft.EntityFrameworkCore;
-using Core.Entities;
-using Core.Enums;
 
 namespace Infrastructure.Persistence.SQL;
 
@@ -23,7 +22,6 @@ public class ApplicationDbContext : DbContext {
             entity.Property(e => e.Email).IsRequired().HasMaxLength(320);
             entity.Property(e => e.EmailVerified).IsRequired().HasDefaultValue(false);
             entity.Property(e => e.ProfilePicture).HasMaxLength(2048);
-            entity.Property(e => e.Role).IsRequired().HasDefaultValue(UserRole.Student);
             entity.Property(e => e.Xp).IsRequired().HasDefaultValue(0);
             entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");

@@ -1,67 +1,83 @@
 using API.Setup.Swagger;
-using Core.Mappings;
 using API.Middleware;
 using API.Setup.Security;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.SQL;
-using App.Contracts.Persistence;
-using App.Services.Auth;
+using Core.Interfaces;
+using Core.Services.Auth;
 using Infrastructure.Repositories;
+using DotNetEnv;
+using Infrastructure.Services;
+
+Env.Load(".env");
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Controllers & JSON
 builder.Services.AddControllers()
-    .AddJsonOptions(options => {
-        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
-        options.JsonSerializerOptions.WriteIndented = true;
+    .AddJsonOptions(o => {
+        o.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+        o.JsonSerializerOptions.WriteIndented = true;
     });
 builder.Services.AddEndpointsApiExplorer();
 
-// Add security services (CORS, JWT, etc.)
+// Security (CORS + Auth)
 builder.Services.AddSecurityServices(builder.Configuration);
 
-// Add database context
+// DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        Environment.GetEnvironmentVariable("CONNECTION_STRING")
+        ?? builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 
-// Register AutoMapper
-builder.Services.AddAutoMapper(typeof(UserMappingProfile));
+Console.WriteLine("Using connection string: "
+    + (Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 
-// Register repositories
+// Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IOtpRepository, OtpRepository>();
 
-// Register services
-builder.Services.AddScoped<App.Contracts.Security.IPasswordService, App.Services.Security.PasswordService>();
+// Services
+builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<OtpService>();
 
+// Swagger
 builder.Services.AddSwaggerServices();
 
 var app = builder.Build();
 
-// Add security middleware (CORS, JWT, etc.)
-app.UseSecurityMiddleware();
+// Dev-only HTTPS redirect can break preflight if FE uses http.
+if (!app.Environment.IsDevelopment()) {
+    app.UseHttpsRedirection();
+}
 
-// Add authentication and authorization
+// Global error handling should not short-circuit OPTIONS.
+app.UseMiddleware<ErrorHandler>();
+
+// Routing first
+app.UseRouting();
+
+// CORS must be between routing and auth
+app.UseCors("AllowFrontend");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Add error handling middleware
-app.UseMiddleware<ErrorHandler>();
-
-using (var scope = app.Services.CreateScope()) {
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    context.Database.EnsureCreated();
-}
-
+// Swagger after routing is fine
 if (app.Environment.IsDevelopment()) {
     app.UseSwaggerServices(app.Environment);
 }
 
-app.UseHttpsRedirection();
-app.UseRouting();
-
+// Endpoints
 app.MapControllers();
+
+// Ensure DB created
+using (var scope = app.Services.CreateScope()) {
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    context.Database.EnsureCreated();
+}
 
 app.Run();
