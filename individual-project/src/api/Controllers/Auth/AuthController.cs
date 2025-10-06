@@ -1,6 +1,7 @@
 using API.DTOs;
 using API.DTOs.Auth;
 using Core.Services.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.Auth;
@@ -40,6 +41,18 @@ public class AuthController : ControllerBase {
         return Ok(new ResponseDto<object> {
             Success = true,
             Message = "User has successfully logged in.",
+            Data = null
+        });
+    }
+
+    [Authorize]
+    [HttpPost("logout")]
+    public IActionResult Logout() {
+        Response.Cookies.Delete("access_token");
+
+        return Ok(new ResponseDto<object> {
+            Success = true,
+            Message = "Logged out successfully.",
             Data = null
         });
     }

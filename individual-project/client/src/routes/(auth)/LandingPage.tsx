@@ -8,9 +8,9 @@ const LandingPage = () => {
   return (
     <div>
       <Navbar />
-      <GridDotBackground className="h-screen absolute top-0 -z-1" />
+      <GridDotBackground className="h-[50dvh] absolute top-0 -z-1" />
 
-      <div className="h-[calc(100vh-80px)] w-full flex flex-col gap-5 items-center justify-center">
+      <div className="h-[calc(100vh-100px)] w-full flex flex-col gap-5 items-center justify-center">
         <div className="mx-auto text-3xl font-bold tracking-tight md:text-6xl lg:text-7xl text-center">
           Unlock Knowledge, Together With
           <PointerHighlight containerClassName="mx-auto">

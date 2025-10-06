@@ -1,26 +1,26 @@
 import Loading from "@/components/Loading";
 import TitleWrapper from "@/components/TitleWrapper";
-import AuthLayout from "@/components/layouts/AuthLayout";
-import RootLayout from "@/components/layouts/RootLayout";
-import AppLayout from "@/components/layouts/AppLayout";
 
 import { Suspense } from "react";
 import { Dashboard, Profile, Settings, OnboardingPage } from "@/routes/(root)";
 import { Route, Routes } from "react-router-dom";
 import {
   AuthCallback,
+  ResetPassword,
   ForgotPassword,
   LandingPage,
   Login,
   Otp,
   Register,
 } from "@/routes/(auth)";
-import ResetPassword from "./routes/(auth)/auth/ResetPassword";
+import { AppGuard, AuthGuard, OnboardingGuard } from "./components/guards";
+import RootLayout from "./components/layouts/RootLayout";
 
 const App = () => {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
+        {/* Public landing */}
         <Route
           path="/"
           element={
@@ -29,7 +29,9 @@ const App = () => {
             </TitleWrapper>
           }
         />
-        <Route element={<AuthLayout />}>
+
+        {/* Public-only auth routes */}
+        <Route element={<AuthGuard />}>
           <Route
             path="/login"
             element={
@@ -78,6 +80,10 @@ const App = () => {
               </TitleWrapper>
             }
           />
+        </Route>
+
+        {/* Onboarding (auth-only, not completed) */}
+        <Route element={<OnboardingGuard />}>
           <Route
             path="/onboarding"
             element={
@@ -87,7 +93,9 @@ const App = () => {
             }
           />
         </Route>
-        <Route element={<AppLayout />}>
+
+        {/* Protected app */}
+        <Route element={<AppGuard />}>
           <Route element={<RootLayout />}>
             <Route
               path="/dashboard"

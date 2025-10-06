@@ -1,15 +1,11 @@
 namespace API.Controllers.User;
 
+using API.DTOs;
 using Core.Models;
 using Core.Interfaces.User;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using API.DTOs;
 
-[ApiController]
-[Route("api/[controller]")]
-public class UserController : ControllerBase {
+public class UserController : BaseController {
 
     private readonly IUserService _userService;
 
@@ -17,24 +13,29 @@ public class UserController : ControllerBase {
         _userService = userService;
     }
 
-    [Authorize]
     [HttpGet("me")]
     public async Task<IActionResult> GetProfile() {
-        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        int userIdResult = GetCurrentUserId();
 
-        if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId)) {
-            return Unauthorized(new {
-                success = false,
-                message = "Invalid or missing user ID in token."
-            });
-        }
-
-        User? user = await _userService.GetByIdUser(userId);
+        User? user = await _userService.GetByIdUser(userIdResult);
 
         return Ok(new ResponseDto<object> {
             Success = true,
             Message = "User profile retrieved successfully.",
             Data = new { user }
+        });
+    }
+
+    [HttpPut("update")]
+    public async Task<IActionResult> UpdateUser([FromBody] Dictionary<string, object> updates) {
+        int userId = GetCurrentUserId();
+
+        await _userService.UpdateUser(userId, updates);
+
+        return Ok(new ResponseDto<object> {
+            Success = true,
+            Message = "User updated successfully.",
+            Data = null
         });
     }
 }

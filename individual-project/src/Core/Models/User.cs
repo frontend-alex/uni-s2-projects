@@ -8,6 +8,7 @@ public class User : BaseEntity {
     public string Email { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
     public bool EmailVerified { get; set; } = false;
+    public bool Onboarding { get; set; } = false;
     public string? ProfilePicture { get; set; }
     public int Xp { get; set; }
 }

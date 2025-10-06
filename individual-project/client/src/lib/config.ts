@@ -29,13 +29,14 @@ export const API = {
     AUTH: {
       REGISTER: "/Auth/register",
       LOGIN: "/Auth/login",
+      LOGOUT: "/Auth/logout",
+
 
       OTP: {
         GENERATE: "/Otp/send",
         VERIFY: "/Otp/verify",
       },
 
-      LOGOUT: "/auth/logout",
       FORGOT_PASSWORD: "/auth/forgot-password",
       RESET_PASSWORD: "/auth/reset-password",
       CHANGE_PASSWORD: "/auth/change-password",

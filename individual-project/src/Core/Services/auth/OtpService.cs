@@ -15,7 +15,7 @@ public class OtpService {
         _userRepository = userRepository;
     }
 
-    public async Task<(bool Success, string Message, DateTime? ExpiresAt)> SendOtpAsync(string email) {
+    public async Task<DateTime> SendOtpAsync(string email) {
 
         if (await _userRepository.GetByEmailAsync(email) == null) {
             throw AppException.CreateError("USER_NOT_FOUND");
@@ -36,10 +36,10 @@ public class OtpService {
 
         await _otpRepository.CreateOtpAsync(otp);
 
-        return (true, "OTP sent successfully", expirationTime);
+        return expirationTime;
     }
 
-    public async Task<(bool Success, string Message)> VerifyOtpAsync(string email, string code) {
+    public async Task VerifyOtpAsync(string email, string code) {
 
         var user = await _userRepository.GetByEmailAsync(email);
         if (user is null)
@@ -65,7 +65,5 @@ public class OtpService {
 
         user.EmailVerified = true;
         await _userRepository.UpdateAsync(user);
-
-        return (true, "OTP verified successfully");
     }
 }

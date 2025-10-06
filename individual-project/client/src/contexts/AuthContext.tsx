@@ -33,8 +33,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   );
 
-  console.log(data)
-
   const { mutateAsync: logoutMutation } = useApiMutation(
     "POST",
     API.ENDPOINTS.AUTH.LOGOUT,
@@ -50,6 +48,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     await logoutMutation(undefined);
   };
+
+  console.log(data)
 
   const contextValue = useMemo<AuthContextType>(() => {
     return {

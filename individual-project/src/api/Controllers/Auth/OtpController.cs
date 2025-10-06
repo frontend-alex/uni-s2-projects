@@ -15,20 +15,20 @@ public class OtpController : ControllerBase {
 
     [HttpPost("send")]
     public async Task<IActionResult> SendOtp([FromBody] SendOtpRequest request) {
-        var (success, message, expiresAt) = await _otpService.SendOtpAsync(request.Email);
+        DateTime expirationTime = await _otpService.SendOtpAsync(request.Email);
         return Ok(new OtpResponse {
-            Success = success,
-            Message = message,
-            ExpiresAt = expiresAt
+            Success = true,
+            Message = "OTP sent successfully",
+            ExpiresAt = expirationTime
         });
     }
 
     [HttpPut("verify")]
     public async Task<IActionResult> VerifyOtp([FromBody] OtpVerifyRequest request) {
-        var (success, message) = await _otpService.VerifyOtpAsync(request.Email, request.Code);
+        await _otpService.VerifyOtpAsync(request.Email, request.Code);
         return Ok(new OtpResponse {
-            Success = success,
-            Message = message
+            Success = true,
+            Message = "OTP verified successfully"
         });
     }
 }

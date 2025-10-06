@@ -1,11 +1,10 @@
-import Loading from "@/components/Loading";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import Loading from "@/components/Loading";
 
-const AppLayout = () => {
+const AppGuard = () => {
+  const { isAuthenticated, isLoading, user } = useAuth();
   const location = useLocation();
-  const { isAuthenticated, isLoading } = useAuth();
-
 
   if (isLoading) return <Loading />;
 
@@ -13,7 +12,11 @@ const AppLayout = () => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  if (!user?.onboarding) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
   return <Outlet />;
 };
 
-export default AppLayout;
+export default AppGuard;

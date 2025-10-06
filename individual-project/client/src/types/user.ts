@@ -6,12 +6,14 @@ export enum AccountProviders {
 }
 
 export type User = {
-  _id: string;
-  username: string;
+  id: number;
   email: string;
-  provider: AccountProviders; 
+  username: string;
+  firstName: string;
+  lastName: string;
+  profilePicture: string | null;
   emailVerified: boolean;
-  hasPassword: boolean;
   createdAt: string;
   updatedAt: string;
+  onboarding: boolean;
 }

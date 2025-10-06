@@ -12,7 +12,7 @@ public class UserService : IUserService {
     }
 
     public async Task<User?> GetByIdUser(int id) {
-        
+
         User? user = await _userRepository.GetByIdAsync(id);
 
         if (user == null) {
@@ -22,9 +22,9 @@ public class UserService : IUserService {
         return user;
     }
 
-    public async Task<string> UpdateUser(int id, Dictionary<string, object> updates) {
+    public async Task UpdateUser(int id, Dictionary<string, object> updates) {
         User? user = await _userRepository.GetByIdAsync(id);
-        
+
         if (user == null) {
             throw AppException.CreateError("USER_NOT_FOUND");
         }
@@ -38,21 +38,19 @@ public class UserService : IUserService {
         }
 
         await _userRepository.UpdateAsync(user);
-        return "User updated successfully";
     }
 
-    public async Task<string> DeleteUser(int id) {
+    public async Task DeleteUser(int id) {
         User? user = await _userRepository.GetByIdAsync(id);
-        
+
         if (user == null) {
             throw AppException.CreateError("USER_NOT_FOUND");
         }
 
         bool deleted = await _userRepository.DeleteAsync(id);
+
         if (!deleted) {
             throw AppException.CreateError("USER_DELETE_FAILED");
         }
-
-        return "User deleted successfully";
     }
 }
