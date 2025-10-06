@@ -1,13 +1,15 @@
-using API.Setup.Swagger;
+using DotNetEnv;
 using API.Middleware;
+using API.Setup.Swagger;
 using API.Setup.Security;
+using Core.Services.User;
+using Core.Services.Auth;
+using Core.Interfaces.User;
+using Core.Interfaces.Auth;
+using Infrastructure.Services;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.SQL;
-using Core.Interfaces;
-using Core.Services.Auth;
-using Infrastructure.Repositories;
-using DotNetEnv;
-using Infrastructure.Services;
 
 Env.Load(".env");
 
@@ -41,6 +43,7 @@ builder.Services.AddScoped<IOtpRepository, OtpRepository>();
 
 // Services
 builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<OtpService>();
 

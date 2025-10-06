@@ -33,6 +33,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   );
 
+  console.log(data)
+
   const { mutateAsync: logoutMutation } = useApiMutation(
     "POST",
     API.ENDPOINTS.AUTH.LOGOUT,

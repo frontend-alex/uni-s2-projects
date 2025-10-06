@@ -1,7 +1,5 @@
 using System.Text.Json;
 using Core.Exceptions;
-using Core.Constants;
-using Microsoft.AspNetCore.Http;
 
 namespace API.Middleware;
 

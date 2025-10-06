@@ -1,6 +1,7 @@
 using Core.Exceptions;
 using Core.Utils.Email;
-using Core.Interfaces;
+using Core.Interfaces.Auth;
+using Core.Interfaces.User;
 
 namespace Core.Services.Auth;
 

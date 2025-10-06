@@ -1,4 +1,3 @@
-using API.DTOs;
 using API.DTOs.Auth;
 using Core.Services.Auth;
 using Microsoft.AspNetCore.Mvc;

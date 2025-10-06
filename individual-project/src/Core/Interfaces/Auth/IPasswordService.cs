@@ -1,4 +1,4 @@
-namespace Core.Interfaces;
+namespace Core.Interfaces.Auth;
 
 public interface IPasswordService {
     string HashPassword(string password);

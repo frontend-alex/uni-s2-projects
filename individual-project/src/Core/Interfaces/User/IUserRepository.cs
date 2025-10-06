@@ -1,6 +1,6 @@
-using Core.Models;
+namespace Core.Interfaces.User;
 
-namespace Core.Interfaces;
+using Core.Models;
 
 public interface IUserRepository {
     Task<User?> GetByIdAsync(int id);

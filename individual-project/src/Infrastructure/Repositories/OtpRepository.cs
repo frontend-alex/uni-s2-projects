@@ -1,9 +1,8 @@
-using Core.Models;
-using Core.Interfaces;
+namespace Infrastructure.Repositories;
+
+using Core.Interfaces.Auth;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.SQL;
-
-namespace Infrastructure.Repositories;
 
 public class OtpRepository : IOtpRepository {
     private readonly ApplicationDbContext _context;
