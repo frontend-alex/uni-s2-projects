@@ -4,6 +4,8 @@ using API.DTOs;
 using API.DTOs.Workspace;
 using Microsoft.AspNetCore.Mvc;
 using Core.Interfaces.Services.Workspace;
+using API.Controllers.Base;
+
 
 public class WorkspaceController : BaseController {
     private readonly IWorkspaceService _workspaceService;

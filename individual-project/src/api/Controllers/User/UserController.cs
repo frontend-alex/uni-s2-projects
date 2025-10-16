@@ -5,8 +5,10 @@ using Core.Models;
 using API.DTOs.User;
 using Core.Interfaces.Services.User;
 using Microsoft.AspNetCore.Mvc;
+using API.Controllers.Base;
 
 // User controller
+
 public class UserController : BaseController {
 
     private readonly IUserService _userService;
