@@ -5,6 +5,7 @@ import { UserDropdownSkeleton } from "./dropdowns/user-dropdown";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "./ui/button";
 import { User } from "lucide-react";
+import { ROUTES } from "@/lib/router-paths";
 
 const LazyUserDropdown = lazy(
   () => import("@/components/dropdowns/user-dropdown")
@@ -38,10 +39,10 @@ const Navbar = () => {
         </Suspense>
       ) : (
         <div className="flex items-center gap-3">
-          <Link to="/login">
+          <Link to={ROUTES.PUBLIC.LOGIN}>
             <Button variant={"ghost"}>Log in</Button>
           </Link>
-          <Link to="/register">
+          <Link to={ROUTES.PUBLIC.REGISTER}>
             <Button>
               <User /> Create an account
             </Button>

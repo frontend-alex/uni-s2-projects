@@ -3,6 +3,7 @@ import { GridDotBackground } from "@/components/ui/backgrounds/grid-dot-backgrou
 import { Button } from "@/components/ui/button";
 import { PointerHighlight } from "@/components/ui/pointer-highlight";
 import { Link } from "react-router-dom";
+import { ROUTES } from "@/lib/router-paths";
 
 const LandingPage = () => {
   return (
@@ -22,7 +23,7 @@ const LandingPage = () => {
           expertise, ask questions, and grow together. PeerLearn makes learning
           collaborative and fun!
         </p>
-        <Link to="/register">
+        <Link to={ROUTES.PUBLIC.REGISTER}>
           <Button>Get Started</Button>
         </Link>
       </div>

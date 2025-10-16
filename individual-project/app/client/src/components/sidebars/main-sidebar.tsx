@@ -3,6 +3,7 @@ import AppLogo from "../AppLogo";
 import {
   Frame,
   LifeBuoy,
+  Layout,
   Map,
   PieChart,
   Send,
@@ -23,6 +24,7 @@ import { lazy, Suspense } from "react";
 import { NavMain } from "./main-nav";
 import { NavProjects } from "./secondary-nav";
 import { UserDropdownSkeleton } from "@/components/dropdowns/user-dropdown";
+import { ROUTES } from "@/lib/router-paths";
 
 const LazyUserDropdown = lazy(() => import("@/components/dropdowns/user-dropdown"))
 
@@ -34,18 +36,23 @@ const data = {
   },
   navMain: [
     {
+      title: "Workspace Board",
+      url: ROUTES.HELPERS.getBoardRoute(),
+      icon: Layout,
+    },
+    {
       title: "Settings",
-      url: "/settings",
+      url: ROUTES.AUTHENTICATED.SETTINGS,
       icon: Settings2,
       items: [
         {
           title: "Settings",
-          url: "/settings",
+          url: ROUTES.AUTHENTICATED.SETTINGS,
           icon: User
         },
         {
           title: "Profile",
-          url: "/profile",
+          url: ROUTES.AUTHENTICATED.PROFILE,
         },
       ],
     },

@@ -2,7 +2,7 @@ import Loading from "@/components/Loading";
 import TitleWrapper from "@/components/TitleWrapper";
 
 import { Suspense } from "react";
-import { Dashboard, Profile, Settings, OnboardingPage } from "@/routes/(root)";
+import { Dashboard, Board, Profile, Settings, OnboardingPage } from "@/routes/(root)";
 import { Route, Routes } from "react-router-dom";
 import {
   AuthCallback,
@@ -13,27 +13,30 @@ import {
   Otp,
   Register,
 } from "@/routes/(auth)";
-import { AppGuard, AuthGuard, OnboardingGuard } from "./components/guards";
+import { AppGuard, AuthGuard, OnboardingGuard, LandingGuard } from "./components/guards";
 import RootLayout from "./components/layouts/RootLayout";
+import { ROUTES } from "@/lib/router-paths";
 
 const App = () => {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
         {/* Public landing */}
-        <Route
-          path="/"
-          element={
-            <TitleWrapper title="Landing Page">
-              <LandingPage />
-            </TitleWrapper>
-          }
-        />
+        <Route element={<LandingGuard />}>
+          <Route
+            path={ROUTES.PUBLIC.LANDING}
+            element={
+              <TitleWrapper title="Landing Page">
+                <LandingPage />
+              </TitleWrapper>
+            }
+          />
+        </Route>
 
         {/* Public-only auth routes */}
         <Route element={<AuthGuard />}>
           <Route
-            path="/login"
+            path={ROUTES.PUBLIC.LOGIN}
             element={
               <TitleWrapper title="Login Page">
                 <Login />
@@ -41,7 +44,7 @@ const App = () => {
             }
           />
           <Route
-            path="/register"
+            path={ROUTES.PUBLIC.REGISTER}
             element={
               <TitleWrapper title="Register Page">
                 <Register />
@@ -49,7 +52,7 @@ const App = () => {
             }
           />
           <Route
-            path="/verify-email"
+            path={ROUTES.PUBLIC.VERIFY_EMAIL}
             element={
               <TitleWrapper title="Verify Email">
                 <Otp />
@@ -57,7 +60,7 @@ const App = () => {
             }
           />
           <Route
-            path="/forgot-password"
+            path={ROUTES.PUBLIC.FORGOT_PASSWORD}
             element={
               <TitleWrapper title="Recover Page">
                 <ForgotPassword />
@@ -65,7 +68,7 @@ const App = () => {
             }
           />
           <Route
-            path="/reset-password"
+            path={ROUTES.PUBLIC.RESET_PASSWORD}
             element={
               <TitleWrapper title="Recover Page">
                 <ResetPassword />
@@ -73,7 +76,7 @@ const App = () => {
             }
           />
           <Route
-            path="/auth/callback"
+            path={ROUTES.PUBLIC.AUTH_CALLBACK}
             element={
               <TitleWrapper title="Verifying...">
                 <AuthCallback />
@@ -85,7 +88,7 @@ const App = () => {
         {/* Onboarding (auth-only, not completed) */}
         <Route element={<OnboardingGuard />}>
           <Route
-            path="/onboarding"
+            path={ROUTES.AUTHENTICATED.ONBOARDING}
             element={
               <TitleWrapper title="Onboarding">
                 <OnboardingPage />
@@ -98,15 +101,15 @@ const App = () => {
         <Route element={<AppGuard />}>
           <Route element={<RootLayout />}>
             <Route
-              path="/dashboard"
+              path={`${ROUTES.BASE.APP}/board/:workspaceId`}
               element={
-                <TitleWrapper title="Dashboard Page">
-                  <Dashboard />
+                <TitleWrapper title="Workspace Board">
+                  <Board />
                 </TitleWrapper>
               }
             />
             <Route
-              path="/profile"
+              path={ROUTES.AUTHENTICATED.PROFILE}
               element={
                 <TitleWrapper title="Profile Page">
                   <Profile />
@@ -114,10 +117,19 @@ const App = () => {
               }
             />
             <Route
-              path="/settings"
+              path={ROUTES.AUTHENTICATED.SETTINGS}
               element={
                 <TitleWrapper title="Settings Page">
                   <Settings />
+                </TitleWrapper>
+              }
+            />
+            {/* Legacy dashboard route (kept for backward compatibility) */}
+            <Route
+              path={ROUTES.AUTHENTICATED.DASHBOARD}
+              element={
+                <TitleWrapper title="Dashboard Page">
+                  <Dashboard />
                 </TitleWrapper>
               }
             />
