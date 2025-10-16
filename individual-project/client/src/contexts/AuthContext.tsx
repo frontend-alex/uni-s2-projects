@@ -15,6 +15,7 @@ type AuthContextType = {
   isAuthenticated: boolean;
   logout: () => void;
   refetch: () => void;
+  update: (data: Partial<User>) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -45,11 +46,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   );
 
+
+  const { mutateAsync: updateMutation } = useApiMutation(
+    "PUT",
+    API.ENDPOINTS.USER.UPDATE,
+    {
+      invalidateQueries: [["auth", "me"]],
+      onSuccess: (data) => {
+        console.log(data)
+        toast.success(data.message)
+      },
+    }
+  );
+
   const logout = async () => {
     await logoutMutation(undefined);
   };
 
-  console.log(data)
+  const update = async (payload: Partial<User>) => {
+    await updateMutation(payload);
+  };
 
   const contextValue = useMemo<AuthContextType>(() => {
     return {
@@ -59,6 +75,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       isAuthenticated: Boolean(data?.data) && !error,
       logout,
       refetch,
+      update,
     };
   }, [data, isLoading, error, refetch, logout]);
 

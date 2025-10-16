@@ -4,12 +4,18 @@ using API.Setup.Swagger;
 using API.Setup.Security;
 using Core.Services.User;
 using Core.Services.Auth;
-using Core.Interfaces.User;
-using Core.Interfaces.Auth;
+using Core.Services.Workspace;
 using Infrastructure.Services;
 using Infrastructure.Repositories;
+using Infrastructure.Repositories.Workspace;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.SQL;
+using Core.Interfaces.Services.Auth;
+using Core.Interfaces.Services.User;
+using Core.Interfaces.Services.Workspace;
+using Core.Interfaces.Repositories.User;
+using Core.Interfaces.Repositories.Auth;
+using Core.Interfaces.Repositories.Workspace;
 
 Env.Load(".env");
 
@@ -40,10 +46,13 @@ Console.WriteLine("Using connection string: "
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IOtpRepository, OtpRepository>();
+builder.Services.AddScoped<IWorkspaceRepository, WorkspaceRepository>();
+builder.Services.AddScoped<IUserWorkspaceRepository, UserWorkspaceRepository>();
 
 // Services
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IWorkspaceService, WorkspaceService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<OtpService>();
 

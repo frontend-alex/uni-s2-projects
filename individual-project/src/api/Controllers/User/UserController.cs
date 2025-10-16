@@ -2,9 +2,11 @@ namespace API.Controllers.User;
 
 using API.DTOs;
 using Core.Models;
-using Core.Interfaces.User;
+using API.DTOs.User;
+using Core.Interfaces.Services.User;
 using Microsoft.AspNetCore.Mvc;
 
+// User controller
 public class UserController : BaseController {
 
     private readonly IUserService _userService;

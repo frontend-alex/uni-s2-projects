@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Separator } from "@/components/ui/separator";
 import { type UseFormReturn } from "react-hook-form";
 import { CircleAlert, LoaderCircle } from "lucide-react";
-import { emailSchema, usernameSchema } from "@/utils/schemas/auth/user.schema";
+import { emailSchema, usernameSchema } from "@/utils/schemas/user/user.schema";
 import {
   Form,
   FormControl,

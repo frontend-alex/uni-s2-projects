@@ -41,7 +41,6 @@ const Login = () => {
     }
   );
 
-  // const { data: providers } = useApiQuery<string[]>(["providers"], "/auth/providers");
 
   const handleLogin = (data: LoginSchemaType) => login(data);
 

@@ -1,5 +1,5 @@
 
-namespace Core.Interfaces.Auth;
+namespace Core.Interfaces.Repositories.Auth;
 
 public interface IOtpRepository {
     Task CreateOtpAsync(Otp otp);

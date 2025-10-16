@@ -23,7 +23,6 @@ import { lazy, Suspense } from "react";
 const PasswordStrengthChecks = lazy(() => import("@/components/PasswordChecker"))
 
 const ProfilePassword = ({ user }: { user: User }) => {
-  if (user.provider != AccountProviders.Credentials) return null;
 
   const updatePasswordsForm = useForm({
     resolver: zodResolver(updatePasswordSchema),

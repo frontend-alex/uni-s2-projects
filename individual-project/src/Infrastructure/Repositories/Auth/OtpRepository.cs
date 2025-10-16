@@ -1,6 +1,6 @@
 namespace Infrastructure.Repositories;
 
-using Core.Interfaces.Auth;
+using Core.Interfaces.Repositories.Auth;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.SQL;
 

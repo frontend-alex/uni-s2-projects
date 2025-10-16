@@ -1,4 +1,4 @@
-namespace Core.Interfaces.Auth;
+namespace Core.Interfaces.Services.Auth;
 
 using System.Security.Claims;
 using Core.Models;

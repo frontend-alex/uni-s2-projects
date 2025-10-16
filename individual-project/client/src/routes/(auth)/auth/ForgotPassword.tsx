@@ -4,7 +4,7 @@ import AppLogo from "@/components/AppLogo";
 import { toast } from "sonner";
 import { makeForm } from "@/lib/utils";
 import { useApiMutation } from "@/hooks/hook";
-import { emailSchema } from "@/utils/schemas/auth/user.schema";
+import { emailSchema } from "@/utils/schemas/user/user.schema";
 import { ForgotPasswordForm } from "@/components/auth/forms/password/forgot-password-02";
 
 const ForgotPassword = () => {

@@ -2,8 +2,8 @@ namespace Core.Services.Auth;
 
 using Core.Models;
 using Core.Exceptions;
-using Core.Interfaces.Auth;
-using Core.Interfaces.User;
+using Core.Interfaces.Services.Auth;
+using Core.Interfaces.Repositories.User;
 
 public class AuthService {
     private readonly IUserRepository _userRepository;

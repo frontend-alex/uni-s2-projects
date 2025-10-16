@@ -43,6 +43,11 @@ export const API = {
     },
     USER: {
       ME: "/User/me",
+      UPDATE: "/User/update",
     },
+    WORKSPACE: {
+      Id: (id: string) => `/Workspace/${id}`,
+      WORKSPACE: "/Workspace",
+    }
   },
 };

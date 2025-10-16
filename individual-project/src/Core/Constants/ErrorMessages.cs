@@ -84,6 +84,259 @@ public static class ErrorMessages
             ErrorCode = "USER_007",
             UserFriendlyMessage = "Your password and confirmation password must match."
         },
+        ["USER_DELETE_FAILED"] = new()
+        {
+            Message = "Failed to delete user account.",
+            StatusCode = 500,
+            ErrorCode = "USER_008",
+            UserFriendlyMessage = "We couldn't delete your account. Please try again or contact support."
+        },
+
+        // Workspace errors
+        ["WORKSPACE_NOT_FOUND"] = new()
+        {
+            Message = "Workspace not found.",
+            StatusCode = 404,
+            ErrorCode = "WORKSPACE_001",
+            UserFriendlyMessage = "The workspace you're looking for doesn't exist or has been deleted."
+        },
+        ["WORKSPACE_ACCESS_DENIED"] = new()
+        {
+            Message = "You do not have access to this workspace.",
+            StatusCode = 403,
+            ErrorCode = "WORKSPACE_002",
+            UserFriendlyMessage = "You don't have permission to access this workspace. Ask the owner to invite you."
+        },
+        ["WORKSPACE_NAME_REQUIRED"] = new()
+        {
+            Message = "Workspace name is required.",
+            StatusCode = 400,
+            ErrorCode = "WORKSPACE_003",
+            UserFriendlyMessage = "Please provide a name for your workspace."
+        },
+        ["WORKSPACE_NAME_TOO_LONG"] = new()
+        {
+            Message = "Workspace name is too long.",
+            StatusCode = 400,
+            ErrorCode = "WORKSPACE_004",
+            UserFriendlyMessage = "Workspace name must be 128 characters or less."
+        },
+        ["WORKSPACE_DESCRIPTION_TOO_LONG"] = new()
+        {
+            Message = "Workspace description is too long.",
+            StatusCode = 400,
+            ErrorCode = "WORKSPACE_005",
+            UserFriendlyMessage = "Workspace description must be 1000 characters or less."
+        },
+        ["WORKSPACE_OWNER_REQUIRED"] = new()
+        {
+            Message = "Workspace must have an owner.",
+            StatusCode = 400,
+            ErrorCode = "WORKSPACE_006",
+            UserFriendlyMessage = "Every workspace must have an owner."
+        },
+        ["WORKSPACE_DELETE_FAILED"] = new()
+        {
+            Message = "Failed to delete workspace.",
+            StatusCode = 500,
+            ErrorCode = "WORKSPACE_007",
+            UserFriendlyMessage = "We couldn't delete the workspace. Please try again or contact support."
+        },
+        ["WORKSPACE_UPDATE_FAILED"] = new()
+        {
+            Message = "Failed to update workspace.",
+            StatusCode = 500,
+            ErrorCode = "WORKSPACE_008",
+            UserFriendlyMessage = "We couldn't update the workspace. Please try again or contact support."
+        },
+
+        // UserWorkspace errors
+        ["USER_WORKSPACE_NOT_FOUND"] = new()
+        {
+            Message = "User workspace relationship not found.",
+            StatusCode = 404,
+            ErrorCode = "USER_WORKSPACE_001",
+            UserFriendlyMessage = "You are not a member of this workspace."
+        },
+        ["USER_WORKSPACE_ALREADY_EXISTS"] = new()
+        {
+            Message = "User is already a member of this workspace.",
+            StatusCode = 409,
+            ErrorCode = "USER_WORKSPACE_002",
+            UserFriendlyMessage = "You are already a member of this workspace."
+        },
+        ["USER_WORKSPACE_INSUFFICIENT_PERMISSIONS"] = new()
+        {
+            Message = "Insufficient permissions for this workspace action.",
+            StatusCode = 403,
+            ErrorCode = "USER_WORKSPACE_003",
+            UserFriendlyMessage = "You don't have the required permissions to perform this action."
+        },
+        ["USER_WORKSPACE_OWNER_CANNOT_LEAVE"] = new()
+        {
+            Message = "Workspace owner cannot leave the workspace.",
+            StatusCode = 400,
+            ErrorCode = "USER_WORKSPACE_004",
+            UserFriendlyMessage = "As the workspace owner, you cannot leave. Transfer ownership first or delete the workspace."
+        },
+        ["USER_WORKSPACE_JOIN_FAILED"] = new()
+        {
+            Message = "Failed to join workspace.",
+            StatusCode = 500,
+            ErrorCode = "USER_WORKSPACE_005",
+            UserFriendlyMessage = "We couldn't add you to the workspace. Please try again or contact support."
+        },
+        ["USER_WORKSPACE_LEAVE_FAILED"] = new()
+        {
+            Message = "Failed to leave workspace.",
+            StatusCode = 500,
+            ErrorCode = "USER_WORKSPACE_006",
+            UserFriendlyMessage = "We couldn't remove you from the workspace. Please try again or contact support."
+        },
+
+        // Workspace Invitation errors
+        ["WORKSPACE_INVITATION_NOT_FOUND"] = new()
+        {
+            Message = "Workspace invitation not found.",
+            StatusCode = 404,
+            ErrorCode = "INVITATION_001",
+            UserFriendlyMessage = "This invitation doesn't exist or has expired."
+        },
+        ["WORKSPACE_INVITATION_EXPIRED"] = new()
+        {
+            Message = "Workspace invitation has expired.",
+            StatusCode = 400,
+            ErrorCode = "INVITATION_002",
+            UserFriendlyMessage = "This invitation has expired. Please request a new one."
+        },
+        ["WORKSPACE_INVITATION_ALREADY_ACCEPTED"] = new()
+        {
+            Message = "Workspace invitation has already been accepted.",
+            StatusCode = 409,
+            ErrorCode = "INVITATION_003",
+            UserFriendlyMessage = "This invitation has already been accepted."
+        },
+        ["WORKSPACE_INVITATION_REVOKED"] = new()
+        {
+            Message = "Workspace invitation has been revoked.",
+            StatusCode = 400,
+            ErrorCode = "INVITATION_004",
+            UserFriendlyMessage = "This invitation has been revoked by the sender."
+        },
+        ["WORKSPACE_INVITATION_EMAIL_REQUIRED"] = new()
+        {
+            Message = "Email address is required for invitation.",
+            StatusCode = 400,
+            ErrorCode = "INVITATION_005",
+            UserFriendlyMessage = "Please provide a valid email address for the invitation."
+        },
+        ["WORKSPACE_INVITATION_INVALID_EMAIL"] = new()
+        {
+            Message = "Invalid email address for invitation.",
+            StatusCode = 400,
+            ErrorCode = "INVITATION_006",
+            UserFriendlyMessage = "Please provide a valid email address."
+        },
+        ["WORKSPACE_INVITATION_SELF_INVITE"] = new()
+        {
+            Message = "Cannot invite yourself to workspace.",
+            StatusCode = 400,
+            ErrorCode = "INVITATION_007",
+            UserFriendlyMessage = "You cannot invite yourself to a workspace you already own."
+        },
+        ["WORKSPACE_INVITATION_CREATE_FAILED"] = new()
+        {
+            Message = "Failed to create workspace invitation.",
+            StatusCode = 500,
+            ErrorCode = "INVITATION_008",
+            UserFriendlyMessage = "We couldn't send the invitation. Please try again or contact support."
+        },
+        ["WORKSPACE_INVITATION_ACCEPT_FAILED"] = new()
+        {
+            Message = "Failed to accept workspace invitation.",
+            StatusCode = 500,
+            ErrorCode = "INVITATION_009",
+            UserFriendlyMessage = "We couldn't accept the invitation. Please try again or contact support."
+        },
+
+        // Document errors
+        ["DOCUMENT_NOT_FOUND"] = new()
+        {
+            Message = "Document not found.",
+            StatusCode = 404,
+            ErrorCode = "DOCUMENT_001",
+            UserFriendlyMessage = "The document you're looking for doesn't exist or has been deleted."
+        },
+        ["DOCUMENT_ACCESS_DENIED"] = new()
+        {
+            Message = "You do not have access to this document.",
+            StatusCode = 403,
+            ErrorCode = "DOCUMENT_002",
+            UserFriendlyMessage = "You don't have permission to access this document."
+        },
+        ["DOCUMENT_TITLE_REQUIRED"] = new()
+        {
+            Message = "Document title is required.",
+            StatusCode = 400,
+            ErrorCode = "DOCUMENT_003",
+            UserFriendlyMessage = "Please provide a title for the document."
+        },
+        ["DOCUMENT_TITLE_TOO_LONG"] = new()
+        {
+            Message = "Document title is too long.",
+            StatusCode = 400,
+            ErrorCode = "DOCUMENT_004",
+            UserFriendlyMessage = "Document title must be 256 characters or less."
+        },
+        ["DOCUMENT_YDOC_ID_REQUIRED"] = new()
+        {
+            Message = "Document YDoc ID is required.",
+            StatusCode = 400,
+            ErrorCode = "DOCUMENT_005",
+            UserFriendlyMessage = "Document ID is required for real-time collaboration."
+        },
+        ["DOCUMENT_YDOC_ID_DUPLICATE"] = new()
+        {
+            Message = "Document YDoc ID already exists.",
+            StatusCode = 409,
+            ErrorCode = "DOCUMENT_006",
+            UserFriendlyMessage = "A document with this ID already exists."
+        },
+        ["DOCUMENT_CREATE_FAILED"] = new()
+        {
+            Message = "Failed to create document.",
+            StatusCode = 500,
+            ErrorCode = "DOCUMENT_007",
+            UserFriendlyMessage = "We couldn't create the document. Please try again or contact support."
+        },
+        ["DOCUMENT_UPDATE_FAILED"] = new()
+        {
+            Message = "Failed to update document.",
+            StatusCode = 500,
+            ErrorCode = "DOCUMENT_008",
+            UserFriendlyMessage = "We couldn't update the document. Please try again or contact support."
+        },
+        ["DOCUMENT_DELETE_FAILED"] = new()
+        {
+            Message = "Failed to delete document.",
+            StatusCode = 500,
+            ErrorCode = "DOCUMENT_009",
+            UserFriendlyMessage = "We couldn't delete the document. Please try again or contact support."
+        },
+        ["DOCUMENT_ARCHIVE_FAILED"] = new()
+        {
+            Message = "Failed to archive document.",
+            StatusCode = 500,
+            ErrorCode = "DOCUMENT_010",
+            UserFriendlyMessage = "We couldn't archive the document. Please try again or contact support."
+        },
+        ["DOCUMENT_UNARCHIVE_FAILED"] = new()
+        {
+            Message = "Failed to unarchive document.",
+            StatusCode = 500,
+            ErrorCode = "DOCUMENT_011",
+            UserFriendlyMessage = "We couldn't unarchive the document. Please try again or contact support."
+        },
 
         // OTP errors
         ["OTP_NOT_FOUND"] = new()

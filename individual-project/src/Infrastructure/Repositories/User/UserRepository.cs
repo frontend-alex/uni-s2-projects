@@ -1,10 +1,11 @@
 using Core.Models;
-using Core.Interfaces.User;
+using Core.Interfaces.Repositories.User;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.SQL;
 
 namespace Infrastructure.Repositories;
 
+// User repository implementation
 public class UserRepository : IUserRepository {
     private readonly ApplicationDbContext _context;
 

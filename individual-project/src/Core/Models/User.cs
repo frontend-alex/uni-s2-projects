@@ -1,4 +1,3 @@
-
 namespace Core.Models;
 
 public class User : BaseEntity {
@@ -10,5 +9,5 @@ public class User : BaseEntity {
     public bool EmailVerified { get; set; } = false;
     public bool Onboarding { get; set; } = false;
     public string? ProfilePicture { get; set; }
-    public int Xp { get; set; }
+    public int Xp { get; set; } = 0;
 }

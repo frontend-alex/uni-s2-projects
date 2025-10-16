@@ -2,8 +2,9 @@ using API.DTOs;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Core.Exceptions;
 
-namespace API.Controllers;
+namespace API.Controllers.Base;
 
 [ApiController]
 [Authorize]
@@ -13,7 +14,7 @@ public abstract class BaseController : ControllerBase {
         var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId)) {
-            throw new UnauthorizedAccessException("Invalid or missing user ID in token.");
+            throw AppException.CreateError("USER_NOT_FOUND");
         }
 
         return userId;

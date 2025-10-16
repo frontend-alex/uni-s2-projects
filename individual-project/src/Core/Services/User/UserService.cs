@@ -1,9 +1,11 @@
 namespace Core.Services.User;
 
-using Core.Exceptions;
-using Core.Interfaces.User;
 using Core.Models;
+using Core.Exceptions;
+using Core.Interfaces.Services.User;
+using Core.Interfaces.Repositories.User;
 
+// User service implementation
 public class UserService : IUserService {
     private readonly IUserRepository _userRepository;
 
@@ -29,7 +31,6 @@ public class UserService : IUserService {
             throw AppException.CreateError("USER_NOT_FOUND");
         }
 
-        // Apply updates to user object
         foreach (var update in updates) {
             var property = typeof(User).GetProperty(update.Key);
             if (property != null && property.CanWrite) {
