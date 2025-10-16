@@ -2,8 +2,8 @@ $ErrorActionPreference = 'Stop'
 
 Set-Location -Path $PSScriptRoot
 
-$clientDir = Join-Path $PSScriptRoot 'client'
-$serverDir = Join-Path $PSScriptRoot 'src'
+$clientDir = Join-Path $PSScriptRoot 'app/client'
+$serverDir = Join-Path $PSScriptRoot 'app/server'
 
 if (-not (Test-Path $clientDir)) { throw "Client directory not found: $clientDir" }
 if (-not (Test-Path $serverDir)) { throw "Server directory not found: $serverDir" }
