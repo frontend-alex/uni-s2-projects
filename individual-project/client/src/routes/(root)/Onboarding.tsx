@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/form";
 
 const OnboardingPage = () => {
-  const { user, update } = useAuth();
+  const { user, refetch } = useAuth();
 
   const form = useForm<WorkspaceSchemaType>({
     defaultValues: {
@@ -68,7 +68,9 @@ const OnboardingPage = () => {
     useApiMutation("POST", API.ENDPOINTS.WORKSPACE.WORKSPACE, {
       onSuccess: (data) => {
         if (data.success && data.data) {
-          update({ onboarding: true });
+          // User onboarding status is now updated by the backend
+          // Refetch user data to get the updated onboarding status
+          refetch();
         }
       },
     });

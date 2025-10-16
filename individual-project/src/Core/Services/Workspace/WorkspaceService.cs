@@ -38,14 +38,14 @@ public class WorkspaceService : IWorkspaceService {
         }
 
         // Create workspace with hardcoded description
-        var workspace = new Workspace {
+        Workspace workspace = new Workspace {
             Name = name.Trim(),
             Description = "A collaborative workspace for learning and studying together.",
             Visibility = visibility,
             CreatedBy = creatorId
         };
 
-        var createdWorkspace = await _workspaceRepository.CreateAsync(workspace);
+        Workspace createdWorkspace = await _workspaceRepository.CreateAsync(workspace);
 
         // Add creator as owner
         var userWorkspace = new UserWorkspace {
@@ -56,6 +56,10 @@ public class WorkspaceService : IWorkspaceService {
         };
 
         await _userWorkspaceRepository.CreateAsync(userWorkspace);
+
+        // Update user's onboarding status to true
+        creator.Onboarding = true;
+        await _userRepository.UpdateAsync(creator);
 
         return createdWorkspace;
     }

@@ -53,7 +53,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     {
       invalidateQueries: [["auth", "me"]],
       onSuccess: (data) => {
-        console.log(data)
         toast.success(data.message)
       },
     }
