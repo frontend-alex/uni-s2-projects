@@ -1,5 +1,5 @@
-using API.DTOs;
-using API.DTOs.Auth;
+using API.Models;
+using API.Models.Auth;
 using Core.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +19,7 @@ public class AuthController : ControllerBase {
     public async Task<IActionResult> Register([FromBody] RegisterRequest request) {
         string email = await _authService.RegisterAsync(request.Username, request.FirstName, request.LastName, request.Email, request.Password);
 
-        return Ok(new ResponseDto<object> {
+        return Ok(new ApiResponse<object> {
             Success = true,
             Message = "User has successfully registered.",
             Data = new { email }
@@ -38,7 +38,7 @@ public class AuthController : ControllerBase {
             Expires = DateTimeOffset.UtcNow.AddHours(1)
         });
 
-        return Ok(new ResponseDto<object> {
+        return Ok(new ApiResponse<object> {
             Success = true,
             Message = "User has successfully logged in.",
             Data = null
@@ -50,7 +50,7 @@ public class AuthController : ControllerBase {
     public IActionResult Logout() {
         Response.Cookies.Delete("access_token");
 
-        return Ok(new ResponseDto<object> {
+        return Ok(new ApiResponse<object> {
             Success = true,
             Message = "Logged out successfully.",
             Data = null

@@ -1,6 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Loading from "@/components/Loading";
+import { ROUTES } from "@/lib/router-paths";
 
 const OnboardingGuard = () => {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -13,7 +14,7 @@ const OnboardingGuard = () => {
   }
 
   if (user?.onboarding) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={ROUTES.AUTHENTICATED.DASHBOARD} replace />;
   }
 
   return <Outlet />;

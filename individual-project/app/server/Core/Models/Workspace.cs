@@ -5,8 +5,8 @@ namespace Core.Models;
 public class Workspace : BaseEntity {
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
-    public WorkspaceVisibility Visibility { get; set; }
     public int CreatedBy { get; set; }
+    public WorkspaceVisibility Visibility { get; set; }
     
     // Navigation properties
     public User? Creator { get; set; }

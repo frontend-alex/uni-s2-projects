@@ -48,6 +48,7 @@ const Register = () => {
       }
     },
     onError: (err) => {
+      console.log(err)
       const extra = err.response?.data?.extra as {
         otpRedirect?: boolean;
         email?: string;

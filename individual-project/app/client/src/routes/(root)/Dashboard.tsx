@@ -1,14 +1,24 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUserWorkspaces } from "@/hooks/workspace/use-workspaces";
+import { ROUTES } from "@/lib/router-paths";
+
 const Dashboard = () => {
-  return (
-    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-        <div className="bg-muted/50 aspect-video rounded-xl" />
-        <div className="bg-muted/50 aspect-video rounded-xl" />
-        <div className="bg-muted/50 aspect-video rounded-xl" />
-      </div>
-      <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
-    </div>
-  );
+  const navigate = useNavigate();
+  const { data: workspaces, isLoading } = useUserWorkspaces();
+
+  useEffect(() => {
+    if (!isLoading && workspaces?.data?.length) {
+      const firstWorkspace = workspaces.data[0];
+      navigate(ROUTES.HELPERS.getBoardRoute(firstWorkspace.id), {
+        replace: true,
+      });
+    }
+  }, [isLoading, workspaces, navigate]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 };
 
 export default Dashboard;

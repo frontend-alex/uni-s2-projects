@@ -1,5 +1,4 @@
 using Core.Models;
-using Core.Interfaces.Repositories.User;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.SQL;
 

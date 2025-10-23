@@ -12,22 +12,10 @@ import { Button } from "@/components/ui/button";
 import { getUserInitials } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronsUpDown, Layout, LogOut, Sparkles, User } from "lucide-react";
+import { ChevronsUpDown, Layout, LogOut, Settings, Sparkles, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ROUTES } from "@/lib/router-paths";
-
-const dropdownLinks = [
-  {
-    name: "Workspace Board",
-    url: ROUTES.HELPERS.getBoardRoute(),
-    icon: Layout,
-  },
-  {
-    name: "Profile",
-    url: ROUTES.AUTHENTICATED.PROFILE,
-    icon: User,
-  },
-];
+import { useCurrentWorkspace } from "@/hooks/workspace/use-current-workspace";
 
 export const UserDropdownSkeleton = () => {
   return (
@@ -45,13 +33,35 @@ export const UserDropdownSkeleton = () => {
   );
 };
 
-export default function UserDropdown({
+const UserDropdown = ({
   align = "end",
   side = "bottom",
 }: {
   align?: "start" | "center" | "end";
   side?: "top" | "right" | "bottom" | "left";
-}) {
+}) => {
+  const { currentWorkspaceId, hasWorkspaceContext } = useCurrentWorkspace();
+  
+  const dropdownLinks = [
+    {
+      name: "Workspace Board",
+      url: hasWorkspaceContext 
+        ? ROUTES.HELPERS.getBoardRoute(currentWorkspaceId)
+        : ROUTES.AUTHENTICATED.DASHBOARD,
+      icon: Layout,
+    },
+    {
+      name: "Profile",
+      url: ROUTES.AUTHENTICATED.PROFILE,
+      icon: User,
+    },
+    {
+      name: "Settings",
+      url: ROUTES.AUTHENTICATED.SETTINGS,
+      icon: Settings,
+    }
+  ];
+
   const { logout, user, isLoading } = useAuth();
 
   if (isLoading) return <UserDropdownSkeleton />;
@@ -132,4 +142,6 @@ export default function UserDropdown({
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};
+
+export default UserDropdown;

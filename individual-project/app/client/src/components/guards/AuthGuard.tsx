@@ -13,7 +13,7 @@ const AuthGuard = () => {
       <Navigate
         to={
           user?.onboarding
-            ? ROUTES.HELPERS.getBoardRoute()
+            ? ROUTES.AUTHENTICATED.DASHBOARD
             : ROUTES.AUTHENTICATED.ONBOARDING
         }
         replace

@@ -2,11 +2,11 @@ namespace Core.Services.User;
 
 using Core.Models;
 using Core.Exceptions;
-using Core.Interfaces.Services.User;
-using Core.Interfaces.Repositories.User;
+using Infrastructure.Repositories;
 
 // User service implementation
-public class UserService : IUserService {
+
+public class UserService {
     private readonly IUserRepository _userRepository;
 
     public UserService(IUserRepository userRepository) {

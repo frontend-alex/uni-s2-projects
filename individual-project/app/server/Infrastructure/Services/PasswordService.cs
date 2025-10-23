@@ -1,4 +1,4 @@
-using Core.Interfaces.Services.Auth;
+using Core.Interfaces.Services;
 
 namespace Infrastructure.Services;
 

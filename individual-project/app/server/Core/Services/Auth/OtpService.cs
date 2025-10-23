@@ -1,7 +1,6 @@
 using Core.Exceptions;
 using Core.Utils.Email;
-using Core.Interfaces.Repositories.Auth;
-using Core.Interfaces.Repositories.User;
+using Infrastructure.Repositories;
 
 namespace Core.Services.Auth;
 

@@ -10,12 +10,7 @@ using Infrastructure.Repositories;
 using Infrastructure.Repositories.Workspace;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.SQL;
-using Core.Interfaces.Services.Auth;
-using Core.Interfaces.Services.User;
-using Core.Interfaces.Services.Workspace;
-using Core.Interfaces.Repositories.User;
-using Core.Interfaces.Repositories.Auth;
-using Core.Interfaces.Repositories.Workspace;
+using Core.Interfaces.Services;
 
 Env.Load(".env");
 
@@ -51,8 +46,8 @@ builder.Services.AddScoped<IUserWorkspaceRepository, UserWorkspaceRepository>();
 
 // Services
 builder.Services.AddScoped<IPasswordService, PasswordService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IWorkspaceService, WorkspaceService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<WorkspaceService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<OtpService>();
 

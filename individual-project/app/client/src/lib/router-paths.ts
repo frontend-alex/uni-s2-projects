@@ -25,15 +25,13 @@ export const AUTHENTICATED_ROUTES = {
   DASHBOARD: '/dashboard',
 } as const;
 
-// Default workspace ID for new users
-export const DEFAULT_WORKSPACE_ID = 1;
-
 // Helper functions for common route operations
 export const ROUTE_HELPERS = {
   /**
    * Get the board route for a specific workspace
+   * @param workspaceId - The workspace ID (required)
    */
-  getBoardRoute: (workspaceId: string | number = DEFAULT_WORKSPACE_ID) => 
+  getBoardRoute: (workspaceId: string | number) => 
     AUTHENTICATED_ROUTES.BOARD(workspaceId),
   
   /**

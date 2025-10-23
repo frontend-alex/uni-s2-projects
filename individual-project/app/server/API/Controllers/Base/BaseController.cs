@@ -1,8 +1,8 @@
-using API.DTOs;
+using API.Models;
+using Core.Exceptions;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Core.Exceptions;
 
 namespace API.Controllers.Base;
 
@@ -21,7 +21,7 @@ public abstract class BaseController : ControllerBase {
     }
 
     protected IActionResult HandleUserIdError() {
-        return Unauthorized(new ResponseDto<object> {
+        return Unauthorized(new ApiResponse<object> {
             Success = false,
             Message = "Invalid or missing user ID in token.",
             Data = null

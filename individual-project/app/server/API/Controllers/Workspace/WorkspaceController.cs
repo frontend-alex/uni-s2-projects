@@ -1,16 +1,21 @@
-namespace API.Controllers.Workspace;
+// The key principle: DTOs are the contract between layers, 
+// while Domain Models are the internal representation. 
+// This separation ensures clean architecture and prevents domain pollution.
 
-using API.DTOs;
-using API.DTOs.Workspace;
-using Microsoft.AspNetCore.Mvc;
-using Core.Interfaces.Services.Workspace;
+
+namespace API.Controllers.WorkspaceController;
+
+using API.Models;
+using API.Models.Workspace;
 using API.Controllers.Base;
-
+using Microsoft.AspNetCore.Mvc;
+using Core.Services.Workspace;
+using Core.DTOs.Workspace;
 
 public class WorkspaceController : BaseController {
-    private readonly IWorkspaceService _workspaceService;
+    private readonly WorkspaceService _workspaceService;
 
-    public WorkspaceController(IWorkspaceService workspaceService) {
+    public WorkspaceController(WorkspaceService workspaceService) {
         _workspaceService = workspaceService;
     }
 
@@ -18,29 +23,16 @@ public class WorkspaceController : BaseController {
     public async Task<IActionResult> CreateWorkspace([FromBody] CreateWorkspaceRequest request) {
         int userId = GetCurrentUserId();
 
-        var workspace = await _workspaceService.CreateWorkspaceAsync(
+        WorkspaceDto workspaceDto = await _workspaceService.CreateWorkspaceAsync(
             userId,
             request.Name,
             request.Visibility
         );
 
-        var response = new WorkspaceResponse {
-            Id = workspace.Id,
-            Name = workspace.Name,
-            Description = workspace.Description,
-            Visibility = workspace.Visibility,
-            CreatedBy = workspace.CreatedBy,
-            CreatedAt = workspace.CreatedAt,
-            UpdatedAt = workspace.UpdatedAt,
-            CreatorName = $"{workspace.Creator?.FirstName} {workspace.Creator?.LastName}".Trim(),
-            MemberCount = 1, // Creator is the first member
-            DocumentCount = 0 // New workspace has no documents
-        };
-
-        return Ok(new ResponseDto<WorkspaceResponse> {
+        return Ok(new ApiResponse<WorkspaceDto> {
             Success = true,
             Message = "Workspace created successfully.",
-            Data = response
+            Data = workspaceDto
         });
     }
 
@@ -48,33 +40,12 @@ public class WorkspaceController : BaseController {
     public async Task<IActionResult> GetWorkspace(int workspaceId) {
         int userId = GetCurrentUserId();
 
-        var workspace = await _workspaceService.GetWorkspaceAsync(workspaceId, userId);
+        WorkspaceDto workspaceDto = await _workspaceService.GetWorkspaceAsync(workspaceId, userId);
 
-        if (workspace == null) {
-            return NotFound(new ResponseDto<object> {
-                Success = false,
-                Message = "Workspace not found.",
-                Data = null
-            });
-        }
-
-        var response = new WorkspaceResponse {
-            Id = workspace.Id,
-            Name = workspace.Name,
-            Description = workspace.Description,
-            Visibility = workspace.Visibility,
-            CreatedBy = workspace.CreatedBy,
-            CreatedAt = workspace.CreatedAt,
-            UpdatedAt = workspace.UpdatedAt,
-            CreatorName = $"{workspace.Creator?.FirstName} {workspace.Creator?.LastName}".Trim(),
-            MemberCount = workspace.UserWorkspaces?.Count ?? 0,
-            DocumentCount = workspace.Documents?.Count ?? 0
-        };
-
-        return Ok(new ResponseDto<WorkspaceResponse> {
+        return Ok(new ApiResponse<WorkspaceDto> {
             Success = true,
             Message = "Workspace retrieved successfully.",
-            Data = response
+            Data = workspaceDto
         });
     }
 
@@ -82,25 +53,12 @@ public class WorkspaceController : BaseController {
     public async Task<IActionResult> GetUserWorkspaces() {
         int userId = GetCurrentUserId();
 
-        var workspaces = await _workspaceService.GetUserWorkspacesAsync(userId);
+        IEnumerable<WorkspaceDto> workspaces = await _workspaceService.GetUserWorkspacesAsync(userId);
 
-        var response = workspaces.Select(w => new WorkspaceResponse {
-            Id = w.Id,
-            Name = w.Name,
-            Description = w.Description,
-            Visibility = w.Visibility,
-            CreatedBy = w.CreatedBy,
-            CreatedAt = w.CreatedAt,
-            UpdatedAt = w.UpdatedAt,
-            CreatorName = $"{w.Creator?.FirstName} {w.Creator?.LastName}".Trim(),
-            MemberCount = w.UserWorkspaces?.Count ?? 0,
-            DocumentCount = w.Documents?.Count ?? 0
-        });
-
-        return Ok(new ResponseDto<IEnumerable<WorkspaceResponse>> {
+        return Ok(new ApiResponse<IEnumerable<WorkspaceDto>> {
             Success = true,
             Message = "User workspaces retrieved successfully.",
-            Data = response
+            Data = workspaces
         });
     }
 
@@ -108,17 +66,9 @@ public class WorkspaceController : BaseController {
     public async Task<IActionResult> DeleteWorkspace(int workspaceId) {
         int userId = GetCurrentUserId();
 
-        var result = await _workspaceService.DeleteWorkspaceAsync(workspaceId, userId);
+        await _workspaceService.DeleteWorkspaceAsync(workspaceId, userId);
 
-        if (!result) {
-            return BadRequest(new ResponseDto<object> {
-                Success = false,
-                Message = "Failed to delete workspace.",
-                Data = null
-            });
-        }
-
-        return Ok(new ResponseDto<object> {
+        return Ok(new ApiResponse<object> {
             Success = true,
             Message = "Workspace deleted successfully.",
             Data = null
@@ -129,7 +79,7 @@ public class WorkspaceController : BaseController {
     public async Task<IActionResult> UpdateWorkspace(int workspaceId, [FromBody] UpdateWorkspaceRequest request) {
         int userId = GetCurrentUserId();
 
-        var workspace = await _workspaceService.UpdateWorkspaceAsync(
+        WorkspaceDto workspace = await _workspaceService.UpdateWorkspaceAsync(
             workspaceId,
             userId,
             request.Name,
@@ -137,23 +87,10 @@ public class WorkspaceController : BaseController {
             request.Visibility
         );
 
-        var response = new WorkspaceResponse {
-            Id = workspace.Id,
-            Name = workspace.Name,
-            Description = workspace.Description,
-            Visibility = workspace.Visibility,
-            CreatedBy = workspace.CreatedBy,
-            CreatedAt = workspace.CreatedAt,
-            UpdatedAt = workspace.UpdatedAt,
-            CreatorName = $"{workspace.Creator?.FirstName} {workspace.Creator?.LastName}".Trim(),
-            MemberCount = workspace.UserWorkspaces?.Count ?? 0,
-            DocumentCount = workspace.Documents?.Count ?? 0
-        };
-
-        return Ok(new ResponseDto<WorkspaceResponse> {
+        return Ok(new ApiResponse<WorkspaceDto> {
             Success = true,
             Message = "Workspace updated successfully.",
-            Data = response
+            Data = workspace
         });
     }
 }

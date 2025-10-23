@@ -42,3 +42,15 @@ export const questionnaireSteps = [
     isForm: true,
   },
 ];
+
+export const randomColors = [
+  "#ef444433",
+  "#3b82f633",
+  "#22c55e33",
+  "#eab30833",
+  "#a855f733",
+  "#ec489933",
+  "#6366f133",
+  "#14b8a633",
+  "#f9731633",
+];

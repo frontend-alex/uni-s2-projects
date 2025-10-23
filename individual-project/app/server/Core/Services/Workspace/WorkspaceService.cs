@@ -2,12 +2,13 @@ namespace Core.Services.Workspace;
 
 using Core.Models;
 using Core.Enums;
-using Core.Interfaces.Services.Workspace;
-using Core.Interfaces.Repositories.Workspace;
-using Core.Interfaces.Repositories.User;
 using Core.Exceptions;
+using Core.DTOs.Workspace;
+using Infrastructure.Repositories.Workspace;
+using Infrastructure.Repositories;
 
-public class WorkspaceService : IWorkspaceService {
+
+public class WorkspaceService {
     private readonly IWorkspaceRepository _workspaceRepository;
     private readonly IUserWorkspaceRepository _userWorkspaceRepository;
     private readonly IUserRepository _userRepository;
@@ -21,8 +22,7 @@ public class WorkspaceService : IWorkspaceService {
         _userRepository = userRepository;
     }
 
-    public async Task<Workspace> CreateWorkspaceAsync(int creatorId, string name, WorkspaceVisibility visibility) {
-        // Validate creator exists
+    public async Task<WorkspaceDto> CreateWorkspaceAsync(int creatorId, string name, WorkspaceVisibility visibility) {
         var creator = await _userRepository.GetByIdAsync(creatorId);
         if (creator == null) {
             throw AppException.CreateError("USER_NOT_FOUND");
@@ -61,21 +61,78 @@ public class WorkspaceService : IWorkspaceService {
         creator.Onboarding = true;
         await _userRepository.UpdateAsync(creator);
 
-        return createdWorkspace;
+        // Return DTO
+        return new WorkspaceDto {
+            Id = createdWorkspace.Id,
+            Name = createdWorkspace.Name,
+            Description = createdWorkspace.Description,
+            Visibility = createdWorkspace.Visibility,
+            CreatedBy = createdWorkspace.CreatedBy,
+            CreatedAt = createdWorkspace.CreatedAt,
+            UpdatedAt = createdWorkspace.UpdatedAt,
+            CreatorName = $"{creator.FirstName} {creator.LastName}".Trim(),
+            MemberCount = 1,
+            DocumentCount = 0,
+            UserRole = UserWorkspaceRole.Owner
+        };
     }
 
-    public async Task<Workspace?> GetWorkspaceAsync(int workspaceId, int userId) {
+    public async Task<WorkspaceDto?> GetWorkspaceAsync(int workspaceId, int userId) {
         // Check if user has access to workspace
-        var hasAccess = await _userWorkspaceRepository.UserHasAccessAsync(userId, workspaceId);
+        bool hasAccess = await _userWorkspaceRepository.UserHasAccessAsync(userId, workspaceId);
+
         if (!hasAccess) {
             throw AppException.CreateError("WORKSPACE_ACCESS_DENIED");
         }
 
-        return await _workspaceRepository.GetByIdAsync(workspaceId);
+        var workspace = await _workspaceRepository.GetByIdAsync(workspaceId);
+        
+        if (workspace == null) {
+            throw AppException.CreateError("WORKSPACE_ACCESS_DENIED");
+        }
+
+        // Find the current user's role in this workspace
+        var userWorkspace = workspace.UserWorkspaces?.FirstOrDefault(uw => uw.UserId == userId);
+        var userRole = userWorkspace?.Role ?? UserWorkspaceRole.Member;
+
+        return new WorkspaceDto {
+            Id = workspace.Id,
+            Name = workspace.Name,
+            Description = workspace.Description,
+            Visibility = workspace.Visibility,
+            CreatedBy = workspace.CreatedBy,
+            CreatedAt = workspace.CreatedAt,
+            UpdatedAt = workspace.UpdatedAt,
+            CreatorName = $"{workspace.Creator?.FirstName} {workspace.Creator?.LastName}".Trim(),
+            MemberCount = workspace.UserWorkspaces?.Count ?? 0,
+            DocumentCount = workspace.Documents?.Count ?? 0,
+            UserRole = userRole
+        };
     }
 
-    public async Task<IEnumerable<Workspace>> GetUserWorkspacesAsync(int userId) {
-        return await _workspaceRepository.GetByUserIdAsync(userId);
+    public async Task<IEnumerable<WorkspaceDto>> GetUserWorkspacesAsync(int userId) {
+        
+        var workspaces = await _workspaceRepository.GetByUserIdAsync(userId);
+        
+        return workspaces.Select(w => {
+            // Find the current user's role in this workspace
+            var userWorkspace = w.UserWorkspaces?.FirstOrDefault(uw => uw.UserId == userId);
+            var userRole = userWorkspace?.Role ?? UserWorkspaceRole.Member;
+
+            return new WorkspaceDto {
+                Id = w.Id,
+                Name = w.Name,
+                Description = w.Description,
+                Visibility = w.Visibility,
+                CreatedBy = w.CreatedBy,
+                CreatedAt = w.CreatedAt,
+                UpdatedAt = w.UpdatedAt,
+                CreatorName = $"{w.Creator?.FirstName} {w.Creator?.LastName}".Trim(),
+                MemberCount = w.UserWorkspaces?.Count ?? 0,
+                DocumentCount = w.Documents?.Count ?? 0,
+                UserRole = userRole
+            };
+        });
     }
 
     public async Task<bool> DeleteWorkspaceAsync(int workspaceId, int userId) {
@@ -88,7 +145,7 @@ public class WorkspaceService : IWorkspaceService {
         return await _workspaceRepository.DeleteAsync(workspaceId);
     }
 
-    public async Task<Workspace> UpdateWorkspaceAsync(int workspaceId, int userId, string? name, string? description, WorkspaceVisibility? visibility) {
+    public async Task<WorkspaceDto> UpdateWorkspaceAsync(int workspaceId, int userId, string? name, string? description, WorkspaceVisibility? visibility) {
         // Check if user has access and is owner or cohost
         var hasAccess = await _userWorkspaceRepository.UserHasAccessAsync(userId, workspaceId);
         if (!hasAccess) {
@@ -120,6 +177,24 @@ public class WorkspaceService : IWorkspaceService {
             workspace.Visibility = visibility.Value;
         }
 
-        return await _workspaceRepository.UpdateAsync(workspace);
+        var updatedWorkspace = await _workspaceRepository.UpdateAsync(workspace);
+
+        // Find the current user's role in this workspace
+        var userWorkspace = updatedWorkspace.UserWorkspaces?.FirstOrDefault(uw => uw.UserId == userId);
+        var userRole = userWorkspace?.Role ?? UserWorkspaceRole.Member;
+
+        return new WorkspaceDto {
+            Id = updatedWorkspace.Id,
+            Name = updatedWorkspace.Name,
+            Description = updatedWorkspace.Description,
+            Visibility = updatedWorkspace.Visibility,
+            CreatedBy = updatedWorkspace.CreatedBy,
+            CreatedAt = updatedWorkspace.CreatedAt,
+            UpdatedAt = updatedWorkspace.UpdatedAt,
+            CreatorName = $"{updatedWorkspace.Creator?.FirstName} {updatedWorkspace.Creator?.LastName}".Trim(),
+            MemberCount = updatedWorkspace.UserWorkspaces?.Count ?? 0,
+            DocumentCount = updatedWorkspace.Documents?.Count ?? 0,
+            UserRole = userRole
+        };
     }
 }

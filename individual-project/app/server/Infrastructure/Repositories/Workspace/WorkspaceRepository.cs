@@ -1,7 +1,6 @@
 namespace Infrastructure.Repositories.Workspace;
 
 using Core.Models;
-using Core.Interfaces.Repositories.Workspace;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.SQL;
 

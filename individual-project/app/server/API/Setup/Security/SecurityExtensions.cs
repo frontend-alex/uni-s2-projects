@@ -1,8 +1,8 @@
 using System.Text;
 using Infrastructure.Services;
-using Core.Interfaces.Services.Auth;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Core.Interfaces.Services;
 
 namespace API.Setup.Security;
 

@@ -1,19 +1,15 @@
 namespace API.Controllers.User;
 
-using API.DTOs;
+using API.Models;
 using Core.Models;
-using API.DTOs.User;
-using Core.Interfaces.Services.User;
+using Core.Services.User;
 using Microsoft.AspNetCore.Mvc;
 using API.Controllers.Base;
 
-// User controller
-
 public class UserController : BaseController {
+    private readonly UserService _userService;
 
-    private readonly IUserService _userService;
-
-    public UserController(IUserService userService) {
+    public UserController(UserService userService) {
         _userService = userService;
     }
 
@@ -23,7 +19,7 @@ public class UserController : BaseController {
 
         User? user = await _userService.GetByIdUser(userIdResult);
 
-        return Ok(new ResponseDto<object> {
+        return Ok(new ApiResponse<object> {
             Success = true,
             Message = "User profile retrieved successfully.",
             Data = new { user }
@@ -36,7 +32,7 @@ public class UserController : BaseController {
 
         await _userService.UpdateUser(userId, updates);
 
-        return Ok(new ResponseDto<object> {
+        return Ok(new ApiResponse<object> {
             Success = true,
             Message = "User updated successfully.",
             Data = null

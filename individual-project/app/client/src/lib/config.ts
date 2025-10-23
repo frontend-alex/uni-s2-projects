@@ -24,6 +24,7 @@ export const config = {
 export const API = {
   // BASE_URL: `${import.meta.env.VITE_API_URL}/v1` || "http://localhost:5062/api/v1/",
   BASE_URL: `http://localhost:5106/api`,
+  WORKSPACE_ID: localStorage.getItem("currentWorkspaceId") ? Number(localStorage.getItem("currentWorkspaceId")) : 0,
   QK: {},
   ENDPOINTS: {
     AUTH: {
@@ -46,8 +47,9 @@ export const API = {
       UPDATE: "/User/update",
     },
     WORKSPACE: {
-      Id: (id: string) => `/Workspace/${id}`,
+      Id: (id: number) => `/Workspace/${id}`,
       WORKSPACE: "/Workspace",
+      USER_WORKSPACES: "/Workspace",
     }
   },
 };

@@ -2,8 +2,6 @@ import AppLogo from "@/components/AppLogo";
 
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useApiMutation } from "@/hooks/hook";
 import { LoginForm } from "@/components/auth/forms/login/login-form-03";
@@ -13,9 +11,10 @@ import {
   type LoginSchemaType,
 } from "@/utils/schemas/auth/auth.schema";
 import { API } from "@/lib/config";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
-  const navigate = useNavigate();
+
   const { refetch } = useAuth();
 
   const form = useForm<LoginSchemaType>({
@@ -31,16 +30,14 @@ const Login = () => {
     API.ENDPOINTS.AUTH.LOGIN,
     {
       onSuccess: () => {
-        refetch();
-        navigate("/dashboard");
         toast.success("Login successful");
+        refetch();
       },
       onError: (err) => {
         toast.error(err.response?.data?.message || "Login failed");
       },
     }
   );
-
 
   const handleLogin = (data: LoginSchemaType) => login(data);
 

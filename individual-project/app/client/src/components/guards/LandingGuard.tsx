@@ -8,9 +8,9 @@ const LandingGuard = () => {
 
   if (isLoading) return <Loading />;
 
-  // If user is authenticated and has completed onboarding, redirect to their workspace board
+  // If user is authenticated and has completed onboarding, redirect to dashboard
   if (isAuthenticated && user?.onboarding) {
-    return <Navigate to={ROUTES.HELPERS.getBoardRoute()} replace />;
+    return <Navigate to={ROUTES.AUTHENTICATED.DASHBOARD} replace />;
   }
 
   // If user is authenticated but hasn't completed onboarding, redirect to onboarding

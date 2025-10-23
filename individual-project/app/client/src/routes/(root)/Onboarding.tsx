@@ -1,31 +1,25 @@
+import WorkspaceForm from "@/components/auth/forms/workspace/workspace-form-01";
+
 import { useState } from "react";
-import { ChevronRight, LoaderCircle, Lock, LockOpen } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { motion, AnimatePresence } from "motion/react";
-import { questionnaireSteps } from "@/consts/consts";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
-import { WorkspaceVisibility } from "@/types/enum";
-import { useAuth } from "@/contexts/AuthContext";
-import type { WorkspaceSchemaType } from "@/utils/schemas/workspace/workspace.schema";
-import { useApiMutation } from "@/hooks/hook";
 import { API } from "@/lib/config";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { ROUTES } from "@/lib/router-paths";
+import { getRandomColor } from "@/lib/utils";
+import { useApiMutation } from "@/hooks/hook";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { ChevronRight, LoaderCircle } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { questionnaireSteps, randomColors } from "@/consts/consts";
+import { WorkspaceVisibility, type Workspace } from "@/types/workspace";
+import type { WorkspaceSchemaType } from "@/utils/schemas/workspace/workspace.schema";
+
+
 
 const OnboardingPage = () => {
-  const { user, refetch } = useAuth();
+  const navigate = useNavigate();
+
+  const { user } = useAuth();
 
   const form = useForm<WorkspaceSchemaType>({
     defaultValues: {
@@ -33,8 +27,6 @@ const OnboardingPage = () => {
       visibility: WorkspaceVisibility.PUBLIC,
     },
   });
-
-  const vis = form.watch("visibility");
 
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -54,26 +46,19 @@ const OnboardingPage = () => {
     }
   };
 
-  const toggleVisibility = () => {
-    form.setValue(
-      "visibility",
-      vis === WorkspaceVisibility.PUBLIC
-        ? WorkspaceVisibility.PRIVATE
-        : WorkspaceVisibility.PUBLIC,
-      { shouldDirty: true, shouldValidate: true }
-    );
-  };
-
   const { mutateAsync: createWorkspace, isPending: isWorkspacePending } =
-    useApiMutation("POST", API.ENDPOINTS.WORKSPACE.WORKSPACE, {
-      onSuccess: (data) => {
-        if (data.success && data.data) {
-          // User onboarding status is now updated by the backend
-          // Refetch user data to get the updated onboarding status
-          refetch();
-        }
-      },
-    });
+    useApiMutation<Workspace>(
+      "POST",
+      API.ENDPOINTS.WORKSPACE.WORKSPACE,
+      {
+        onSuccess: (data) => {
+          if (data.success && data.data) {
+            navigate(`${ROUTES.AUTHENTICATED.BOARD(data.data.id)}`);
+            localStorage.setItem("currentWorkspaceId", data.data.id.toString());
+          }
+        },
+      }
+    );
 
   const handleWorkspace = async (data: WorkspaceSchemaType) =>
     createWorkspace(data);
@@ -127,95 +112,17 @@ const OnboardingPage = () => {
 
               {/* Options Grid or Form */}
               {questionnaireSteps[currentStep].isForm ? (
-                <Form {...form}>
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.4, duration: 0.5 }}
-                    className="max-w-md mx-auto mb-8"
-                  >
-                    <form
-                      onSubmit={form.handleSubmit((data) =>
-                        handleWorkspace(data)
-                      )}
-                    >
-                      <div className="space-y-4">
-                        <div>
-                          <Label
-                            htmlFor="workspace-name"
-                            className="text-sm font-medium text-stone-400 mb-2"
-                          >
-                            Workspace Name
-                          </Label>
-                          <div className="flex items-center gap-2">
-                            <FormField
-                              control={form.control}
-                              name="name"
-                              render={({ field }) => (
-                                <FormItem className="w-full">
-                                  <FormControl>
-                                    <Input
-                                      className="input no-ring"
-                                      placeholder="e.g., My Study Room, Team Alpha, Learning Hub"
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={form.control}
-                              name="visibility"
-                              render={() => (
-                                <FormItem>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        type="button"
-                                        variant={
-                                          vis === WorkspaceVisibility.PUBLIC
-                                            ? "secondary"
-                                            : "default"
-                                        }
-                                        onClick={toggleVisibility}
-                                        disabled={isWorkspacePending}
-                                        className="shrink-0"
-                                      >
-                                        {vis === WorkspaceVisibility.PUBLIC ? (
-                                          <>
-                                            <LockOpen className="mr-2 h-4 w-4" />
-                                            Public
-                                          </>
-                                        ) : (
-                                          <>
-                                            <Lock className="mr-2 h-4 w-4" />
-                                            Private
-                                          </>
-                                        )}
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent className="bg-accent">
-                                      <p className="text-sm text-stone-400">
-                                        {vis === WorkspaceVisibility.PUBLIC
-                                          ? "Anyone with a link can view this workspace."
-                                          : "Only invited members can access this workspace."}
-                                      </p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                        </div>
-                        <p className="text-sm text-stone-400">
-                          This will be the name of your personal learning space
-                        </p>
-                      </div>
-                    </form>
-                  </motion.div>
-                </Form>
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                  className="max-w-md mx-auto mb-8"
+                >
+                  <WorkspaceForm
+                    workspaceForm={form}
+                    isPending={isWorkspacePending}
+                  />
+                </motion.div>
               ) : (
                 <motion.div
                   initial={{ y: 20, opacity: 0 }}
@@ -226,25 +133,31 @@ const OnboardingPage = () => {
                   {questionnaireSteps[currentStep].options?.map((option) => {
                     const isSelected = answers[currentStep + 1] === option.id;
                     const Icon = option.icon;
-
+                    const color = getRandomColor(randomColors);
                     return (
                       <motion.div
                         key={option.id}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleOptionSelect(option.id)}
+                        style={{ "--dynamic-bg": color } as React.CSSProperties}
                         className={`
                             relative p-6 rounded-xl border-2 transition-all duration-300 cursor-pointer
                             ${
                               isSelected
-                                ? "border-primary bg-primary/5 shadow-md"
-                                : "border-accent hover:border-primary/50 hover:bg-accent/5"
+                                ? "border-[var(--dynamic-bg)] bg-[var(--dynamic-bg)]/5 shadow-md"
+                                : "border-accent hover:border-[var(--dynamic-bg)] hover:bg-accent/5"
                             }
                           `}
                       >
                         <div className="flex items-center gap-4">
-                          <div className="bg-primary p-3 rounded-lg">
-                            <Icon className="size-6 text-primary-foreground" />
+                          <div
+                            style={
+                              { "--dynamic-bg": color } as React.CSSProperties
+                            }
+                            className={`bg-[var(--dynamic-bg)] p-3 rounded-lg`}
+                          >
+                            <Icon className="size-6" />
                           </div>
                           <span className={`text-lg font-medium`}>
                             {option.label}
@@ -282,7 +195,8 @@ const OnboardingPage = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     disabled={isWorkspacePending}
-                    onClick={() => form.handleSubmit(handleWorkspace)()}
+                    onClick={() => handleWorkspace(form.getValues())}
+                    // onClick={() => form.handleSubmit(handleWorkspace)()}
                     className={`px-6 py-2 rounded-lg transition-colors flex items-center gap-2 ${
                       !isWorkspacePending
                         ? "bg-primary text-primary-foreground hover:bg-primary/90"
