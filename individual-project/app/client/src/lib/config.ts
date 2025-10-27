@@ -47,7 +47,7 @@ export const API = {
       UPDATE: "/User/update",
     },
     WORKSPACE: {
-      Id: (id: number) => `/Workspace/${id}`,
+      Id: (id: number | undefined) => `/Workspace/${id}`,
       WORKSPACE: "/Workspace",
       USER_WORKSPACES: "/Workspace",
     }

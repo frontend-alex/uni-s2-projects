@@ -7,7 +7,7 @@ const RootLayout = () => {
     <div>
       <SidebarProvider> 
         <AppSidebar />
-        <SidebarInset className="p-5">
+        <SidebarInset>
           <Outlet />
         </SidebarInset>
       </SidebarProvider>

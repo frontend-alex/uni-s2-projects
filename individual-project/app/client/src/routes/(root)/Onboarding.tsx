@@ -8,6 +8,7 @@ import { getRandomColor } from "@/lib/utils";
 import { useApiMutation } from "@/hooks/hook";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import { ChevronRight, LoaderCircle } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { questionnaireSteps, randomColors } from "@/consts/consts";
@@ -20,6 +21,7 @@ const OnboardingPage = () => {
   const navigate = useNavigate();
 
   const { user } = useAuth();
+  const { theme } = useTheme();
 
   const form = useForm<WorkspaceSchemaType>({
     defaultValues: {
@@ -133,7 +135,7 @@ const OnboardingPage = () => {
                   {questionnaireSteps[currentStep].options?.map((option) => {
                     const isSelected = answers[currentStep + 1] === option.id;
                     const Icon = option.icon;
-                    const color = getRandomColor(randomColors);
+                    const color = getRandomColor(randomColors, theme);
                     return (
                       <motion.div
                         key={option.id}

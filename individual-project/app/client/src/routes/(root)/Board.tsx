@@ -1,9 +1,16 @@
-import React from 'react'
+import { useWorkspace } from "@/hooks/workspace/use-workspaces";
+import { useParams } from "react-router-dom";
 
 const Board = () => {
-  return (
-    <div></div>
-  )
-}
+  const { workspaceId } = useParams<{ workspaceId: string }>();
 
-export default Board
+  const { data: workspace } = useWorkspace(
+    workspaceId ? Number(workspaceId) : undefined
+  );
+
+  console.log(workspace);
+
+  return <div></div>;
+};
+
+export default Board;

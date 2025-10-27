@@ -3,6 +3,7 @@ import { clsx, type ClassValue } from "clsx";
 import { useForm } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
 import type z from "zod";
+import { randomColors, randomColorsDark } from "@/consts/consts";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -25,7 +26,11 @@ export const makeForm = <T extends z.ZodTypeAny>(
     defaultValues,
   });
 
-export const getRandomColor = (array: string[]) => {
-  const randomIndex = Math.floor(Math.random() * array.length);
-  return array[randomIndex];
+export const getRandomColor = (_array: string[], theme?: string) => {
+  const isDark = theme === 'dark' || 
+    (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+  const colorArray = isDark ? randomColorsDark : randomColors;
+  const randomIndex = Math.floor(Math.random() * colorArray.length);
+  return colorArray[randomIndex];
 };

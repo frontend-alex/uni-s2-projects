@@ -54,3 +54,15 @@ export const randomColors = [
   "#14b8a633",
   "#f9731633",
 ];
+
+export const randomColorsDark = [
+  "#f8717166",
+  "#60a5fa66",
+  "#4ade8066",
+  "#fbbf2466",
+  "#c084fc66",
+  "#fb718566",
+  "#818cf866",
+  "#2dd4bf66",
+  "#fb923c66",
+];

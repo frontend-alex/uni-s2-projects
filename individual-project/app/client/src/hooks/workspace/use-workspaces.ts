@@ -12,7 +12,7 @@ export const useUserWorkspaces = () => {
   );
 };
 
-export const useWorkspace = (workspaceId: number) => {
+export const useWorkspace = (workspaceId: number | undefined) => {
   return useApiQuery<Workspace>(
     ["workspace", workspaceId],
     API.ENDPOINTS.WORKSPACE.Id(workspaceId),

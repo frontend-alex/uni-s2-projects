@@ -23,9 +23,11 @@ import { useApiMutation } from "@/hooks/hook";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { ROUTES } from "@/lib/router-paths";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const WorkspaceDropdown = () => {
-  const { currentWorkspaceId, hasWorkspaceContext } = useCurrentWorkspace();
+
+  const { theme } = useTheme();
 
   const {
     data: workspaces,
@@ -50,6 +52,9 @@ const WorkspaceDropdown = () => {
       },
     });
 
+
+  const { currentWorkspaceId, hasWorkspaceContext } = useCurrentWorkspace();
+
   const handleWorkspace = async (data: WorkspaceSchemaType) =>
     createWorkspace(data);
 
@@ -62,7 +67,7 @@ const WorkspaceDropdown = () => {
     (ws: Workspace) => ws.id === currentWorkspaceId
   );
 
-  const colorFirst = getRandomColor(randomColors);
+  const colorFirst = getRandomColor(randomColors, theme);
 
   return (
     <DropdownMenu>
@@ -99,7 +104,7 @@ const WorkspaceDropdown = () => {
       ) : (
         <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg capitalize">
           {workspaceList.map((workspace: Workspace) => {
-            const colors = getRandomColor(randomColors);
+            const colors = getRandomColor(randomColors, theme);
 
             return (
               <Link to={ROUTES.AUTHENTICATED.BOARD(workspace.id)}>
@@ -114,7 +119,7 @@ const WorkspaceDropdown = () => {
                     >
                       <House className="text-black dark:text-white" />
                     </div>
-                    <span className="font-medium text-xs">
+                    <span className="font-medium text-xs max-w-[100px] truncate">
                       {workspace.name}
                     </span>
                     <WorkspaceVisibilityIcon
