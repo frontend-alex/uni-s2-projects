@@ -1,3 +1,23 @@
+import { toast } from "sonner";
+import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Check, ChevronsUpDown, House, Loader, Plus } from "lucide-react";
+
+import { API } from "@/lib/config";
+import { ROUTES } from "@/lib/router-paths";
+import { getRandomColor } from "@/lib/utils";
+import { useApiMutation } from "@/hooks/hook";
+import { randomColors } from "@/consts/consts";
+import { Button } from "@/components/ui/button";
+import { useTheme } from "@/contexts/ThemeContext";
+import GlobalDialog from "@/components/dialogs/GlobalDialog";
+import { useUserWorkspaces } from "@/hooks/workspace/use-workspaces";
+import { WorkspaceVisibilityIcon } from "@/components/SmallComponents";
+import { type Workspace, WorkspaceVisibility } from "@/types/workspace";
+import { UserDropdownSkeleton } from "@/components/dropdowns/user-dropdown";
+import { useCurrentWorkspace } from "@/hooks/workspace/use-current-workspace";
+import WorkspaceForm from "@/components/auth/forms/workspace/workspace-form-01";
+import type { WorkspaceSchemaType } from "@/utils/schemas/workspace/workspace.schema";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -5,28 +25,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { getRandomColor } from "@/lib/utils";
-import { randomColors } from "@/consts/consts";
-import { WorkspaceVisibility, type Workspace } from "@/types/workspace";
-import { UserDropdownSkeleton } from "./user-dropdown";
-import { Check, ChevronsUpDown, House, Loader, Plus } from "lucide-react";
-import { useUserWorkspaces } from "@/hooks/workspace/use-workspaces";
-import { useCurrentWorkspace } from "@/hooks/workspace/use-current-workspace";
-import { API } from "@/lib/config";
-import GlobalDialog from "../dialogs/GlobalDialog";
-import WorkspaceForm from "../auth/forms/workspace/workspace-form-01";
-import { WorkspaceVisibilityIcon } from "../SmallComponents";
-import type { WorkspaceSchemaType } from "@/utils/schemas/workspace/workspace.schema";
-import { useForm } from "react-hook-form";
-import { useApiMutation } from "@/hooks/hook";
-import { toast } from "sonner";
-import { Link } from "react-router-dom";
-import { ROUTES } from "@/lib/router-paths";
-import { useTheme } from "@/contexts/ThemeContext";
 
 const WorkspaceDropdown = () => {
-
   const { theme } = useTheme();
 
   const {
@@ -51,7 +51,6 @@ const WorkspaceDropdown = () => {
         }
       },
     });
-
 
   const { currentWorkspaceId, hasWorkspaceContext } = useCurrentWorkspace();
 
@@ -84,10 +83,9 @@ const WorkspaceDropdown = () => {
               <House className="h-4 w-4" />
             </div>
             <span className="capitalize truncate max-w-[100px]">
-              {hasWorkspaceContext 
-                ? (currentWorkspace?.name || "Unknown Workspace")
-                : "Secret Bug"
-              }
+              {hasWorkspaceContext
+                ? currentWorkspace?.name || "Unknown Workspace"
+                : "Select Workspace"}
             </span>
             {hasWorkspaceContext && (
               <WorkspaceVisibilityIcon
@@ -103,35 +101,43 @@ const WorkspaceDropdown = () => {
         <Loader />
       ) : (
         <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg capitalize">
-          {workspaceList.map((workspace: Workspace) => {
-            const colors = getRandomColor(randomColors, theme);
+          {workspaceList?.length > 0 ? (
+            workspaceList.map((workspace: Workspace) => {
+              const colors = getRandomColor(randomColors, theme);
 
-            return (
-              <Link to={ROUTES.AUTHENTICATED.BOARD(workspace.id)}>
-                <DropdownMenuItem
-                  key={workspace.id}
-                  className="flex items-center justify-between gap-3"
-                >
-                  <div className="flex items-center gap-3 justify-start">
-                    <div
-                      style={{ backgroundColor: colors }}
-                      className="flex justify-center items-center p-1 rounded-sm"
-                    >
-                      <House className="text-black dark:text-white" />
+              return (
+                <Link to={ROUTES.AUTHENTICATED.BOARD(workspace.id)}>
+                  <DropdownMenuItem
+                    key={workspace.id}
+                    className="flex items-center justify-between gap-3"
+                  >
+                    <div className="flex items-center gap-3 justify-start">
+                      <div
+                        style={{ backgroundColor: colors }}
+                        className="flex justify-center items-center p-1 rounded-sm"
+                      >
+                        <House className="text-black dark:text-white" />
+                      </div>
+                      <span className="font-medium text-xs max-w-[100px] truncate">
+                        {workspace.name}
+                      </span>
+                      <WorkspaceVisibilityIcon
+                        visibility={workspace.visibility}
+                      />
                     </div>
-                    <span className="font-medium text-xs max-w-[100px] truncate">
-                      {workspace.name}
-                    </span>
-                    <WorkspaceVisibilityIcon
-                      visibility={workspace.visibility}
-                    />
-                  </div>
 
-                  {workspace.id === currentWorkspaceId && <Check />}
-                </DropdownMenuItem>
-              </Link>
-            );
-          })}
+                    {workspace.id === currentWorkspaceId && <Check />}
+                  </DropdownMenuItem>
+                </Link>
+              );
+            })
+          ) : (
+            <DropdownMenuItem>
+              <span className="capitalize text-center text-sm">
+                No workspaces found.
+              </span>
+            </DropdownMenuItem>
+          )}
 
           {/* Divider */}
           <DropdownMenuSeparator />

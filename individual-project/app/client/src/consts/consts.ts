@@ -56,13 +56,13 @@ export const randomColors = [
 ];
 
 export const randomColorsDark = [
-  "#f8717166",
-  "#60a5fa66",
-  "#4ade8066",
-  "#fbbf2466",
-  "#c084fc66",
-  "#fb718566",
-  "#818cf866",
-  "#2dd4bf66",
-  "#fb923c66",
+  "#ef4444", // red-500
+  "#3b82f6", // blue-500
+  "#22c55e", // green-500
+  "#eab308", // yellow-500
+  "#a855f7", // purple-500
+  "#ec4899", // pink-500
+  "#6366f1", // indigo-500
+  "#14b8a6", // teal-500
+  "#f97316", // orange-500
 ];

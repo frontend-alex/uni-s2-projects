@@ -54,7 +54,7 @@ const DeleteDialog = ({
               <Button variant="outline" onClick={() => setOpen(false)} disabled={isLoading}>
                 {cancelText}
               </Button>
-              <Button variant="destructive" onClick={(e) => { onConfirm(); setOpen(false); e.stopPropagation() }} disabled={isLoading}>
+              <Button variant="destructive" onClick={(e) => { onConfirm(); setOpen(isLoading); e.stopPropagation() }} disabled={isLoading}>
                 {isLoading ? "Deleting..." : confirmText}
               </Button>
             </DialogFooter>

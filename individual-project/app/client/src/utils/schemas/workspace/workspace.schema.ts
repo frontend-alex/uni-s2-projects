@@ -1,4 +1,4 @@
-import { WorkspaceVisibility } from "@/types/enum";
+import { WorkspaceVisibility } from "@/types/workspace";
 import z from "zod";
 
 export const workspaceSchema = z.object({

@@ -22,7 +22,7 @@ export const AUTHENTICATED_ROUTES = {
   PROFILE: `${BASE_PATHS.APP}/profile`,
   SETTINGS: `${BASE_PATHS.APP}/settings`,
   // Legacy dashboard route (kept for backward compatibility)
-  DASHBOARD: '/dashboard',
+  DASHBOARD: `${BASE_PATHS.APP}/dashboard`,
 } as const;
 
 // Helper functions for common route operations

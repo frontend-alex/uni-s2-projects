@@ -62,7 +62,7 @@ export function useDynamicPartials<T extends Record<string, unknown> = {}>({
 
         if (filterFn) return filterFn(fileName, user);
 
-        const hasPassword = !!user.hasPassword;
+        const hasPassword = true;
         if (fileName === "changecredentialstwo" && hasPassword) return false;
         if (fileName === "changecredentials" && !hasPassword) return false;
         return true;
@@ -73,7 +73,7 @@ export function useDynamicPartials<T extends Record<string, unknown> = {}>({
           const mod = await loader();
           const Component = mod.default;
           return (
-            <div key={path} className="p-4">
+            <div key={path}>
               <Component user={user} refetchUser={refetchUser} {...(extraProps as T)} />
             </div>
           );
@@ -84,7 +84,7 @@ export function useDynamicPartials<T extends Record<string, unknown> = {}>({
     };
 
     loadPartials();
-  }, [user?.hasPassword, partialModules, refetchUser, extraProps, border, filterFn, reverseOrder]);
+  }, [partialModules, refetchUser, extraProps, border, filterFn, reverseOrder]);
 
   return partials;
 }
