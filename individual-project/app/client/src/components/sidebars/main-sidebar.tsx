@@ -14,7 +14,6 @@ import { SidebarGroupRenderer } from "./flexible-sidebar-link";
 import { FileText, LayoutDashboard } from "lucide-react";
 import { useWorkspace } from "@/hooks/workspace/use-workspaces";
 import { useParams } from "react-router-dom";
-import { CreateDocCrouselSkeleton } from "@/components/carousels/create-doc-carousel";
 import { ManageWorkspaceDropdownSkeleton } from "@/components/dropdowns/worksapces/workspace-dropdown-crud";
 
 const LazyUserDropdown = lazy(

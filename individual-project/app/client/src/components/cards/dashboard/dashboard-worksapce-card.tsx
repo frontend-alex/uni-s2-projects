@@ -24,7 +24,7 @@ const DashboardWorkspaceCard = ({ workspace }: { workspace: Workspace }) => {
 
   return (
     <Card
-      className="pb-0 overflow-hidden flex flex-col cursor-pointer hover:bg-muted transition-all"
+      className="pb-0 overflow-hidden flex flex-col cursor-pointer hover:bg-muted transition-all aspect-square"
       onClick={() => navigate(ROUTES.AUTHENTICATED.BOARD(workspace.id))}
     >
       <CardHeader className=" flex items-center justify-between">

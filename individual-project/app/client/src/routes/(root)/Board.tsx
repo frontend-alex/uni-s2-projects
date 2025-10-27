@@ -1,8 +1,8 @@
-import { CreateDocCrouselSkeleton } from "@/components/carousels/create-doc-carousel";
-import { useWorkspace } from "@/hooks/workspace/use-workspaces";
-import { FilePlus, Plus } from "lucide-react";
+import { FilePlus } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { useParams } from "react-router-dom";
+import { useWorkspace } from "@/hooks/workspace/use-workspaces";
+import { CreateDocCrouselSkeleton } from "@/components/carousels/create-doc-carousel";
 
 const LazyCreateDocCarousel = lazy(
   () => import("@/components/carousels/create-doc-carousel")
@@ -10,6 +10,7 @@ const LazyCreateDocCarousel = lazy(
 
 const Board = () => {
   const { workspaceId } = useParams<{ workspaceId: string }>();
+
 
   const { data: workspace } = useWorkspace(
     workspaceId ? Number(workspaceId) : undefined
@@ -27,7 +28,7 @@ const Board = () => {
       </div>
       <div className="w-full">
         <Suspense fallback={<CreateDocCrouselSkeleton />}>
-          <LazyCreateDocCarousel />
+          <LazyCreateDocCarousel documents={[]} />
         </Suspense>
       </div>
     </div>
