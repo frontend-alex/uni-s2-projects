@@ -135,6 +135,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 icon: FileText,
                 items: documentItems,
                 isActive: documentItems.some((item) => item.isActive),
+                colorHex: workspace?.colorHex ?? defaultWorkspaceColor,
               },
             ],
           },

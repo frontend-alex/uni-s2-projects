@@ -24,6 +24,7 @@ type SidebarSubItem = {
   url: string;
   icon?: any;
   isActive?: boolean;
+  colorHex?: string; // For document icon color (inherits from workspace)
 };
 
 type SidebarItem = {
@@ -111,7 +112,11 @@ function CollapsibleNavItem({ item }: { item: SidebarItem }) {
                     )}
                   >
                     <NavLink to={subItem.url} className="flex items-center gap-2">
-                      {subItem.icon && <subItem.icon />}
+                      {subItem.icon && (
+                        <subItem.icon 
+                          style={subItem.colorHex ? { color: subItem.colorHex } : undefined}
+                        />
+                      )}
                       <span>{subItem.title}</span>
                     </NavLink>
                   </SidebarMenuSubButton>
