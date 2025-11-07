@@ -5,6 +5,7 @@ using Core.Models;
 using Core.Enums;
 using Core.Mappers;
 using Core.Exceptions;
+using Core.Utils;
 using Infrastructure.Repositories;
 using Core.Interfaces.repository.workspace;
 using Infrastructure.Repositories.Workspace;
@@ -23,15 +24,18 @@ public class WorkspaceService {
         _userRepository = userRepository;
     }
 
-    public async Task<WorkspaceDto> CreateWorkspaceAsync(int creatorId, string name, WorkspaceVisibility visibility) {
+    public async Task<WorkspaceDto> CreateWorkspaceAsync(int creatorId, string name, WorkspaceVisibility visibility, string? colorHex) {
         User creator = await _userRepository.GetByIdAsync(creatorId)
             ?? throw AppException.CreateError("USER_NOT_FOUND");
+
+        string? normalizedColor = ColorUtils.NormalizeColorHex(colorHex);
 
         Workspace workspace = new Workspace {
             Name = name.Trim(),
             Description = "A collaborative workspace for learning and studying together.",
             Visibility = visibility,
-            CreatedBy = creatorId
+            CreatedBy = creatorId,
+            ColorHex = normalizedColor ?? ColorUtils.GetRandomColorHex()
         };
 
         Workspace createdWorkspace = await _workspaceRepository.CreateAsync(workspace);
@@ -86,7 +90,7 @@ public class WorkspaceService {
         return await _workspaceRepository.DeleteAsync(workspaceId);
     }
 
-    public async Task<WorkspaceDto> UpdateWorkspaceAsync(int workspaceId, int userId, string? name, string? description, WorkspaceVisibility? visibility) {
+    public async Task<WorkspaceDto> UpdateWorkspaceAsync(int workspaceId, int userId, string? name, string? description, WorkspaceVisibility? visibility, string? colorHex) {
         // Check if user has access and is owner or cohost
         bool hasAccess = await _userWorkspaceRepository.UserHasAccessAsync(userId, workspaceId);
 
@@ -107,6 +111,18 @@ public class WorkspaceService {
 
         if (visibility.HasValue) {
             workspace.Visibility = visibility.Value;
+        }
+
+        if (colorHex != null) {
+            if (string.IsNullOrWhiteSpace(colorHex)) {
+                workspace.ColorHex = null;
+            } else {
+                string? normalized = ColorUtils.NormalizeColorHex(colorHex);
+                if (normalized is null) {
+                    throw AppException.CreateError("INVALID_COLOR_HEX");
+                }
+                workspace.ColorHex = normalized;
+            }
         }
 
         await _workspaceRepository.UpdateAsync(workspace);

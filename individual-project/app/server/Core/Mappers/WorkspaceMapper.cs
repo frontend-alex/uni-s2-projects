@@ -38,7 +38,8 @@ public static class WorkspaceMapper {
             MemberCount = memberCount,
             DocumentCount = documentCount,
             UserRole = userRole,
-            Documents = documentDtos
+            Documents = documentDtos,
+            ColorHex = workspace.ColorHex
         };
     }
 }

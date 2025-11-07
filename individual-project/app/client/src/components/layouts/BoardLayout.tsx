@@ -7,12 +7,22 @@ import { Bell, Pin, Search, UserRoundPlus } from "lucide-react";
 import { ManageWorkspaceDropdownSkeleton } from "../dropdowns/worksapces/workspace-dropdown-crud";
 
 const LazyBreadCrumps = lazy(() => import("@/components/BreadCrumps"));
-const LazyManageWorkspaceDropdown = lazy(() => import("@/components/dropdowns/worksapces/workspace-dropdown-crud"));
+
+const LazyManageWorkspaceDropdown = lazy(
+  () => import("@/components/dropdowns/worksapces/workspace-dropdown-crud")
+);
+
+const LazyManageDocumentDropdown = lazy(
+  () => import("@/components/dropdowns/documents/document-dropdown-crud")
+);
 
 const BoardLayout = ({ children }: { children: React.ReactNode }) => {
-  
   const location = useLocation();
-  const isBoardRoute = location.pathname.startsWith(`${ROUTES.BASE.APP}/board`);
+  const isBoardRoute = location.pathname.startsWith(
+    `${ROUTES.BASE.APP}/workspace`
+  );
+
+  const isDocumentRoute = location.pathname.includes("/document/");
 
   return (
     <div className="flex flex-col h-full w-full">
@@ -30,7 +40,7 @@ const BoardLayout = ({ children }: { children: React.ReactNode }) => {
                 <Pin className="size-4" />
               </Button>
               <Suspense fallback={<ManageWorkspaceDropdownSkeleton />}>
-                <LazyManageWorkspaceDropdown />
+                {isDocumentRoute ? <LazyManageDocumentDropdown/> : <LazyManageWorkspaceDropdown />}
               </Suspense>
               <div className="h-6 w-px bg-accent" />
             </>
@@ -39,14 +49,14 @@ const BoardLayout = ({ children }: { children: React.ReactNode }) => {
             <Button size="icon" variant={"secondary"}>
               <Bell className="size-4" />
             </Button>
-            <span className="absolute -top-1 animate-pulse -right-1 bg-red-500 text-white text-xs rounded-full size-3 "/>
+            <span className="absolute -top-1 animate-pulse -right-1 bg-red-500 text-white text-xs rounded-full size-3 " />
           </div>
           <Button size="icon" variant={"secondary"}>
             <Search className="size-4" />
           </Button>
         </div>
       </div>
-      <div className="flex-1 min-h-0">{children}</div>
+      <div className="flex-1 min-h-0 py-5">{children}</div>
     </div>
   );
 };

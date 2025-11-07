@@ -8,6 +8,7 @@ public class Document : BaseEntity {
     public DocumentKind Kind { get; set; } = DocumentKind.Note;
     public string YDocId { get; set; } = string.Empty;
     public string? Content { get; set; }
+    public string? ColorHex { get; set; }
     public int CreatedBy { get; set; }
     public bool IsArchived { get; set; } = false;
     

@@ -20,6 +20,7 @@ public class WorkspaceMapper {
             Visibility = workspaceDto.Visibility,
             CreatedAt = workspaceDto.CreatedAt,
             UpdatedAt = workspaceDto.UpdatedAt,
+            ColorHex = workspaceDto.ColorHex,
             Documents = documentResponses
         };
     }

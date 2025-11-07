@@ -10,6 +10,9 @@ public class CreateWorkspaceRequest {
 
     [Required(ErrorMessage = "Workspace visibility is required")]
     public WorkspaceVisibility Visibility { get; set; } = WorkspaceVisibility.Private;
+
+    [RegularExpression("^#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$", ErrorMessage = "Color must be a valid hex value (e.g., #RRGGBB)")]
+    public string? ColorHex { get; set; }
 }
 
 public class UpdateWorkspaceRequest {
@@ -20,4 +23,7 @@ public class UpdateWorkspaceRequest {
     public string? Description { get; set; }
 
     public WorkspaceVisibility? Visibility { get; set; }
+
+    [RegularExpression("^#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$", ErrorMessage = "Color must be a valid hex value (e.g., #RRGGBB)")]
+    public string? ColorHex { get; set; }
 }

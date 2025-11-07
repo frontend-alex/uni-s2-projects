@@ -66,3 +66,6 @@ export const randomColorsDark = [
   "#14b8a6", // teal-500
   "#f97316", // orange-500
 ];
+
+export const defaultWorkspaceColor = "#6366f1";
+export const defaultDocumentColor = "#3b82f6";

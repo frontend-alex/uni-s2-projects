@@ -18,7 +18,7 @@ const Profile = () => {
     return <Loading />;
   }
 
-  return <div className="flex-col-3 max-w-3xl">{partials}</div>;
+  return <div className="flex flex-col gap-3 max-w-3xl">{partials}</div>;
 };
 
 export default Profile;

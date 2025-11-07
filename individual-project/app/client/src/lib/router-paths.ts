@@ -18,11 +18,12 @@ export const PUBLIC_ROUTES = {
 // Authenticated routes (require authentication)
 export const AUTHENTICATED_ROUTES = {
   ONBOARDING: '/onboarding',
-  BOARD: (workspaceId: string | number) => `${BASE_PATHS.APP}/board/${workspaceId}`,
+  BOARD: (workspaceId: string | number) => `${BASE_PATHS.APP}/workspace/${workspaceId}`,
   PROFILE: `${BASE_PATHS.APP}/profile`,
   SETTINGS: `${BASE_PATHS.APP}/settings`,
   // Legacy dashboard route (kept for backward compatibility)
   DASHBOARD: `${BASE_PATHS.APP}/dashboard`,
+  DOCUMENT: (documentId: string | number, workspaceId: string | number) => `${BASE_PATHS.APP}/workspace/${workspaceId}/document/${documentId}`,
 } as const;
 
 // Helper functions for common route operations

@@ -12,6 +12,7 @@ public class DocumentMapper {
             Kind = documentDto.Kind,
             YDocId = documentDto.YDocId,
             Content = documentDto.Content,
+            ColorHex = documentDto.ColorHex,
             CreatedBy = documentDto.CreatedBy,
             CreatorName = documentDto.CreatorName,
             IsArchived = documentDto.IsArchived,

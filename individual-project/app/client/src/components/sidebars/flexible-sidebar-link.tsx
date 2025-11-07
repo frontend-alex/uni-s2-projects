@@ -1,6 +1,4 @@
-import {
-  ChevronRight,
-} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 import {
   SidebarMenu,
@@ -18,19 +16,23 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
+type SidebarSubItem = {
+  title: string;
+  url: string;
+  icon?: any;
+  isActive?: boolean;
+};
 
 type SidebarItem = {
   title: string;
   icon: any;
   isActive?: boolean;
   url?: string;
-  items?: Array<{
-    title: string;
-    url: string;
-    icon?: any;
-  }>; // For collapsible groups
+  items?: SidebarSubItem[]; // For collapsible groups
+  colorHex?: string; // For workspace icon color
 };
 
 function CollapsibleNavItem({ item }: { item: SidebarItem }) {
@@ -41,11 +43,17 @@ function CollapsibleNavItem({ item }: { item: SidebarItem }) {
   if (shouldRenderAsLink && item.url) {
     return (
       <SidebarMenuItem>
-        <SidebarMenuButton asChild tooltip={item.title}>
-          <Link to={item.url}>
+        <SidebarMenuButton
+          asChild
+          tooltip={item.title}
+          className={cn(
+            item.isActive && "bg-accent text-accent-foreground hover:bg-accent"
+          )}
+        >
+          <NavLink to={item.url!} className="flex items-center gap-2">
             <item.icon />
             <span>{item.title}</span>
-          </Link>
+          </NavLink>
         </SidebarMenuButton>
       </SidebarMenuItem>
     );
@@ -67,13 +75,22 @@ function CollapsibleNavItem({ item }: { item: SidebarItem }) {
     }
   }, [isOpen, storageKey]);
 
+  useEffect(() => {
+    if (item.isActive) {
+      setIsOpen(true);
+    }
+  }, [item.isActive]);
+
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} asChild>
       <SidebarMenuItem>
         <CollapsibleTrigger asChild>
           <SidebarMenuButton tooltip={item.title}>
-            <item.icon />
-            <span>{item.title}</span>
+            <item.icon 
+              className=""
+              style={item.colorHex ? { color: item.colorHex } : undefined}
+            />
+            <span className="max-w-[150px] truncate">{item.title}</span>
             <ChevronRight
               className={`ml-auto transition-transform duration-200 ${
                 isOpen ? "rotate-90" : ""
@@ -86,11 +103,17 @@ function CollapsibleNavItem({ item }: { item: SidebarItem }) {
             {item.items && item.items.length > 0 ? (
               item.items.map((subItem) => (
                 <SidebarMenuSubItem key={subItem.title}>
-                  <SidebarMenuSubButton asChild>
-                    <Link to={subItem.url}>
+                  <SidebarMenuSubButton
+                    asChild
+                    className={cn(
+                      subItem.isActive &&
+                        "bg-accent text-accent-foreground hover:bg-accent"
+                    )}
+                  >
+                    <NavLink to={subItem.url} className="flex items-center gap-2">
                       {subItem.icon && <subItem.icon />}
                       <span>{subItem.title}</span>
-                    </Link>
+                    </NavLink>
                   </SidebarMenuSubButton>
                 </SidebarMenuSubItem>
               ))

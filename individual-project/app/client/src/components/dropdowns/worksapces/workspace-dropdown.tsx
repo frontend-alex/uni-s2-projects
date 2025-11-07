@@ -5,11 +5,9 @@ import { Check, ChevronsUpDown, House, Loader, Plus } from "lucide-react";
 
 import { API } from "@/lib/config";
 import { ROUTES } from "@/lib/router-paths";
-import { getRandomColor } from "@/lib/utils";
 import { useApiMutation } from "@/hooks/hook";
-import { randomColors } from "@/consts/consts";
+import { defaultWorkspaceColor } from "@/consts/consts";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/contexts/ThemeContext";
 import GlobalDialog from "@/components/dialogs/GlobalDialog";
 import { useUserWorkspaces } from "@/hooks/workspace/use-workspaces";
 import { WorkspaceVisibilityIcon } from "@/components/SmallComponents";
@@ -27,7 +25,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const WorkspaceDropdown = () => {
-  const { theme } = useTheme();
 
   const {
     data: workspaces,
@@ -66,7 +63,7 @@ const WorkspaceDropdown = () => {
     (ws: Workspace) => ws.id === currentWorkspaceId
   );
 
-  const colorFirst = getRandomColor(randomColors, theme);
+  const colorFirst = currentWorkspace?.colorHex ?? defaultWorkspaceColor;
 
   return (
     <DropdownMenu>
@@ -80,7 +77,7 @@ const WorkspaceDropdown = () => {
               style={{ backgroundColor: colorFirst }}
               className="flex justify-center items-center p-2 rounded-sm"
             >
-              <House className="h-4 w-4" />
+              <House className="h-4 w-4 text-white" />
             </div>
             <span className="capitalize truncate max-w-[100px]">
               {hasWorkspaceContext
@@ -103,24 +100,26 @@ const WorkspaceDropdown = () => {
         <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg capitalize">
           {workspaceList?.length > 0 ? (
             workspaceList.map((workspace: Workspace) => {
-              const colors = getRandomColor(randomColors, theme);
+              const colors = workspace.colorHex ?? defaultWorkspaceColor;
 
               return (
                 <Link to={ROUTES.AUTHENTICATED.BOARD(workspace.id)}>
                   <DropdownMenuItem
                     key={workspace.id}
-                    className="flex items-center justify-between gap-3"
+                    className="flex items-center justify-between gap-3 w-full"
                   >
-                    <div className="flex items-center gap-3 justify-start">
-                      <div
-                        style={{ backgroundColor: colors }}
-                        className="flex justify-center items-center p-1 rounded-sm"
-                      >
-                        <House className="text-black dark:text-white" />
+                    <div className="flex items-center gap-3 justify-between w-full">
+                      <div className="flex items-center gap-3">
+                        <div
+                          style={{ backgroundColor: colors }}
+                          className="flex justify-center items-center p-1 rounded-sm"
+                        >
+                          <House className="text-white" />
+                        </div>
+                        <span className="font-medium text-xs max-w-[130px] truncate">
+                          {workspace.name}
+                        </span>
                       </div>
-                      <span className="font-medium text-xs max-w-[100px] truncate">
-                        {workspace.name}
-                      </span>
                       <WorkspaceVisibilityIcon
                         visibility={workspace.visibility}
                       />

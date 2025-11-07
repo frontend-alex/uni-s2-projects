@@ -1,9 +1,7 @@
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { randomColors } from "@/consts/consts";
-import { getRandomColor } from "@/lib/utils";
 import type { Workspace } from "@/types/workspace";
-import { useTheme } from "@/contexts/ThemeContext";
+import { defaultWorkspaceColor } from "@/consts/consts";
 import { WorkspaceVisibilityIcon } from "@/components/SmallComponents";
 import { ROUTES } from "@/lib/router-paths";
 import { useNavigate } from "react-router-dom";
@@ -19,8 +17,7 @@ export const DashboardWorkspaceCardSkeleton = () => {
 const DashboardWorkspaceCard = ({ workspace }: { workspace: Workspace }) => {
   const navigate = useNavigate();
 
-  const { theme } = useTheme();
-  const color = getRandomColor(randomColors, theme);
+  const color = workspace.colorHex ?? defaultWorkspaceColor;
 
   return (
     <Card
@@ -28,7 +25,7 @@ const DashboardWorkspaceCard = ({ workspace }: { workspace: Workspace }) => {
       onClick={() => navigate(ROUTES.AUTHENTICATED.BOARD(workspace.id))}
     >
       <CardHeader className=" flex items-center justify-between">
-        <CardTitle className="w-full">{workspace.name}</CardTitle>
+        <CardTitle className="w-full truncate max-w-[100px]">{workspace.name}</CardTitle>
         <WorkspaceVisibilityIcon
           visibility={workspace.visibility}
           className="h-5 w-5 "

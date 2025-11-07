@@ -1,29 +1,30 @@
 $ErrorActionPreference = 'Stop'
 
-Set-Location -Path $PSScriptRoot
-
-$clientDir = Join-Path $PSScriptRoot 'app/client'
-$serverDir = Join-Path $PSScriptRoot 'app/server'
+$scriptRoot = $PSScriptRoot
+$repoRoot   = Split-Path -Path $scriptRoot -Parent
+$clientDir  = Join-Path $repoRoot 'app\client'
+$serverDir  = Join-Path $repoRoot 'app\server'
+$apiDir     = Join-Path $serverDir 'API'
 
 if (-not (Test-Path $clientDir)) { throw "Client directory not found: $clientDir" }
-if (-not (Test-Path $serverDir)) { throw "Server directory not found: $serverDir" }
+if (-not (Test-Path $apiDir))   { throw "API project directory not found: $apiDir" }
 
 $clientCmd = if ($env:CLIENT_START_COMMAND) { $env:CLIENT_START_COMMAND } else { 'pnpm dev' }
-$serverCmd = if ($env:SERVER_START_COMMAND) { $env:SERVER_START_COMMAND } else { 'dotnet watch run --project api' }
+$serverCmd = if ($env:SERVER_START_COMMAND) { $env:SERVER_START_COMMAND } else { 'dotnet watch run' }
 
 Write-Host "Starting client in: $clientDir" -ForegroundColor Cyan
 Write-Host "Command: $clientCmd" -ForegroundColor DarkCyan
 Start-Process -FilePath "powershell" -WorkingDirectory $clientDir -ArgumentList @(
-    "-NoExit",
-    "-Command",
+    '-NoExit',
+    '-Command',
     "& { $clientCmd }"
 ) | Out-Null
 
-Write-Host "Starting server in: $serverDir" -ForegroundColor Cyan
+Write-Host "Starting server in: $apiDir" -ForegroundColor Cyan
 Write-Host "Command: $serverCmd" -ForegroundColor DarkCyan
-Start-Process -FilePath "powershell" -WorkingDirectory $serverDir -ArgumentList @(
-    "-NoExit",
-    "-Command",
+Start-Process -FilePath "powershell" -WorkingDirectory $apiDir -ArgumentList @(
+    '-NoExit',
+    '-Command',
     "& { $serverCmd }"
 ) | Out-Null
 

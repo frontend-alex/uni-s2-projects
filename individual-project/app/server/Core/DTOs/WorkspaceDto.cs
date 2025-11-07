@@ -12,4 +12,5 @@ public class WorkspaceDto : BaseDto {
     public UserWorkspaceRole UserRole { get; set; }
     public WorkspaceVisibility Visibility { get; set; }
     public IEnumerable<DocumentDto> Documents { get; set; } = new List<DocumentDto>();
+    public string? ColorHex { get; set; }
 }

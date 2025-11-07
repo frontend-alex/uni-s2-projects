@@ -2,7 +2,7 @@ import Loading from "@/components/Loading";
 import TitleWrapper from "@/components/TitleWrapper";
 
 import { Suspense } from "react";
-import { Dashboard, Board, Profile, Settings, OnboardingPage } from "@/routes/(root)";
+import { Dashboard, Board, Profile, Settings, OnboardingPage, Document } from "@/routes/(root)";
 import { Route, Routes } from "react-router-dom";
 import {
   AuthCallback,
@@ -101,7 +101,7 @@ const App = () => {
         <Route element={<AppGuard />}>
           <Route element={<RootLayout />}>
             <Route
-              path={`${ROUTES.BASE.APP}/board/:workspaceId`}
+              path={`${ROUTES.BASE.APP}/workspace/:workspaceId`}
               element={
                 <TitleWrapper title="Workspace Board">
                   <Board />
@@ -124,12 +124,19 @@ const App = () => {
                 </TitleWrapper>
               }
             />
-            {/* Legacy dashboard route (kept for backward compatibility) */}
             <Route
               path={ROUTES.AUTHENTICATED.DASHBOARD}
               element={
                 <TitleWrapper title="Dashboard Page">
                   <Dashboard />
+                </TitleWrapper>
+              }
+            />
+             <Route
+              path={`${ROUTES.BASE.APP}/workspace/:workspaceId/document/:documentId`}
+              element={
+                <TitleWrapper title="Document">
+                  <Document />
                 </TitleWrapper>
               }
             />

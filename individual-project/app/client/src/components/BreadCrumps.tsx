@@ -22,7 +22,7 @@ export const BreadCrumpSkeleton = () => {
 };
 
 const BreadCrumps = () => {
-  const { workspaceId } = useParams<{ workspaceId: string }>();
+  const { workspaceId, documentId } = useParams<{ workspaceId: string, documentId: string }>();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -30,14 +30,11 @@ const BreadCrumps = () => {
     workspaceId ? Number(workspaceId) : undefined
   );
 
-  console.log(workspaceResponse?.data)
-
   const workspace = workspaceResponse?.data;
 
   // Extract the current route after /v1
   const getCurrentRoute = () => {
     const pathname = location.pathname;
-    // Extract segment after /app/v1/
     const match = pathname.match(/\/app\/v1\/([^/]+)/);
     return match ? match[1] : "";
   };
@@ -45,8 +42,6 @@ const BreadCrumps = () => {
   const currentRoute = getCurrentRoute();
 
   if (isLoading) return <BreadCrumpSkeleton />;
-
-  console.log(workspace?.name)
 
   return (
     <div className="flex items-center gap-3">
@@ -71,19 +66,35 @@ const BreadCrumps = () => {
       </div>
 
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm" aria-label="Breadcrumb">
+      <nav className="flex items-center gap-0 text-sm" aria-label="Breadcrumb">
         <Link
           to={ROUTES.AUTHENTICATED.DASHBOARD}
           className="text-muted-foreground capitalize max-w-[100px] truncate"
         >
-          {currentRoute || "board"}
+          <Button className="px-2 capitalize" variant={'ghost'}>{currentRoute || "Workspace"}</Button>
         </Link>
-        {workspace && (
+        {workspace  && (
           <>
             <span className="text-muted-foreground">/</span>
-            <span className="font-medium text-foreground  max-w-[150px] lg:max-w-full truncate">
-              {workspace.name}
-            </span>
+            <Link to={ROUTES.AUTHENTICATED.BOARD(workspace.id)}>
+              <Button
+                variant="ghost"
+                className="font-medium text-foreground px-2"
+              >
+                {workspace.name}
+              </Button>
+            </Link>
+          </>
+        )}
+         {documentId  && (
+          <>
+            <span className="text-muted-foreground">/</span>
+              <Button
+                variant="ghost"
+                className="font-medium text-foreground px-2"
+              >
+                Document
+              </Button>
           </>
         )}
       </nav>

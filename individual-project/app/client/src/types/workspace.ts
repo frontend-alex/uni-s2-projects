@@ -31,6 +31,7 @@ export interface Workspace {
   memberCount: number;
   documentCount: number;
   userRole: UserWorkspaceRole;
+  colorHex?: string;
   // Optional fields for full workspace data (when needed)
   
   creator?: User;
@@ -63,6 +64,7 @@ export interface Document {
   title?: string;
   kind: DocumentKind;
   yDocId: string;
+  colorHex?: string;
   createdBy: number;
   isArchived: boolean;
   createdAt: string;

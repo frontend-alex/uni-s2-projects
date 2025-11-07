@@ -1,6 +1,6 @@
 import WorkspaceForm from "@/components/auth/forms/workspace/workspace-form-01";
 
-import { useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { API } from "@/lib/config";
 import { useForm } from "react-hook-form";
 import { ROUTES } from "@/lib/router-paths";
@@ -20,10 +20,8 @@ import type { WorkspaceSchemaType } from "@/utils/schemas/workspace/workspace.sc
 const OnboardingPage = () => {
   const navigate = useNavigate();
 
-  const { user } = useAuth();
+  const { user, refetch } = useAuth();
   const { theme } = useTheme();
-
-  console.log(user)
 
   const form = useForm<WorkspaceSchemaType>({
     defaultValues: {
@@ -35,20 +33,21 @@ const OnboardingPage = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
 
-  const handleOptionSelect = (optionId: string) => {
-    setAnswers({ ...answers, [currentStep + 1]: optionId });
-    if (currentStep < questionnaireSteps.length - 1) {
-      setTimeout(() => {
-        setCurrentStep(currentStep + 1);
-      }, 300);
-    }
-  };
+  const handleOptionSelect = useCallback(
+    (optionId: string) => {
+      setAnswers((prev) => ({ ...prev, [currentStep + 1]: optionId }));
+      if (currentStep < questionnaireSteps.length - 1) {
+        setTimeout(() => {
+          setCurrentStep((step) => step + 1);
+        }, 300);
+      }
+    },
+    [currentStep]
+  );
 
-  const prevStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
+  const prevStep = useCallback(() => {
+    setCurrentStep((step) => (step > 0 ? step - 1 : step));
+  }, []);
 
   const { mutateAsync: createWorkspace, isPending: isWorkspacePending } =
     useApiMutation<Workspace>(
@@ -57,15 +56,26 @@ const OnboardingPage = () => {
       {
         onSuccess: (data) => {
           if (data.success && data.data) {
-            navigate(`${ROUTES.AUTHENTICATED.BOARD(data.data.id)}`);
             localStorage.setItem("currentWorkspaceId", data.data.id.toString());
+            navigate(`${ROUTES.AUTHENTICATED.BOARD(data.data.id)}`);
+            refetch();
           }
         },
       }
     );
 
-  const handleWorkspace = async (data: WorkspaceSchemaType) =>
-    createWorkspace(data);
+  const handleWorkspace = useCallback(
+    async (data: WorkspaceSchemaType) => createWorkspace(data),
+    [createWorkspace]
+  );
+
+  const currentQuestion = questionnaireSteps[currentStep];
+
+  const optionColors = useMemo(() => {
+    const options = questionnaireSteps[currentStep].options;
+    if (!options) return [] as string[];
+    return options.map(() => getRandomColor(randomColors, theme));
+  }, [currentStep, theme]);
 
   return (
     <div className="h-dvh flex flex-col">
@@ -102,7 +112,7 @@ const OnboardingPage = () => {
                 transition={{ delay: 0.2, duration: 0.5 }}
                 className="text-3xl font-bold mb-4"
               >
-                {questionnaireSteps[currentStep].question}
+                {currentQuestion.question}
               </motion.h1>
 
               <motion.p
@@ -111,11 +121,11 @@ const OnboardingPage = () => {
                 transition={{ delay: 0.3, duration: 0.5 }}
                 className="text-lg text-muted-foreground mb-8"
               >
-                {questionnaireSteps[currentStep].description}
+                {currentQuestion.description}
               </motion.p>
 
               {/* Options Grid or Form */}
-              {questionnaireSteps[currentStep].isForm ? (
+              {currentQuestion.isForm ? (
                 <motion.div
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -134,10 +144,10 @@ const OnboardingPage = () => {
                   transition={{ delay: 0.4, duration: 0.5 }}
                   className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"
                 >
-                  {questionnaireSteps[currentStep].options?.map((option) => {
+                  {currentQuestion.options?.map((option, index) => {
                     const isSelected = answers[currentStep + 1] === option.id;
                     const Icon = option.icon;
-                    const color = getRandomColor(randomColors, theme);
+                    const color = optionColors[index];
                     return (
                       <motion.div
                         key={option.id}
@@ -221,4 +231,4 @@ const OnboardingPage = () => {
   );
 };
 
-export default OnboardingPage;
+export default memo(OnboardingPage);

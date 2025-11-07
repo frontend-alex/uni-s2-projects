@@ -15,5 +15,6 @@ public class WorkspaceResponse {
     public WorkspaceVisibility Visibility { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    public string? ColorHex { get; set; }
     public IEnumerable<API.Contracts.Document.DocumentResponse> Documents { get; set; } = new List<API.Contracts.Document.DocumentResponse>();
 }

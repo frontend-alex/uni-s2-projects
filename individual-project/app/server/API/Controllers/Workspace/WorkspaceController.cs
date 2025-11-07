@@ -26,7 +26,8 @@ public class WorkspaceController : BaseController {
         WorkspaceDto workspaceDto = await _workspaceService.CreateWorkspaceAsync(
             userId,
             request.Name,
-            request.Visibility
+            request.Visibility,
+            request.ColorHex
         );
 
         WorkspaceResponse response = WorkspaceMapper.ToWorkspaceResponse(workspaceDto);
@@ -44,7 +45,7 @@ public class WorkspaceController : BaseController {
 
         WorkspaceDto? workspaceDto = await _workspaceService.GetWorkspaceAsync(workspaceId, userId);
 
-        WorkspaceResponse response = WorkspaceMapper.ToWorkspaceResponse(workspaceDto);
+        WorkspaceResponse response = WorkspaceMapper.ToWorkspaceResponse(workspaceDto!);
 
         return Ok(new ApiResponse<WorkspaceResponse> {
             Success = true,
@@ -89,7 +90,8 @@ public class WorkspaceController : BaseController {
             userId,
             request.Name,
             request.Description,
-            request.Visibility
+            request.Visibility,
+            request.ColorHex
         );
 
         WorkspaceResponse response = WorkspaceMapper.ToWorkspaceResponse(workspaceDto);

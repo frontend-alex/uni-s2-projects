@@ -1,11 +1,13 @@
 namespace Core.Services.Document;
 
 using System;
+using System.Linq;
 using Core.DTOs;
 using Core.Enums;
 using Core.Exceptions;
 using Core.Mappers;
 using Core.Models;
+using Core.Utils;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Workspace;
 
@@ -23,7 +25,7 @@ public class DocumentService {
         _userWorkspaceRepository = userWorkspaceRepository;
     }
 
-    public async Task<DocumentDto> CreateDocumentAsync(int creatorId, int workspaceId) {
+    public async Task<DocumentDto> CreateDocumentAsync(int creatorId, int workspaceId, string? colorHex = null) {
         User creator = await _userRepository.GetByIdAsync(creatorId)
             ?? throw AppException.CreateError("USER_NOT_FOUND");
 
@@ -37,14 +39,18 @@ public class DocumentService {
         int documentNumber = existingDocuments.Count() + 1;
         string documentTitle = $"Document {documentNumber}";
 
+        string? normalizedColor = ColorUtils.NormalizeColorHex(colorHex);
+        string assignedColor = normalizedColor ?? ColorUtils.GetRandomColorHex();
+
         string yDocId = Guid.NewGuid().ToString();
 
-        var document = new Core.Models.Document {
+        var document = new Document {
             WorkspaceId = workspaceId,
             Title = documentTitle,
             Kind = DocumentKind.Note, 
             YDocId = yDocId,
             Content = null, 
+            ColorHex = assignedColor,
             CreatedBy = creatorId,
             IsArchived = false
         };
@@ -91,7 +97,7 @@ public class DocumentService {
         return await _documentRepository.DeleteAsync(documentId);
     }
 
-    public async Task<DocumentDto> UpdateDocumentAsync(int documentId, int userId, string? title, string? content, bool? isArchived) {
+    public async Task<DocumentDto> UpdateDocumentAsync(int documentId, int userId, string? title, string? content, bool? isArchived, string? colorHex) {
         var doc = await _documentRepository.GetByIdAsync(documentId)
             ?? throw AppException.CreateError("DOCUMENT_NOT_FOUND");
 
@@ -110,6 +116,18 @@ public class DocumentService {
 
         if (isArchived.HasValue) {
             doc.IsArchived = isArchived.Value;
+        }
+
+        if (colorHex != null) {
+            if (string.IsNullOrWhiteSpace(colorHex)) {
+                doc.ColorHex = null;
+            } else {
+                string? normalized = ColorUtils.NormalizeColorHex(colorHex);
+                if (normalized is null) {
+                    throw AppException.CreateError("INVALID_COLOR_HEX");
+                }
+                doc.ColorHex = normalized;
+            }
         }
 
         await _documentRepository.UpdateAsync(doc);

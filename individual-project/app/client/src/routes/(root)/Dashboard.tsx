@@ -45,7 +45,7 @@ const Dashboard = () => {
     createWorkspace(data);
 
   return (
-    <div className="md:h-[50dvh] flex flex-col gap-10 items-center justify-center">
+    <div className="h-[50dvh] flex flex-col gap-10 items-center justify-center">
       <h1 className="text-xl">Hello There!</h1>
 
       <Accordion
@@ -79,7 +79,7 @@ const Dashboard = () => {
             </GlobalDialog>
           </div>
             <AccordionContent className="w-full">
-              <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 w-full">
+              <div className="grid grid-cols-3 lg:grid-cols-5 gap-4 w-full">
                 {isLoading ? (
                   Array.from({ length: 3 }).map((_, index) => (
                     <DashboardWorkspaceCardSkeleton key={index} />
