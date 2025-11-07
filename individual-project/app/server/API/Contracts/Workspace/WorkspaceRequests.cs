@@ -1,4 +1,4 @@
-namespace API.Models.Workspace;
+namespace API.Contracts.Workspace;
 
 using System.ComponentModel.DataAnnotations;
 using Core.Enums;

@@ -23,6 +23,8 @@ const OnboardingPage = () => {
   const { user } = useAuth();
   const { theme } = useTheme();
 
+  console.log(user)
+
   const form = useForm<WorkspaceSchemaType>({
     defaultValues: {
       name: `${user?.username}'s Workspace` || "",

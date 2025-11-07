@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data, isLoading, error, refetch } = useApiQuery<{ user: User }>(
+  const { data, isLoading, error, refetch } = useApiQuery<User>(
     ["auth", "me"],
     API.ENDPOINTS.USER.ME,
     {
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const contextValue = useMemo<AuthContextType>(() => {
     return {
-      user: data?.data?.user ?? null,
+      user: data?.data ?? null,
       isLoading,
       error,
       isAuthenticated: Boolean(data?.data) && !error,

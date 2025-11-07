@@ -14,3 +14,5 @@ public class ApiErrorResponse {
     public string UserFriendlyMessage { get; set; } = string.Empty;
     public Dictionary<string, object>? Extra { get; set; }
 }
+
+public class EmptyResponse {}

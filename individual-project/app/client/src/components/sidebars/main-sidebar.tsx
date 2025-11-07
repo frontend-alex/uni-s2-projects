@@ -57,7 +57,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <div
             className={`flex items-center ${workspace.name.length <= 14 ? "gap-1" : ""}`}
           >
-            <span className="max-w-[100px] truncate">{workspace.name}</span>
+          <span className="max-w-[100px] truncate">{workspace.name}</span>
             Documents
           </div>
           <Suspense fallback={<ManageWorkspaceDropdownSkeleton />}>
@@ -73,7 +73,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           title: "Documents",
           icon: FileText,
 
-          items: [], // Will be populated with documents from backend
+          items: workspace?.documents
+            ?.filter((document) => document.title) 
+            .map((document) => ({
+              title: document.title!, 
+              url: "",
+            })) ?? [], 
         },
       ],
     },

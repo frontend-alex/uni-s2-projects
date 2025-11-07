@@ -1,10 +1,13 @@
 namespace API.Controllers.User;
 
 using API.Models;
-using Core.Models;
+using Core.DTOs;
+using API.Mappers;
+using API.Contracts.User;
 using Core.Services.User;
-using Microsoft.AspNetCore.Mvc;
 using API.Controllers.Base;
+using Microsoft.AspNetCore.Mvc;
+
 
 public class UserController : BaseController {
     private readonly UserService _userService;
@@ -17,12 +20,14 @@ public class UserController : BaseController {
     public async Task<IActionResult> GetProfile() {
         int userIdResult = GetCurrentUserId();
 
-        User? user = await _userService.GetByIdUser(userIdResult);
+        UserDto userDto = await _userService.GetByIdUser(userIdResult);
 
-        return Ok(new ApiResponse<object> {
+        UserResponse user = UserMapper.ToGetUserResponse(userDto);
+
+        return Ok(new ApiResponse<UserResponse> {
             Success = true,
             Message = "User profile retrieved successfully.",
-            Data = new { user }
+            Data = user
         });
     }
 
@@ -32,7 +37,7 @@ public class UserController : BaseController {
 
         await _userService.UpdateUser(userId, updates);
 
-        return Ok(new ApiResponse<object> {
+        return Ok(new ApiResponse<EmptyResponse> {
             Success = true,
             Message = "User updated successfully.",
             Data = null

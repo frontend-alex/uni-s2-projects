@@ -11,7 +11,7 @@ namespace API.Controllers.Base;
 [Route("api/[controller]")]
 public abstract class BaseController : ControllerBase {
     protected int GetCurrentUserId() {
-        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId)) {
             throw AppException.CreateError("USER_NOT_FOUND");
@@ -21,7 +21,7 @@ public abstract class BaseController : ControllerBase {
     }
 
     protected IActionResult HandleUserIdError() {
-        return Unauthorized(new ApiResponse<object> {
+        return Unauthorized(new ApiResponse<EmptyResponse> {
             Success = false,
             Message = "Invalid or missing user ID in token.",
             Data = null

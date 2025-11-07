@@ -1,0 +1,91 @@
+namespace API.Controllers.Document;
+
+using API.Models;
+using API.Controllers.Base;
+using Microsoft.AspNetCore.Mvc;
+using Core.Services.Document;
+using API.Contracts.Document;
+using API.Mappers;
+
+public class DocumentController : BaseController {
+    private readonly DocumentService _documentService;
+
+    public DocumentController(DocumentService documentService) {
+        _documentService = documentService;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateDocument([FromBody] CreateDocumentRequest request) {
+        int userId = GetCurrentUserId();
+
+        var dto = await _documentService.CreateDocumentAsync(
+            userId,
+            request.WorkspaceId
+        );
+
+        var response = DocumentMapper.ToDocumentResponse(dto);
+
+        return Ok(new ApiResponse<DocumentResponse> {
+            Success = true,
+            Message = "Document created successfully.",
+            Data = response
+        });
+    }
+
+    [HttpGet("{documentId}")]
+    public async Task<IActionResult> GetDocument(int documentId) {
+        int userId = GetCurrentUserId();
+
+        var dto = await _documentService.GetDocumentAsync(documentId, userId);
+        var response = DocumentMapper.ToDocumentResponse(dto);
+
+        return Ok(new ApiResponse<DocumentResponse> {
+            Success = true,
+            Message = "Document retrieved successfully.",
+            Data = response
+        });
+    }
+
+    [HttpGet("workspace/{workspaceId}")]
+    public async Task<IActionResult> GetWorkspaceDocuments(int workspaceId) {
+        int userId = GetCurrentUserId();
+
+        var dtos = await _documentService.GetWorkspaceDocumentsAsync(workspaceId, userId);
+        var responses = dtos.Select(DocumentMapper.ToDocumentResponse);
+
+        return Ok(new ApiResponse<IEnumerable<DocumentResponse>> {
+            Success = true,
+            Message = "Workspace documents retrieved successfully.",
+            Data = responses
+        });
+    }
+
+    [HttpPut("{documentId}")]
+    public async Task<IActionResult> UpdateDocument(int documentId, [FromBody] UpdateDocumentRequest request) {
+        int userId = GetCurrentUserId();
+
+        var dto = await _documentService.UpdateDocumentAsync(documentId, userId, request.Title, request.Content, request.IsArchived);
+        var response = DocumentMapper.ToDocumentResponse(dto);
+
+        return Ok(new ApiResponse<DocumentResponse> {
+            Success = true,
+            Message = "Document updated successfully.",
+            Data = response
+        });
+    }
+
+    [HttpDelete("{documentId}")]
+    public async Task<IActionResult> DeleteDocument(int documentId) {
+        int userId = GetCurrentUserId();
+
+        await _documentService.DeleteDocumentAsync(documentId, userId);
+
+        return Ok(new ApiResponse<object> {
+            Success = true,
+            Message = "Document deleted successfully.",
+            Data = null
+        });
+    }
+}
+
+

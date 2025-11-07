@@ -59,8 +59,8 @@ const CreateDocCarousel = ({ documents }: { documents: Document[] }) => {
           <CarouselItem key={index} className="basis-1/3 lg:basis-1/5">
             <div className="p-1">
               <Card className="cursor-pointer hover:bg-accent transition-colors w-full aspect-square overflow-hidden pb-0">
-                <CardContent className="flex h-full items-center justify-center p-6">
-                  <span className="text-3xl font-semibold">{document.title}</span>
+                <CardContent className="flex h-full">
+                  <span className="font-semibold">{document.title}</span>
                 </CardContent>
                 <CardFooter className="p-0 mb-0 relative mt-auto">
                   <span

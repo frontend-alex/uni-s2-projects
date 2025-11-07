@@ -115,6 +115,7 @@ public class ApplicationDbContext : DbContext {
             entity.Property(e => e.Title).HasMaxLength(256);
             entity.Property(e => e.Kind).IsRequired().HasConversion<string>();
             entity.Property(e => e.YDocId).IsRequired().HasMaxLength(128);
+            entity.Property(e => e.Content).HasColumnType("nvarchar(max)");
             entity.Property(e => e.IsArchived).IsRequired().HasDefaultValue(false);
             entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("SYSUTCDATETIME()");
             entity.Property(e => e.UpdatedAt).IsRequired().HasDefaultValueSql("SYSUTCDATETIME()");

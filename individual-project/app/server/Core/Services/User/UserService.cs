@@ -3,8 +3,8 @@ namespace Core.Services.User;
 using Core.Models;
 using Core.Exceptions;
 using Infrastructure.Repositories;
-
-// User service implementation
+using Core.DTOs;
+using Core.Mappers;
 
 public class UserService {
     private readonly IUserRepository _userRepository;
@@ -13,23 +13,16 @@ public class UserService {
         _userRepository = userRepository;
     }
 
-    public async Task<User?> GetByIdUser(int id) {
+    public async Task<UserDto> GetByIdUser(int id) {
+        User user = await _userRepository.GetByIdAsync(id)
+            ?? throw AppException.CreateError("USER_NOT_FOUND");
 
-        User? user = await _userRepository.GetByIdAsync(id);
-
-        if (user == null) {
-            throw AppException.CreateError("USER_NOT_FOUND");
-        }
-
-        return user;
+        return UserMapper.ToUserDto(user);
     }
 
     public async Task UpdateUser(int id, Dictionary<string, object> updates) {
-        User? user = await _userRepository.GetByIdAsync(id);
-
-        if (user == null) {
-            throw AppException.CreateError("USER_NOT_FOUND");
-        }
+        User? user = await _userRepository.GetByIdAsync(id)
+            ?? throw AppException.CreateError("USER_NOT_FOUND");
 
         foreach (var update in updates) {
             var property = typeof(User).GetProperty(update.Key);
@@ -42,11 +35,8 @@ public class UserService {
     }
 
     public async Task DeleteUser(int id) {
-        User? user = await _userRepository.GetByIdAsync(id);
-
-        if (user == null) {
-            throw AppException.CreateError("USER_NOT_FOUND");
-        }
+        User user = await _userRepository.GetByIdAsync(id)
+            ?? throw AppException.CreateError("USER_NOT_FOUND");
 
         bool deleted = await _userRepository.DeleteAsync(id);
 

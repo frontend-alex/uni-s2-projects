@@ -10,6 +10,7 @@ const LazyBreadCrumps = lazy(() => import("@/components/BreadCrumps"));
 const LazyManageWorkspaceDropdown = lazy(() => import("@/components/dropdowns/worksapces/workspace-dropdown-crud"));
 
 const BoardLayout = ({ children }: { children: React.ReactNode }) => {
+  
   const location = useLocation();
   const isBoardRoute = location.pathname.startsWith(`${ROUTES.BASE.APP}/board`);
 

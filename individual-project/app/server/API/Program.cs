@@ -5,12 +5,14 @@ using API.Setup.Security;
 using Core.Services.User;
 using Core.Services.Auth;
 using Core.Services.Workspace;
+using Core.Services.Document;
 using Infrastructure.Services;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Workspace;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.SQL;
 using Core.Interfaces.Services;
+using Core.Interfaces.repository.workspace;
 
 Env.Load(".env");
 
@@ -22,6 +24,7 @@ builder.Services.AddControllers()
         o.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
         o.JsonSerializerOptions.WriteIndented = true;
     });
+    
 builder.Services.AddEndpointsApiExplorer();
 
 // Security (CORS + Auth)
@@ -43,11 +46,13 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IOtpRepository, OtpRepository>();
 builder.Services.AddScoped<IWorkspaceRepository, WorkspaceRepository>();
 builder.Services.AddScoped<IUserWorkspaceRepository, UserWorkspaceRepository>();
+builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 
 // Services
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<WorkspaceService>();
+builder.Services.AddScoped<DocumentService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<OtpService>();
 

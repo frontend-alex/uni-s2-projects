@@ -28,7 +28,7 @@ const Board = () => {
       </div>
       <div className="w-full">
         <Suspense fallback={<CreateDocCrouselSkeleton />}>
-          <LazyCreateDocCarousel documents={[]} />
+          <LazyCreateDocCarousel documents={workspace?.data?.documents ?? []} />
         </Suspense>
       </div>
     </div>

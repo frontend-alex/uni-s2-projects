@@ -2,15 +2,15 @@
 // while Domain Models are the internal representation. 
 // This separation ensures clean architecture and prevents domain pollution.
 
-
-namespace API.Controllers.WorkspaceController;
+namespace API.Controllers.Workspace;
 
 using API.Models;
-using API.Models.Workspace;
 using API.Controllers.Base;
 using Microsoft.AspNetCore.Mvc;
 using Core.Services.Workspace;
-using Core.DTOs.Workspace;
+using Core.DTOs;
+using API.Contracts.Workspace;
+using API.Mappers;
 
 public class WorkspaceController : BaseController {
     private readonly WorkspaceService _workspaceService;
@@ -29,10 +29,12 @@ public class WorkspaceController : BaseController {
             request.Visibility
         );
 
-        return Ok(new ApiResponse<WorkspaceDto> {
+        WorkspaceResponse response = WorkspaceMapper.ToWorkspaceResponse(workspaceDto);
+
+        return Ok(new ApiResponse<WorkspaceResponse> {
             Success = true,
             Message = "Workspace created successfully.",
-            Data = workspaceDto
+            Data = response
         });
     }
 
@@ -40,12 +42,14 @@ public class WorkspaceController : BaseController {
     public async Task<IActionResult> GetWorkspace(int workspaceId) {
         int userId = GetCurrentUserId();
 
-        WorkspaceDto workspaceDto = await _workspaceService.GetWorkspaceAsync(workspaceId, userId);
+        WorkspaceDto? workspaceDto = await _workspaceService.GetWorkspaceAsync(workspaceId, userId);
 
-        return Ok(new ApiResponse<WorkspaceDto> {
+        WorkspaceResponse response = WorkspaceMapper.ToWorkspaceResponse(workspaceDto);
+
+        return Ok(new ApiResponse<WorkspaceResponse> {
             Success = true,
             Message = "Workspace retrieved successfully.",
-            Data = workspaceDto
+            Data = response
         });
     }
 
@@ -53,12 +57,13 @@ public class WorkspaceController : BaseController {
     public async Task<IActionResult> GetUserWorkspaces() {
         int userId = GetCurrentUserId();
 
-        IEnumerable<WorkspaceDto> workspaces = await _workspaceService.GetUserWorkspacesAsync(userId);
+        IEnumerable<WorkspaceDto> workspaceDtos = await _workspaceService.GetUserWorkspacesAsync(userId);
+        IEnumerable<WorkspaceResponse> responses = workspaceDtos.Select(WorkspaceMapper.ToWorkspaceResponse);
 
-        return Ok(new ApiResponse<IEnumerable<WorkspaceDto>> {
+        return Ok(new ApiResponse<IEnumerable<WorkspaceResponse>> {
             Success = true,
             Message = "User workspaces retrieved successfully.",
-            Data = workspaces
+            Data = responses
         });
     }
 
@@ -79,7 +84,7 @@ public class WorkspaceController : BaseController {
     public async Task<IActionResult> UpdateWorkspace(int workspaceId, [FromBody] UpdateWorkspaceRequest request) {
         int userId = GetCurrentUserId();
 
-        WorkspaceDto workspace = await _workspaceService.UpdateWorkspaceAsync(
+        WorkspaceDto workspaceDto = await _workspaceService.UpdateWorkspaceAsync(
             workspaceId,
             userId,
             request.Name,
@@ -87,10 +92,12 @@ public class WorkspaceController : BaseController {
             request.Visibility
         );
 
-        return Ok(new ApiResponse<WorkspaceDto> {
+        WorkspaceResponse response = WorkspaceMapper.ToWorkspaceResponse(workspaceDto);
+
+        return Ok(new ApiResponse<WorkspaceResponse> {
             Success = true,
             Message = "Workspace updated successfully.",
-            Data = workspace
+            Data = response
         });
     }
 }

@@ -1,8 +1,9 @@
 using API.Models;
 using API.Models.Auth;
 using Core.Services.Auth;
-using Microsoft.AspNetCore.Authorization;
+using API.Contracts.Auth;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers.Auth;
 
@@ -19,10 +20,10 @@ public class AuthController : ControllerBase {
     public async Task<IActionResult> Register([FromBody] RegisterRequest request) {
         string email = await _authService.RegisterAsync(request.Username, request.FirstName, request.LastName, request.Email, request.Password);
 
-        return Ok(new ApiResponse<object> {
+        return Ok(new ApiResponse<RegisterResponse> {
             Success = true,
             Message = "User has successfully registered.",
-            Data = new { email }
+            Data =  new RegisterResponse { Email = email } 
         });
     }
 
@@ -30,7 +31,6 @@ public class AuthController : ControllerBase {
     public async Task<IActionResult> Login([FromBody] LoginRequest request) {
         string token = await _authService.LoginAsync(request.Email, request.Password);
 
-        // Set JWT token as HTTP-only cookie
         Response.Cookies.Append("access_token", token, new CookieOptions {
             HttpOnly = true,
             Secure = true,
@@ -38,7 +38,7 @@ public class AuthController : ControllerBase {
             Expires = DateTimeOffset.UtcNow.AddHours(1)
         });
 
-        return Ok(new ApiResponse<object> {
+        return Ok(new ApiResponse<EmptyResponse> {
             Success = true,
             Message = "User has successfully logged in.",
             Data = null
@@ -50,7 +50,7 @@ public class AuthController : ControllerBase {
     public IActionResult Logout() {
         Response.Cookies.Delete("access_token");
 
-        return Ok(new ApiResponse<object> {
+        return Ok(new ApiResponse<EmptyResponse> {
             Success = true,
             Message = "Logged out successfully.",
             Data = null

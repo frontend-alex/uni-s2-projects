@@ -3,9 +3,9 @@ namespace Infrastructure.Repositories.Workspace;
 using Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.SQL;
+using Core.Interfaces.repository.workspace;
 
-
-public class WorkspaceRepository : IWorkspaceRepository {
+public class WorkspaceRepository : IWorkspaceRepository{
     private readonly ApplicationDbContext _context;
 
     public WorkspaceRepository(ApplicationDbContext context) {
@@ -33,11 +33,13 @@ public class WorkspaceRepository : IWorkspaceRepository {
     }
 
     public async Task<bool> DeleteAsync(int id) {
-        var workspace = await _context.Workspaces.FindAsync(id);
+        Workspace? workspace = await _context.Workspaces.FindAsync(id);
         if (workspace == null) return false;
 
         _context.Workspaces.Remove(workspace);
+
         await _context.SaveChangesAsync();
+        
         return true;
     }
 

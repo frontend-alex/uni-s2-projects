@@ -1,4 +1,4 @@
-namespace Infrastructure.Repositories.Workspace;
+namespace Core.Interfaces.repository.workspace;
 
 using Core.Models;
 

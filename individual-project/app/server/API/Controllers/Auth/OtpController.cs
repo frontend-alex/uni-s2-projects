@@ -1,3 +1,5 @@
+using API.Contracts.Auth;
+using API.Models;
 using API.Models.Auth;
 using Core.Services.Auth;
 using Microsoft.AspNetCore.Mvc;
@@ -16,19 +18,20 @@ public class OtpController : ControllerBase {
     [HttpPost("send")]
     public async Task<IActionResult> SendOtp([FromBody] SendOtpRequest request) {
         DateTime expirationTime = await _otpService.SendOtpAsync(request.Email);
-        return Ok(new OtpResponse {
+        return Ok(new ApiResponse<OtpResponse> {
             Success = true,
             Message = "OTP sent successfully",
-            ExpiresAt = expirationTime
+            Data = new OtpResponse { ExpiresAt = expirationTime }
         });
     }
 
     [HttpPut("verify")]
     public async Task<IActionResult> VerifyOtp([FromBody] OtpVerifyRequest request) {
         await _otpService.VerifyOtpAsync(request.Email, request.Code);
-        return Ok(new OtpResponse {
+        return Ok(new ApiResponse<EmptyResponse> {
             Success = true,
-            Message = "OTP verified successfully"
+            Message = "OTP verified successfully",
+            Data = null
         });
     }
 }

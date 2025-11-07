@@ -30,6 +30,8 @@ const BreadCrumps = () => {
     workspaceId ? Number(workspaceId) : undefined
   );
 
+  console.log(workspaceResponse?.data)
+
   const workspace = workspaceResponse?.data;
 
   // Extract the current route after /v1
@@ -43,6 +45,8 @@ const BreadCrumps = () => {
   const currentRoute = getCurrentRoute();
 
   if (isLoading) return <BreadCrumpSkeleton />;
+
+  console.log(workspace?.name)
 
   return (
     <div className="flex items-center gap-3">
