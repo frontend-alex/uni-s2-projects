@@ -7,7 +7,7 @@ export const useDocument = (documentId: number | undefined) => {
     ["document", documentId],
     API.ENDPOINTS.DOCUMENTS.Id(documentId),
     {
-      staleTime: 2 * 60 * 1000, // 2 minutes
+      staleTime: 2 * 60 * 1000,
       enabled: !!documentId,
     }
   );

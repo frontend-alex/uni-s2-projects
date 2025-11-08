@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.SQL;
 using Core.Interfaces.Services;
 using Core.Interfaces.repository.workspace;
+using Core.Interfaces.repository.Document;
 
 Env.Load(".env");
 
