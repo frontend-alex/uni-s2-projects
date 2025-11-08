@@ -24,7 +24,13 @@ const ManageDocumentDropdown = ({
   variant = "secondary",
 }: {
   className?: string;
-  variant?: "default" | "secondary" | "ghost" | "link" | "destructive" | "outline";
+  variant?:
+    | "default"
+    | "secondary"
+    | "ghost"
+    | "link"
+    | "destructive"
+    | "outline";
 }) => {
   const navigate = useNavigate();
 
@@ -36,10 +42,13 @@ const ManageDocumentDropdown = ({
       "DELETE",
       API.ENDPOINTS.DOCUMENTS.Id(Number(documentId)),
       {
-        invalidateQueries: [["workspace", currentWorkspaceId], ["user-workspaces"]],
+        invalidateQueries: [
+          ["workspace", currentWorkspaceId],
+          ["user-workspaces"],
+        ],
         onSuccess: (data) => {
           toast.success(data.message);
-          navigate(ROUTES.AUTHENTICATED.BOARD(currentWorkspaceId ));
+          navigate(ROUTES.AUTHENTICATED.BOARD(currentWorkspaceId));
         },
         onError: (error) => {
           toast.error(error.response?.data.message);
@@ -57,11 +66,6 @@ const ManageDocumentDropdown = ({
       <DropdownMenuContent>
         <DropdownMenuLabel>Manage Document</DropdownMenuLabel>
         <DropdownMenuSeparator />
-
-        <DropdownMenuItem>
-          <Info />
-          <span>Information</span>
-        </DropdownMenuItem>
         <DropdownMenuItem>
           <Settings />
           <span>Settings</span>

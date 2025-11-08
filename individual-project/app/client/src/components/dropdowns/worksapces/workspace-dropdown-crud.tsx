@@ -70,10 +70,6 @@ const ManageWorkspaceDropdown = ({
         <DropdownMenuSeparator />
 
         <DropdownMenuItem>
-          <Info />
-          <span>Information</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
           <Settings />
           <span>Settings</span>
         </DropdownMenuItem>

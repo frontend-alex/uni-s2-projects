@@ -231,4 +231,4 @@ const OnboardingPage = () => {
   );
 };
 
-export default memo(OnboardingPage);
+export default OnboardingPage;

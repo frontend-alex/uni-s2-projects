@@ -2,7 +2,16 @@ import Loading from "@/components/Loading";
 import TitleWrapper from "@/components/TitleWrapper";
 
 import { Suspense } from "react";
-import { Dashboard, Board, Profile, Settings, OnboardingPage, Document } from "@/routes/(root)";
+import {
+  Dashboard,
+  Profile,
+  Settings,
+  OnboardingPage,
+  Document,
+  Workspace,
+  WorkspaceEdit,
+  DocumentEdit
+} from "@/routes/(root)";
 import { Route, Routes } from "react-router-dom";
 import {
   AuthCallback,
@@ -13,8 +22,14 @@ import {
   Otp,
   Register,
 } from "@/routes/(auth)";
-import { AppGuard, AuthGuard, OnboardingGuard, LandingGuard } from "./components/guards";
+import {
+  AppGuard,
+  AuthGuard,
+  OnboardingGuard,
+  LandingGuard,
+} from "./components/guards";
 import RootLayout from "./components/layouts/RootLayout";
+
 import { ROUTES } from "@/lib/router-paths";
 
 const App = () => {
@@ -26,7 +41,7 @@ const App = () => {
           <Route
             path={ROUTES.PUBLIC.LANDING}
             element={
-              <TitleWrapper title="Landing Page">
+              <TitleWrapper title="PeerLearn | Home">
                 <LandingPage />
               </TitleWrapper>
             }
@@ -38,7 +53,7 @@ const App = () => {
           <Route
             path={ROUTES.PUBLIC.LOGIN}
             element={
-              <TitleWrapper title="Login Page">
+              <TitleWrapper title="PeerLearn | Login">
                 <Login />
               </TitleWrapper>
             }
@@ -46,7 +61,7 @@ const App = () => {
           <Route
             path={ROUTES.PUBLIC.REGISTER}
             element={
-              <TitleWrapper title="Register Page">
+              <TitleWrapper title="PeerLearn | Register">
                 <Register />
               </TitleWrapper>
             }
@@ -54,7 +69,7 @@ const App = () => {
           <Route
             path={ROUTES.PUBLIC.VERIFY_EMAIL}
             element={
-              <TitleWrapper title="Verify Email">
+              <TitleWrapper title="PeerLearn | Verify Email">
                 <Otp />
               </TitleWrapper>
             }
@@ -62,7 +77,7 @@ const App = () => {
           <Route
             path={ROUTES.PUBLIC.FORGOT_PASSWORD}
             element={
-              <TitleWrapper title="Recover Page">
+              <TitleWrapper title="PeerLearn | Forgot Password">
                 <ForgotPassword />
               </TitleWrapper>
             }
@@ -70,7 +85,7 @@ const App = () => {
           <Route
             path={ROUTES.PUBLIC.RESET_PASSWORD}
             element={
-              <TitleWrapper title="Recover Page">
+              <TitleWrapper title="PeerLearn | Reset Password">
                 <ResetPassword />
               </TitleWrapper>
             }
@@ -90,7 +105,7 @@ const App = () => {
           <Route
             path={ROUTES.AUTHENTICATED.ONBOARDING}
             element={
-              <TitleWrapper title="Onboarding">
+              <TitleWrapper title="PeerLearn | Onboarding">
                 <OnboardingPage />
               </TitleWrapper>
             }
@@ -101,17 +116,9 @@ const App = () => {
         <Route element={<AppGuard />}>
           <Route element={<RootLayout />}>
             <Route
-              path={`${ROUTES.BASE.APP}/workspace/:workspaceId`}
-              element={
-                <TitleWrapper title="Workspace Board">
-                  <Board />
-                </TitleWrapper>
-              }
-            />
-            <Route
               path={ROUTES.AUTHENTICATED.PROFILE}
               element={
-                <TitleWrapper title="Profile Page">
+                <TitleWrapper title="PeerLearn | Profile">
                   <Profile />
                 </TitleWrapper>
               }
@@ -119,7 +126,7 @@ const App = () => {
             <Route
               path={ROUTES.AUTHENTICATED.SETTINGS}
               element={
-                <TitleWrapper title="Settings Page">
+                <TitleWrapper title="PeerLearn | Settings">
                   <Settings />
                 </TitleWrapper>
               }
@@ -127,16 +134,41 @@ const App = () => {
             <Route
               path={ROUTES.AUTHENTICATED.DASHBOARD}
               element={
-                <TitleWrapper title="Dashboard Page">
+                <TitleWrapper title="PeerLearn | Dashboard">
                   <Dashboard />
                 </TitleWrapper>
               }
             />
+
+            <Route
+              path={`${ROUTES.BASE.APP}/workspace/:workspaceId`}
+              element={
+                <TitleWrapper title="PeerLearn | Workspace">
+                  <Workspace />
+                </TitleWrapper>
+              }
+            />
              <Route
+              path={`${ROUTES.BASE.APP}/workspace/:workspaceId/edit`}
+              element={
+                <TitleWrapper title="PeerLearn | Workspace Edit">
+                  <WorkspaceEdit />
+                </TitleWrapper>
+              }
+            />
+            <Route
               path={`${ROUTES.BASE.APP}/workspace/:workspaceId/document/:documentId`}
               element={
-                <TitleWrapper title="Document">
+                <TitleWrapper title="PeerLearn | Document">
                   <Document />
+                </TitleWrapper>
+              }
+            />
+            <Route
+              path={`${ROUTES.BASE.APP}/workspace/:workspaceId/document/:documentId/edit`}
+              element={
+                <TitleWrapper title="PeerLearn | Document Edit">
+                  <DocumentEdit />
                 </TitleWrapper>
               }
             />

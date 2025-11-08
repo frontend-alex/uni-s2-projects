@@ -8,7 +8,7 @@ const LazyCreateDocCarousel = lazy(
   () => import("@/components/carousels/create-doc-carousel")
 );
 
-const Board = () => {
+const Workspace = () => {
   const { workspaceId } = useParams<{ workspaceId: string }>();
 
 
@@ -35,4 +35,4 @@ const Board = () => {
   );
 };
 
-export default Board;
+export default Workspace;
