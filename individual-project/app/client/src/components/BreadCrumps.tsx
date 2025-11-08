@@ -121,7 +121,7 @@ const BreadCrumps = () => {
             <Link to={ROUTES.AUTHENTICATED.BOARD(workspace.id)}>
               <Button
                 variant="ghost"
-                className="font-medium text-foreground"
+                className="font-medium text-foreground px-2"
               >
                 {workspace.name}
               </Button>
@@ -145,7 +145,7 @@ const BreadCrumps = () => {
               <Button
                 onDoubleClick={() => setIsEditing(true)}
                 variant="ghost"
-                className="font-medium text-foreground px-2 max-w-[130px] truncate"
+                className="font-medium text-foreground px-2"
               >
                 {currentDocument?.title}
               </Button>
