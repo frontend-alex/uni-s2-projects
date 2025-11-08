@@ -21,6 +21,7 @@ export const AUTHENTICATED_ROUTES = {
   SETTINGS: `${BASE_PATHS.APP}/settings`,
   DASHBOARD: `${BASE_PATHS.APP}/dashboard`,
   DOCUMENT: (documentId: string | number, workspaceId: string | number) => `${BASE_PATHS.APP}/workspace/${workspaceId}/document/${documentId}`,
+  WHITEBOARD: (documentId: string | number, workspaceId: string | number) => `${BASE_PATHS.APP}/workspace/${workspaceId}/whiteboard/${documentId}`,
 } as const;
 
 export const ROUTE_HELPERS = {

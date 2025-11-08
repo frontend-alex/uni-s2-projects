@@ -11,7 +11,8 @@ import { lazy, Suspense, useMemo } from "react";
 import { DropdownSkeleton as UserDropdownSkeleton } from "@/components/skeletons/dropdown-skeleton";
 import { ROUTES } from "@/lib/router-paths";
 import { SidebarGroupRenderer } from "./flexible-sidebar-link";
-import { FileText, LayoutDashboard, Folder } from "lucide-react";
+import { FileText, LayoutDashboard, Folder, Square } from "lucide-react";
+import { DocumentKind } from "@/types/workspace";
 import { useUserWorkspaces, useWorkspace } from "@/hooks/workspace/use-workspaces";
 import { useLocation, useParams } from "react-router-dom";
 import { ButtonSkeleton as ManageWorkspaceDropdownSkeleton } from "@/components/skeletons/button-skeleton";
@@ -34,7 +35,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation();
   const pathname = location.pathname;
   
-  // Show all workspaces if NOT on a workspace/board/document route
   const isWorkspaceRoute = pathname.startsWith(`${ROUTES.BASE.APP}/workspace`);
   const showAllWorkspaces = !isWorkspaceRoute;
   
@@ -89,12 +89,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const documentItems = useMemo(() => {
     if (showAllWorkspaces || !workspace?.documents) return [];
     return workspace.documents
-      .filter((document) => document.title)
+      .filter((document) => document.title && document.kind === DocumentKind.DOCUMENT)
       .map((document) => {
-        const documentUrl = ROUTES.AUTHENTICATED.DOCUMENT(
-          document.id,
-          workspace.id
-        );
+        const documentUrl = ROUTES.AUTHENTICATED.DOCUMENT(document.id, workspace.id);
         return {
           title: document.title!,
           url: documentUrl,
@@ -102,6 +99,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         };
       });
   }, [workspace, pathname, showAllWorkspaces]);
+
+  const whiteboardItems = useMemo(() => {
+    if (showAllWorkspaces || !workspace?.documents) return [];
+    return workspace.documents
+      .filter((document) => document.title && document.kind === DocumentKind.WHITEBOARD)
+      .map((document) => {
+        const whiteboardUrl = ROUTES.AUTHENTICATED.WHITEBOARD(document.id, workspace.id);
+        return {
+          title: document.title!,
+          url: whiteboardUrl,
+          isActive: pathname === whiteboardUrl,
+        };
+      });
+  }, [workspace, pathname, showAllWorkspaces]);
+
 
   const sidebarGroups = [
     generalGroup,
@@ -120,7 +132,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   className={`flex items-center ${workspace.name.length <= 14 ? "gap-1" : ""}`}
                 >
                   <span className="max-w-[100px] truncate">{workspace.name}</span>
-                  Documents
                 </div>
                 <Suspense fallback={<ManageWorkspaceDropdownSkeleton />}>
                   <LazyWorspaceCrudDropdown className="size-4" variant="ghost" />
@@ -130,13 +141,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               "Documents"
             ),
             items: [
-              {
-                title: "Documents",
-                icon: FileText,
-                items: documentItems,
-                isActive: documentItems.some((item) => item.isActive),
-                colorHex: workspace?.colorHex ?? defaultWorkspaceColor,
-              },
+              ...(documentItems.length > 0
+                ? [
+                    {
+                      title: "Documents",
+                      icon: FileText,
+                      items: documentItems,
+                      isActive: documentItems.some((item) => item.isActive),
+                      colorHex: workspace?.colorHex ?? defaultWorkspaceColor,
+                    },
+                  ]
+                : []),
+              ...(whiteboardItems.length > 0
+                ? [
+                    {
+                      title: "Whiteboards",
+                      icon: Square,
+                      items: whiteboardItems,
+                      isActive: whiteboardItems.some((item) => item.isActive),
+                      colorHex: workspace?.colorHex ?? defaultWorkspaceColor,
+                    },
+                  ]
+                : []),
             ],
           },
         ]),

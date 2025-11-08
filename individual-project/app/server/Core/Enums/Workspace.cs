@@ -19,8 +19,6 @@ public enum WorkspaceInvitationStatus {
 }
 
 public enum DocumentKind {
-    Note,
+    Document,
     Whiteboard,
-    Outline,
-    Worksheet
 }

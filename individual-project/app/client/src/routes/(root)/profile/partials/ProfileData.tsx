@@ -116,7 +116,7 @@ const ProfileData = () => {
         </p>
       </div>
 
-      <Separator />
+      <Separator className="bg-accent"/>
 
       {renderFormSection({
         title: "Username",

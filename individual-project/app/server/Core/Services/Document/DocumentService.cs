@@ -26,7 +26,7 @@ public class DocumentService {
         _userWorkspaceRepository = userWorkspaceRepository;
     }
 
-    public async Task<DocumentDto> CreateDocumentAsync(int creatorId, int workspaceId, WorkspaceVisibility visibility = WorkspaceVisibility.Public, string? colorHex = null) {
+    public async Task<DocumentDto> CreateDocumentAsync(int creatorId, int workspaceId, string title, DocumentKind kind, WorkspaceVisibility? visibility = null, string? colorHex = null) {
         User creator = await _userRepository.GetByIdAsync(creatorId)
             ?? throw AppException.CreateError("USER_NOT_FOUND");
 
@@ -35,26 +35,25 @@ public class DocumentService {
             throw AppException.CreateError("WORKSPACE_ACCESS_DENIED");
         }
 
-        // Get existing documents in workspace to generate sequential name
-        var existingDocuments = await _documentRepository.GetByWorkspaceIdAsync(workspaceId);
-        int documentNumber = existingDocuments.Count() + 1;
-        string documentTitle = $"Document {documentNumber}";
+        if (string.IsNullOrWhiteSpace(title)) {
+            throw AppException.CreateError("INVALID_DOCUMENT_TITLE");
+        }
 
         string? normalizedColor = ColorUtils.NormalizeColorHex(colorHex);
-        string assignedColor = normalizedColor ?? ColorUtils.GetRandomColorHex();
+        string? assignedColor = normalizedColor ?? ColorUtils.GetRandomColorHex();
 
         string yDocId = Guid.NewGuid().ToString();
 
         var document = new Document {
             WorkspaceId = workspaceId,
-            Title = documentTitle,
-            Kind = DocumentKind.Note, 
+            Title = title.Trim(),
+            Kind = kind, 
             YDocId = yDocId,
             Content = null, 
             ColorHex = assignedColor,
             CreatedBy = creatorId,
             IsArchived = false,
-            Visibility = visibility // Default is Public from model, but allow override
+            Visibility = visibility ?? WorkspaceVisibility.Public 
         };
 
         var created = await _documentRepository.CreateAsync(document);

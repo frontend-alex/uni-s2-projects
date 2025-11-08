@@ -15,7 +15,7 @@ const ChangeTheme = () => {
         </p>
       </div>
 
-      <Separator />
+      <Separator className="bg-accent" />
       <div className="grid grid-cols-3 gap-8 items-start">
         <div>
           <h2 className="text-lg font-medium">Appearance</h2>

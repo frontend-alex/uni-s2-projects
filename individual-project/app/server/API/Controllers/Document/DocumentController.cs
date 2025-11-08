@@ -21,6 +21,8 @@ public class DocumentController : BaseController {
         var dto = await _documentService.CreateDocumentAsync(
             userId,
             request.WorkspaceId,
+            request.Title,
+            request.Kind,
             request.Visibility,
             request.ColorHex
         );

@@ -5,7 +5,7 @@ namespace Core.Models;
 public class Document : BaseEntity {
     public int WorkspaceId { get; set; }
     public string? Title { get; set; }
-    public DocumentKind Kind { get; set; } = DocumentKind.Note;
+    public DocumentKind Kind { get; set; } = DocumentKind.Document;
     public string YDocId { get; set; } = string.Empty;
     public string? Content { get; set; }
     public string? ColorHex { get; set; }

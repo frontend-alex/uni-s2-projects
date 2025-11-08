@@ -145,9 +145,17 @@ export function SidebarGroupRenderer({
     <SidebarGroup>
       <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
       <SidebarMenu>
-        {group.items.map((item) => (
-          <CollapsibleNavItem key={item.title} item={item} />
-        ))}
+        {group.items.length > 0 ? (
+          group.items.map((item) => (
+            <CollapsibleNavItem key={item.title} item={item} />
+          ))
+        ) : (
+          <SidebarMenuItem>
+            <p className="px-3 py-2 text-sm text-muted-foreground">
+              No documents yet. Create one to get started.
+            </p>
+          </SidebarMenuItem>
+        )}
       </SidebarMenu>
     </SidebarGroup>
   );

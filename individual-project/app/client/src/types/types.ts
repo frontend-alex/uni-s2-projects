@@ -6,6 +6,7 @@ import type {
   resetPasswordSchemaType,
 } from "@/utils/schemas/auth/auth.schema";
 import type { WorkspaceSchemaType } from "@/utils/schemas/workspace/workspace.schema";
+import type { DocumentSchemaType } from "@/utils/schemas/document/document.schema";
 
 export interface LoginFormProps {
   loginForm: UseFormReturn<LoginSchemaType>;
@@ -44,5 +45,10 @@ export interface ResetPasswordFormProps {
 
 export interface WorkspaceFormProps {
   workspaceForm: UseFormReturn<WorkspaceSchemaType>;
+  isPending: boolean;
+}
+
+export interface DocumentFormProps {
+  documentForm: UseFormReturn<DocumentSchemaType>;
   isPending: boolean;
 }

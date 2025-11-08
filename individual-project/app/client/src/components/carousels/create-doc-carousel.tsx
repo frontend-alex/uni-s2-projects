@@ -1,5 +1,7 @@
 import { Clock, Plus } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { defaultDocumentColor } from "@/consts/consts";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,12 +20,16 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/lib/router-paths";
 import { toast } from "sonner";
 import { WorkspaceVisibilityIcon } from "../SmallComponents";
+import GlobalDialog from "@/components/dialogs/GlobalDialog";
+import CreateDocument from "@/components/auth/forms/documents/create-document-01";
+import { documentSchema, type DocumentSchemaType } from "@/utils/schemas/document/document.schema";
+import { DocumentKind } from "@/types/workspace";
 
 const CreateDocCarousel = ({ documents }: { documents: Document[] }) => {
   const navigate = useNavigate();
 
   const { currentWorkspaceId } = useCurrentWorkspace();
-  const { mutateAsync: createDocument } = useApiMutation<Document>(
+  const { mutateAsync: createDocument, isPending: isDocumentPending } = useApiMutation<Document>(
     "POST",
     API.ENDPOINTS.DOCUMENTS.CREATE,
     {
@@ -41,8 +47,22 @@ const CreateDocCarousel = ({ documents }: { documents: Document[] }) => {
     }
   );
 
-  const handleCreateDocument = async (workspaceId: number) =>
-    createDocument({ workspaceId });
+  const form = useForm<DocumentSchemaType>({
+    resolver: zodResolver(documentSchema),
+    defaultValues: {
+      workspaceId: currentWorkspaceId || 0,
+      title: "",
+      kind: DocumentKind.DOCUMENT,
+    },
+  });
+
+  const handleCreateDocument = async (data: DocumentSchemaType) => {
+    await createDocument({
+      workspaceId: data.workspaceId,
+      title: data.title,
+      kind: data.kind,
+    });
+  };
 
   return (
     <Carousel
@@ -53,17 +73,36 @@ const CreateDocCarousel = ({ documents }: { documents: Document[] }) => {
     >
       <CarouselContent className="gap-3">
         <CarouselItem className="basis-1/3 lg:basis-1/5">
-          <Card
-            className="cursor-pointer hover:bg-accent transition-colors aspect-square border-2 border-accent border-dashed"
-            onClick={() => handleCreateDocument(currentWorkspaceId)}
+          <GlobalDialog
+            content={
+              <CreateDocument
+                documentForm={form}
+                isPending={isDocumentPending}
+              />
+            }
+            onConfirm={async () => {
+              form.setValue("workspaceId", currentWorkspaceId || 0);
+              const isValid = await form.trigger();
+              if (isValid) {
+                await handleCreateDocument(form.getValues());
+              }
+            }}
+            title="Create New Document"
+            description="Enter the document details"
+            confirmText="Create"
+            cancelText="Cancel"
+            isLoading={isDocumentPending}
+            hideFooter={false}
           >
-            <CardContent className="flex flex-col h-full items-center justify-center  gap-2">
-              <Plus className="text-muted-foreground" />
-              <span className="text-sm font-medium text-center text-muted-foreground">
-                Create New Document
-              </span>
-            </CardContent>
-          </Card>
+            <Card className="cursor-pointer hover:bg-accent transition-colors aspect-square border-2 border-accent border-dashed">
+              <CardContent className="flex flex-col h-full items-center justify-center gap-2">
+                <Plus className="text-muted-foreground" />
+                <span className="text-sm font-medium text-center text-muted-foreground">
+                  Create New Document
+                </span>
+              </CardContent>
+            </Card>
+          </GlobalDialog>
         </CarouselItem>
 
         {documents.map((document, index) => {

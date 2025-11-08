@@ -35,6 +35,7 @@ const Workspace = lazy(() => import("@/routes/(root)/workspace/Workspace"));
 const WorkspaceEdit = lazy(() => import("@/routes/(root)/workspace/WorkspaceEdit"));
 const Document = lazy(() => import("@/routes/(root)/document/Document"));
 const DocumentEdit = lazy(() => import("@/routes/(root)/document/DocumentEdit"));
+const WhiteBoard = lazy(() => import("@/routes/(root)/whiteboard/WhiteBoard"));
 
 const App = () => {
   return (
@@ -157,6 +158,14 @@ const App = () => {
               element={
                 <TitleWrapper title="PeerLearn | Workspace Edit">
                   <WorkspaceEdit />
+                </TitleWrapper>
+              }
+            />
+            <Route
+              path={`${ROUTES.BASE.APP}/workspace/:workspaceId/whiteboard/:documentId`}
+              element={
+                <TitleWrapper title="PeerLearn | Whiteboard">
+                  <WhiteBoard />
                 </TitleWrapper>
               }
             />
