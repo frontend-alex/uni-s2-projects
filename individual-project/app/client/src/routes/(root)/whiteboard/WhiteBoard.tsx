@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useDocument } from "@/hooks/document/use-document";
 import { Skeleton } from "@/components/ui/skeleton";
+import { WhiteboardCanvas } from "./components/WhiteboardCanvas";
 
 const WhiteBoard = () => {
   const { documentId } = useParams<{ documentId: string }>();
@@ -27,11 +28,8 @@ const WhiteBoard = () => {
 
   return (
     <div className="flex flex-col gap-6 w-full h-full">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{document.title || "Untitled Whiteboard"}</h1>
-      </div>
-      <div className="flex-1 border rounded-lg bg-card p-8 flex items-center justify-center">
-        <p className="text-muted-foreground">Whiteboard content will appear here</p>
+      <div className="flex-1 overflow-hidden">
+        <WhiteboardCanvas documentId={Number(documentId)} />
       </div>
     </div>
   );

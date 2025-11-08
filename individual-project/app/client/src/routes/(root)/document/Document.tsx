@@ -1,8 +1,9 @@
-import { useEffect, useCallback, useRef, useMemo } from "react";
+import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useDocument, useUpdateDocument } from "@/hooks/document/use-document";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EditorJSEditor, type OutputData } from "@/components/editors/editorjs-editor";
+import { useAutoSave } from "@/hooks/useAutoSave";
 
 const Document = () => {
   const { documentId } = useParams<{ documentId: string }>();
@@ -14,8 +15,16 @@ const Document = () => {
   const updateDocumentMutation = useUpdateDocument(Number(documentId));
   const { mutateAsync: updateDocument } = updateDocumentMutation;
 
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const lastSaveRef = useRef<number>(Date.now());
+  const localStorageKey = `doc-${documentId}-draft`;
+
+  const { handleChange } = useAutoSave({
+    documentId: Number(documentId) || 0,
+    enabled: !!documentId,
+    onSave: async (content: string) => {
+      await updateDocument({ content });
+    },
+    localStorageKey,
+  });
 
   const initialContent = useMemo(() => {
     if (!document) return undefined;
@@ -37,73 +46,11 @@ const Document = () => {
     }
   }, [document?.id]);
 
-  useEffect(() => {
-    if (document) {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-        debounceTimeoutRef.current = null;
-      }
-    }
-  }, [document?.id]);
-
-  const localStorageKey = `doc-${documentId}-draft`;
-
-  const saveToLocalStorage = useCallback((content: string) => {
-    try {
-      localStorage.setItem(
-        localStorageKey,
-        JSON.stringify({ content, lastModified: Date.now() })
-      );
-    } catch (error) {
-      console.warn("Failed to save to localStorage:", error);
-    }
-  }, [localStorageKey]);
-
-  const clearLocalDraft = useCallback(() => {
-    try {
-      localStorage.removeItem(localStorageKey);
-    } catch (error) {
-      console.warn("Failed to clear localStorage:", error);
-    }
-  }, [localStorageKey]);
-
-  useEffect(() => {
-    return () => {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const handleContentChange = useCallback(
-    (data: OutputData) => {
-      if (!Number(documentId)) return;
-
-      const contentString = JSON.stringify(data);
-
-      saveToLocalStorage(contentString);
-
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-      }
-
-      const timeSinceLastSave = Date.now() - lastSaveRef.current;
-      const debounceDelay = timeSinceLastSave > 5000 ? 300 : 500; // 300ms if idle, 500ms if actively typing
-
-      debounceTimeoutRef.current = setTimeout(async () => {
-        try {
-          await updateDocument({
-            content: contentString,
-          });
-          clearLocalDraft();
-          lastSaveRef.current = Date.now();
-        } catch (error) {
-          console.error("Failed to update content:", error);
-        }
-      }, debounceDelay);
-    },
-    [updateDocument, documentId, saveToLocalStorage, clearLocalDraft]
-  );
+  const handleContentChange = (data: OutputData) => {
+    if (!Number(documentId)) return;
+    const contentString = JSON.stringify(data);
+    handleChange(contentString);
+  };
 
   if (isLoading) {
     return (

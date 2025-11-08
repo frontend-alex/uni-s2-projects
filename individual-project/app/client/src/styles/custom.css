@@ -5,3 +5,36 @@
 .no-ring{
   @apply focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none
 }
+
+/* Diamond node handle positioning - ensure handles are at corner points */
+/* React Flow adds react-flow__node-{type} class to node wrappers */
+.react-flow__node-diamond .react-flow__handle[data-handlepos="top"],
+.react-flow__node[data-node-type="diamond"] .react-flow__handle[data-handlepos="top"] {
+  left: 50% !important;
+  top: 0 !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.react-flow__node-diamond .react-flow__handle[data-handlepos="right"],
+.react-flow__node[data-node-type="diamond"] .react-flow__handle[data-handlepos="right"] {
+  right: 0 !important;
+  top: 50% !important;
+  left: auto !important;
+  transform: translate(50%, -50%) !important;
+}
+
+.react-flow__node-diamond .react-flow__handle[data-handlepos="bottom"],
+.react-flow__node[data-node-type="diamond"] .react-flow__handle[data-handlepos="bottom"] {
+  left: 50% !important;
+  bottom: 0 !important;
+  top: auto !important;
+  transform: translate(-50%, 50%) !important;
+}
+
+.react-flow__node-diamond .react-flow__handle[data-handlepos="left"],
+.react-flow__node[data-node-type="diamond"] .react-flow__handle[data-handlepos="left"] {
+  left: 0 !important;
+  top: 50% !important;
+  right: auto !important;
+  transform: translate(-50%, -50%) !important;
+}
