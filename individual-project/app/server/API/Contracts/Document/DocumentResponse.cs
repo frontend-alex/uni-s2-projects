@@ -14,6 +14,7 @@ public class DocumentResponse {
     public int CreatedBy { get; set; }
     public string CreatorName { get; set; } = string.Empty;
     public bool IsArchived { get; set; }
+    public WorkspaceVisibility Visibility { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }

@@ -1,5 +1,6 @@
 using Core.DTOs;
 using Core.Models;
+using Core.Enums;
 
 namespace Core.Mappers;
 
@@ -8,6 +9,12 @@ public static class DocumentMapper {
         string creatorName = document.Creator != null
             ? $"{document.Creator.FirstName} {document.Creator.LastName}"
             : string.Empty;
+
+        WorkspaceVisibility visibility = document.Visibility switch {
+            WorkspaceVisibility.Private => WorkspaceVisibility.Private,
+            WorkspaceVisibility.Public => WorkspaceVisibility.Public,
+            _ => WorkspaceVisibility.Public // Default to Public
+        };
 
         return new DocumentDto {
             Id = document.Id,
@@ -21,7 +28,8 @@ public static class DocumentMapper {
             ColorHex = document.ColorHex,
             CreatedBy = document.CreatedBy,
             CreatorName = creatorName,
-            IsArchived = document.IsArchived
+            IsArchived = document.IsArchived,
+            Visibility = visibility
         };
     }
 }

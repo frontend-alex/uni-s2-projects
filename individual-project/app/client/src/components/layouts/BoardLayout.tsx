@@ -2,9 +2,9 @@ import { lazy, Suspense } from "react";
 import { ROUTES } from "@/lib/router-paths";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { BreadCrumpSkeleton } from "../BreadCrumps";
+import { BreadCrumpSkeleton } from "../skeletons/breadcrumps-skeleton";
 import { Bell, Pin, Search, UserRoundPlus } from "lucide-react";
-import { ManageWorkspaceDropdownSkeleton } from "../dropdowns/worksapces/workspace-dropdown-crud";
+import { ButtonSkeleton as ManageWorkspaceDropdownSkeleton } from "../skeletons/button-skeleton";
 
 const LazyBreadCrumps = lazy(() => import("@/components/BreadCrumps"));
 

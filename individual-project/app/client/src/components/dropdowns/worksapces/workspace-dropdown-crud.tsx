@@ -8,28 +8,15 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useApiMutation } from "@/hooks/hook";
 import { useCurrentWorkspace } from "@/hooks/workspace/use-current-workspace";
 import { API } from "@/lib/config";
 import { ROUTES } from "@/lib/router-paths";
 import { cn } from "@/lib/utils";
 import type { Workspace } from "@/types/workspace";
-import { EllipsisVerticalIcon, Info, Settings, Trash } from "lucide-react";
+import { EllipsisVerticalIcon, Settings, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-
-export const ManageWorkspaceDropdownSkeleton = () => {
-  return (
-    <Button
-      variant="ghost"
-      size="sm"
-      className="w-full flex-start font-normal hover:text-destructive -ml-[2px] group cursor-pointer"
-    >
-      <Skeleton className="size-9" />
-    </Button>
-  );
-};
 
 const ManageWorkspaceDropdown = ({
   className,

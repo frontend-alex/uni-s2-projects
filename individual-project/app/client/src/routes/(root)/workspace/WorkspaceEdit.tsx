@@ -1,9 +1,7 @@
-import React from 'react'
-
-const BoardEdit = () => {
+const WorkspaceEdit = () => {
   return (
-    <div>BoardEdit</div>
+    <div>WorkspaceEdit</div>
   )
 }
 
-export default BoardEdit
+export default WorkspaceEdit

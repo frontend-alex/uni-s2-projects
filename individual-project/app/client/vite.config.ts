@@ -17,7 +17,12 @@ export default defineConfig({
       threshold: 1024,
       deleteOriginFile: false,
     }),
-    visualizer({ open: true }),
+    visualizer({
+      open: false, // Don't auto-open during dev
+      filename: "dist/stats.html",
+      gzipSize: true,
+      brotliSize: true,
+    }),
     viteImagemin({
       webp: {
         quality: 80,
@@ -31,6 +36,44 @@ export default defineConfig({
   },
   build: {
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Vendor chunks - separate large libraries
+          "react-vendor": ["react", "react-dom", "react-router-dom"],
+          "query-vendor": ["@tanstack/react-query"],
+          "form-vendor": ["react-hook-form", "@hookform/resolvers", "zod"],
+          "ui-vendor": [
+            "@radix-ui/react-dialog",
+            "@radix-ui/react-dropdown-menu",
+            "@radix-ui/react-avatar",
+            "@radix-ui/react-label",
+            "@radix-ui/react-separator",
+            "@radix-ui/react-slot",
+            "@radix-ui/react-tooltip",
+            "@radix-ui/react-accordion",
+            "@radix-ui/react-collapsible",
+            "@radix-ui/react-toggle",
+            "@radix-ui/react-toggle-group",
+          ],
+          "icons-vendor": ["lucide-react"],
+          "editor-vendor": [
+            "@editorjs/editorjs",
+            "@editorjs/header",
+            "@editorjs/list",
+            "@editorjs/paragraph",
+            "@editorjs/quote",
+            "@editorjs/code",
+            "@editorjs/link",
+            "@editorjs/marker",
+            "@editorjs/underline",
+          ],
+          "animation-vendor": ["motion", "embla-carousel-react"],
+          "http-vendor": ["axios"],
+          "toast-vendor": ["sonner"],
+        },
+      },
+    },
   },
   optimizeDeps: {
     include: [

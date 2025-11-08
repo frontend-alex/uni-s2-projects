@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EllipsisVerticalIcon, Info, Settings, Trash } from "lucide-react";
+import { EllipsisVerticalIcon, Settings, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DeleteDialog from "@/components/dialogs/DeleteDialog";
 import { cn } from "@/lib/utils";

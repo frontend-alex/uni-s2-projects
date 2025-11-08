@@ -21,6 +21,7 @@ public class DocumentController : BaseController {
         var dto = await _documentService.CreateDocumentAsync(
             userId,
             request.WorkspaceId,
+            request.Visibility,
             request.ColorHex
         );
 
@@ -65,7 +66,7 @@ public class DocumentController : BaseController {
     public async Task<IActionResult> UpdateDocument(int documentId, [FromBody] UpdateDocumentRequest request) {
         int userId = GetCurrentUserId();
 
-        var dto = await _documentService.UpdateDocumentAsync(documentId, userId, request.Title, request.Content, request.IsArchived, request.ColorHex);
+        var dto = await _documentService.UpdateDocumentAsync(documentId, userId, request.Title, request.Content, request.IsArchived, request.ColorHex, request.Visibility);
         var response = DocumentMapper.ToDocumentResponse(dto);
 
         return Ok(new ApiResponse<DocumentResponse> {

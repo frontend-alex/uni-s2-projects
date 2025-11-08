@@ -8,13 +8,13 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { lazy, Suspense, useMemo } from "react";
-import { UserDropdownSkeleton } from "@/components/dropdowns/user-dropdown";
+import { DropdownSkeleton as UserDropdownSkeleton } from "@/components/skeletons/dropdown-skeleton";
 import { ROUTES } from "@/lib/router-paths";
 import { SidebarGroupRenderer } from "./flexible-sidebar-link";
 import { FileText, LayoutDashboard, Folder } from "lucide-react";
 import { useUserWorkspaces, useWorkspace } from "@/hooks/workspace/use-workspaces";
 import { useLocation, useParams } from "react-router-dom";
-import { ManageWorkspaceDropdownSkeleton } from "@/components/dropdowns/worksapces/workspace-dropdown-crud";
+import { ButtonSkeleton as ManageWorkspaceDropdownSkeleton } from "@/components/skeletons/button-skeleton";
 import { defaultWorkspaceColor } from "@/consts/consts";
 
 const LazyUserDropdown = lazy(

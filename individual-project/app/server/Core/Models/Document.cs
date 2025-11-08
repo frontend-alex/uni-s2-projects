@@ -11,6 +11,7 @@ public class Document : BaseEntity {
     public string? ColorHex { get; set; }
     public int CreatedBy { get; set; }
     public bool IsArchived { get; set; } = false;
+    public WorkspaceVisibility Visibility { get; set; } = WorkspaceVisibility.Public; // Default to Public
     
     // Navigation properties
     public Workspace? Workspace { get; set; }

@@ -16,6 +16,7 @@ public class DocumentMapper {
             CreatedBy = documentDto.CreatedBy,
             CreatorName = documentDto.CreatorName,
             IsArchived = documentDto.IsArchived,
+            Visibility = documentDto.Visibility,
             CreatedAt = documentDto.CreatedAt,
             UpdatedAt = documentDto.UpdatedAt
         };

@@ -1,6 +1,5 @@
 import WorkspaceForm from "@/components/auth/forms/workspace/workspace-form-01";
 
-import { memo, useCallback, useMemo, useState } from "react";
 import { API } from "@/lib/config";
 import { useForm } from "react-hook-form";
 import { ROUTES } from "@/lib/router-paths";
@@ -9,6 +8,7 @@ import { useApiMutation } from "@/hooks/hook";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useCallback, useMemo, useState } from "react";
 import { ChevronRight, LoaderCircle } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { questionnaireSteps, randomColors } from "@/consts/consts";

@@ -1,7 +1,7 @@
 import AppLogo from "./AppLogo";
 import { lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
-import { UserDropdownSkeleton } from "./dropdowns/user-dropdown";
+import { DropdownSkeleton as UserDropdownSkeleton } from "./skeletons/dropdown-skeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "./ui/button";
 import { User } from "lucide-react";

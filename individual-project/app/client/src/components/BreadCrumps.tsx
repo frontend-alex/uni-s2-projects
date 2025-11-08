@@ -3,26 +3,13 @@ import { useWorkspace } from "@/hooks/workspace/use-workspaces";
 import { useUpdateDocument } from "@/hooks/document/use-document";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { getCurrentRoute, ROUTES } from "@/lib/router-paths";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Input } from "./ui/input";
-
-export const BreadCrumpSkeleton = () => {
-  return (
-    <div className="flex items-center gap-2">
-      <Skeleton className="h-8 w-16" />
-      <Skeleton className="h-4 w-4 rounded" />
-      <Skeleton className="h-4 w-4 rounded" />
-      <Skeleton className="h-4 w-16" />
-      <span className="text-muted-foreground">/</span>
-      <Skeleton className="h-4 w-24" />
-      <span className="text-muted-foreground">/</span>
-      <Skeleton className="h-4 w-12" />
-    </div>
-  );
-};
+import { BreadCrumpSkeleton } from "./skeletons/breadcrumps-skeleton";
+import { WorkspaceVisibilityIcon } from "./SmallComponents";
+import { WorkspaceVisibility } from "@/types/workspace";
 
 const BreadCrumps = () => {
   const navigate = useNavigate();
@@ -78,6 +65,23 @@ const BreadCrumps = () => {
     } else if (e.key === "Escape") {
       setTitleInput(currentDocument?.title || "");
       setIsEditing(false);
+    }
+  };
+
+  const handleVisibilityToggle = async () => {
+    if (!documentId || !currentDocument) return;
+
+    const newVisibility =
+      currentDocument.visibility === WorkspaceVisibility.PUBLIC
+        ? WorkspaceVisibility.PRIVATE
+        : WorkspaceVisibility.PUBLIC;
+
+    try {
+      await updateDocument({
+        visibility: newVisibility,
+      });
+    } catch (error) {
+      console.error("Failed to update visibility:", error);
     }
   };
 
@@ -150,6 +154,11 @@ const BreadCrumps = () => {
                 {currentDocument?.title}
               </Button>
             )}
+            <WorkspaceVisibilityIcon
+              className="size-5 ml-1 cursor-pointer"
+              visibility={currentDocument?.visibility}
+              onClick={handleVisibilityToggle}
+            />
           </>
         )}
       </nav>

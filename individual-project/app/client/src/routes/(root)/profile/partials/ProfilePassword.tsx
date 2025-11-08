@@ -2,10 +2,8 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { useApiMutation } from "@/hooks/hook";
 import { Input } from "@/components/ui/input";
-import type { User } from "@/types/user";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AccountProviders } from "@/types/user";
 import {
   Form,
   FormControl,
@@ -22,7 +20,7 @@ import { lazy, Suspense } from "react";
 
 const PasswordStrengthChecks = lazy(() => import("@/components/PasswordChecker"))
 
-const ProfilePassword = ({ user }: { user: User }) => {
+const ProfilePassword = () => {
 
   const updatePasswordsForm = useForm({
     resolver: zodResolver(updatePasswordSchema),

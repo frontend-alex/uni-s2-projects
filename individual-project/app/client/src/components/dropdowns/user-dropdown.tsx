@@ -12,7 +12,6 @@ import { ROUTES } from "@/lib/router-paths";
 import { getUserInitials } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useCurrentWorkspace } from "@/hooks/workspace/use-current-workspace";
 import {
@@ -24,23 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-
-export const UserDropdownSkeleton = () => {
-  return (
-    <Button
-      variant="ghost"
-      disabled
-      className="no-ring h-12 w-full justify-start gap-3 px-3"
-    >
-      <Skeleton className="h-8 w-8 rounded-lg" />
-      <div className="flex flex-col gap-1 flex-1 text-left">
-        <Skeleton className="h-4 w-28" />
-        <Skeleton className="h-3 w-36" />
-      </div>
-    </Button>
-  );
-};
+import { DropdownSkeleton as UserDropdownSkeleton } from "../skeletons/dropdown-skeleton";
 
 const UserDropdown = ({
   align = "end",

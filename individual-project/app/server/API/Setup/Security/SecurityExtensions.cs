@@ -12,11 +12,15 @@ public static class SecurityExtensions {
             options.AddPolicy("AllowFrontend", policy => {
                 policy
                     .WithOrigins(
-                        "http://localhost:5173",
+                        "http://localhost:5173",      // Vite dev server
                         "http://127.0.0.1:5173",
                         "https://localhost:5173",
                         "https://127.0.0.1:5173",
-                        "http://localhost:3000",
+                        "http://localhost:4174",       // Vite preview server (HTTP)
+                        "http://127.0.0.1:4174",
+                        "https://localhost:4174",      // Vite preview server (HTTPS)
+                        "https://127.0.0.1:4174",
+                        "http://localhost:3000",       // Alternative dev port
                         "https://localhost:3000"
                     )
                     .AllowAnyHeader()

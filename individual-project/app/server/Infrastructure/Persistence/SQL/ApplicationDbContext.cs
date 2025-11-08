@@ -1,4 +1,5 @@
 using Core.Models;
+using Core.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.SQL;
@@ -6,7 +7,7 @@ namespace Infrastructure.Persistence.SQL;
 public class ApplicationDbContext : DbContext {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {
     }
-
+  
     public DbSet<User> Users { get; set; }
     public DbSet<Otp> Otps { get; set; }
     public DbSet<Workspace> Workspaces { get; set; }
@@ -119,6 +120,7 @@ public class ApplicationDbContext : DbContext {
             entity.Property(e => e.ColorHex).HasMaxLength(16);
             entity.Property(e => e.Content).HasColumnType("nvarchar(max)");
             entity.Property(e => e.IsArchived).IsRequired().HasDefaultValue(false);
+            entity.Property(e => e.Visibility).IsRequired().HasConversion<string>();
             entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("SYSUTCDATETIME()");
             entity.Property(e => e.UpdatedAt).IsRequired().HasDefaultValueSql("SYSUTCDATETIME()");
 

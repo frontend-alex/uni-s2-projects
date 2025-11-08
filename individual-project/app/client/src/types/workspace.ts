@@ -70,6 +70,7 @@ export interface Document {
   isArchived: boolean;
   createdAt: string;
   updatedAt: string;
+  visibility: WorkspaceVisibility;
 }
 
 export enum DocumentKind {

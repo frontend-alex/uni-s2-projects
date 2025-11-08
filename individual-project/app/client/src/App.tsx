@@ -1,36 +1,40 @@
 import Loading from "@/components/Loading";
 import TitleWrapper from "@/components/TitleWrapper";
+import RootLayout from "./components/layouts/RootLayout";
 
-import { Suspense } from "react";
-import {
-  Dashboard,
-  Profile,
-  Settings,
-  OnboardingPage,
-  Document,
-  Workspace,
-  WorkspaceEdit,
-  DocumentEdit
-} from "@/routes/(root)";
+
+import { Suspense, lazy } from "react";
+import { ROUTES } from "@/lib/router-paths";
 import { Route, Routes } from "react-router-dom";
-import {
-  AuthCallback,
-  ResetPassword,
-  ForgotPassword,
-  LandingPage,
-  Login,
-  Otp,
-  Register,
-} from "@/routes/(auth)";
 import {
   AppGuard,
   AuthGuard,
   OnboardingGuard,
   LandingGuard,
 } from "./components/guards";
-import RootLayout from "./components/layouts/RootLayout";
 
-import { ROUTES } from "@/lib/router-paths";
+
+
+// Import LandingPage directly (not lazy) - it's the first page users see, should load instantly
+import LandingPage from "@/routes/(auth)/LandingPage";
+
+// Auth routes
+const Login = lazy(() => import("@/routes/(auth)/auth/Login"));
+const Register = lazy(() => import("@/routes/(auth)/auth/Register"));
+const Otp = lazy(() => import("@/routes/(auth)/auth/Otp"));
+const ForgotPassword = lazy(() => import("@/routes/(auth)/auth/ForgotPassword"));
+const ResetPassword = lazy(() => import("@/routes/(auth)/auth/ResetPassword"));
+const AuthCallback = lazy(() => import("@/routes/(auth)/AuthCallback"));
+
+// App routes
+const Dashboard = lazy(() => import("@/routes/(root)/Dashboard"));
+const Profile = lazy(() => import("@/routes/(root)/profile/Profile"));
+const Settings = lazy(() => import("@/routes/(root)/settings/Setting"));
+const OnboardingPage = lazy(() => import("@/routes/(root)/Onboarding"));
+const Workspace = lazy(() => import("@/routes/(root)/workspace/Workspace"));
+const WorkspaceEdit = lazy(() => import("@/routes/(root)/workspace/WorkspaceEdit"));
+const Document = lazy(() => import("@/routes/(root)/document/Document"));
+const DocumentEdit = lazy(() => import("@/routes/(root)/document/DocumentEdit"));
 
 const App = () => {
   return (

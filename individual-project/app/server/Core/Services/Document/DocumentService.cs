@@ -26,7 +26,7 @@ public class DocumentService {
         _userWorkspaceRepository = userWorkspaceRepository;
     }
 
-    public async Task<DocumentDto> CreateDocumentAsync(int creatorId, int workspaceId, string? colorHex = null) {
+    public async Task<DocumentDto> CreateDocumentAsync(int creatorId, int workspaceId, WorkspaceVisibility visibility = WorkspaceVisibility.Public, string? colorHex = null) {
         User creator = await _userRepository.GetByIdAsync(creatorId)
             ?? throw AppException.CreateError("USER_NOT_FOUND");
 
@@ -53,7 +53,8 @@ public class DocumentService {
             Content = null, 
             ColorHex = assignedColor,
             CreatedBy = creatorId,
-            IsArchived = false
+            IsArchived = false,
+            Visibility = visibility // Default is Public from model, but allow override
         };
 
         var created = await _documentRepository.CreateAsync(document);
@@ -98,7 +99,7 @@ public class DocumentService {
         return await _documentRepository.DeleteAsync(documentId);
     }
 
-    public async Task<DocumentDto> UpdateDocumentAsync(int documentId, int userId, string? title, string? content, bool? isArchived, string? colorHex) {
+    public async Task<DocumentDto> UpdateDocumentAsync(int documentId, int userId, string? title, string? content, bool? isArchived, string? colorHex, WorkspaceVisibility? visibility = null) {
         var doc = await _documentRepository.GetByIdAsync(documentId)
             ?? throw AppException.CreateError("DOCUMENT_NOT_FOUND");
 
@@ -127,6 +128,10 @@ public class DocumentService {
                    ?? throw AppException.CreateError("INVALID_COLOR_HEX");
                 doc.ColorHex = normalized;
             }
+        }
+
+        if (visibility.HasValue) {
+            doc.Visibility = visibility.Value;
         }
 
         await _documentRepository.UpdateAsync(doc);

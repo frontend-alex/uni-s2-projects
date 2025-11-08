@@ -12,7 +12,6 @@ import GlobalDialog from "@/components/dialogs/GlobalDialog";
 import { useUserWorkspaces } from "@/hooks/workspace/use-workspaces";
 import { WorkspaceVisibilityIcon } from "@/components/SmallComponents";
 import { type Workspace, WorkspaceVisibility } from "@/types/workspace";
-import { UserDropdownSkeleton } from "@/components/dropdowns/user-dropdown";
 import { useCurrentWorkspace } from "@/hooks/workspace/use-current-workspace";
 import WorkspaceForm from "@/components/auth/forms/workspace/workspace-form-01";
 import type { WorkspaceSchemaType } from "@/utils/schemas/workspace/workspace.schema";
@@ -23,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DropdownSkeleton } from "@/components/skeletons/dropdown-skeleton";
 
 const WorkspaceDropdown = () => {
 
@@ -54,7 +54,7 @@ const WorkspaceDropdown = () => {
   const handleWorkspace = async (data: WorkspaceSchemaType) =>
     createWorkspace(data);
 
-  if (isWorkspacesLoading) return <UserDropdownSkeleton />;
+  if (isWorkspacesLoading) return <DropdownSkeleton />;
 
   if (error) return null;
 

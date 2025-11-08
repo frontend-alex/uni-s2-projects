@@ -2,7 +2,6 @@ import { Clock, Plus } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 import { defaultDocumentColor } from "@/consts/consts";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import ColoredCard from "@/components/cards/colored-card";
 
@@ -18,19 +17,7 @@ import { useCurrentWorkspace } from "@/hooks/workspace/use-current-workspace";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/lib/router-paths";
 import { toast } from "sonner";
-
-export const CreateDocCrouselSkeleton = () => {
-  return (
-    <div className="w-full flex gap-2">
-      {Array.from({ length: 5 }).map((_, index) => (
-        <Skeleton
-          key={index}
-          className="w-full h-full rounded-md aspect-square"
-        />
-      ))}
-    </div>
-  );
-};
+import { WorkspaceVisibilityIcon } from "../SmallComponents";
 
 const CreateDocCarousel = ({ documents }: { documents: Document[] }) => {
   const navigate = useNavigate();
@@ -92,11 +79,17 @@ const CreateDocCarousel = ({ documents }: { documents: Document[] }) => {
                   document.id,
                   currentWorkspaceId
                 )}
+                headerIcon={
+                  <WorkspaceVisibilityIcon className="size-5" visibility={document.visibility} />
+                }
               >
                 <span className="font-semibold flex items-center gap-2 text-xs text-muted-foreground">
-                  <Clock className="h-4 w-4" /> 
-                  Last edited {" "}
-                  {formatDistanceToNow(new Date(document.updatedAt || document.createdAt), { addSuffix: true })}
+                  <Clock className="h-4 w-4" />
+                  Last edited{" "}
+                  {formatDistanceToNow(
+                    new Date(document.updatedAt || document.createdAt),
+                    { addSuffix: true }
+                  )}
                 </span>
               </ColoredCard>
             </CarouselItem>

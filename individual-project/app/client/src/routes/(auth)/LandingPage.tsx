@@ -1,9 +1,15 @@
 import Navbar from "@/components/Navbar";
 import { GridDotBackground } from "@/components/ui/backgrounds/grid-dot-background";
 import { Button } from "@/components/ui/button";
-import { PointerHighlight } from "@/components/ui/pointer-highlight";
+import { lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { ROUTES } from "@/lib/router-paths";
+
+const LazyPointerHighlight = lazy(() => 
+  import("@/components/ui/pointer-highlight").then(module => ({ 
+    default: module.PointerHighlight 
+  }))
+);
 
 const LandingPage = () => {
   return (
@@ -13,10 +19,12 @@ const LandingPage = () => {
 
       <div className="h-[calc(100vh-100px)] w-full flex flex-col gap-5 items-center justify-center">
         <div className="mx-auto text-3xl font-bold tracking-tight md:text-6xl lg:text-7xl text-center">
-          Unlock Knowledge, Together With
-          <PointerHighlight containerClassName="mx-auto">
-            <span>PeerLearn</span>
-          </PointerHighlight>
+          Unlock Knowledge, Together With{" "}
+          <Suspense fallback={<span>PeerLearn</span>}>
+            <LazyPointerHighlight containerClassName="mx-auto">
+              <span>PeerLearn</span>
+            </LazyPointerHighlight>
+          </Suspense>
         </div>
         <p className="font-medium text-stone-400 max-w-2xl mx-auto text-center text-base">
           Join a vibrant community of learners and educators. Share your
