@@ -3,15 +3,17 @@ import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { API } from "@/lib/config";
+import { ROUTES } from "@/lib/router-paths";
 import { useApiMutation } from "@/hooks/hook";
 import { Button } from "@/components/ui/button";
+import { defaultWorkspaceColor } from "@/consts/consts";
 import GlobalDialog from "@/components/dialogs/GlobalDialog";
 import { useUserWorkspaces } from "@/hooks/workspace/use-workspaces";
 import { type Workspace, WorkspaceVisibility } from "@/types/workspace";
 import WorkspaceForm from "@/components/auth/forms/workspace/workspace-form-01";
 import type { WorkspaceSchemaType } from "@/utils/schemas/workspace/workspace.schema";
-import DashboardWorkspaceCard from "@/components/cards/dashboard/dashboard-worksapce-card";
-import { DashboardWorkspaceCardSkeleton } from "@/components/cards/dashboard/dashboard-worksapce-card";
+import ColoredCard, { ColoredCardSkeleton } from "@/components/cards/colored-card";
+import { WorkspaceVisibilityIcon } from "@/components/SmallComponents";
 import {
   Accordion,
   AccordionContent,
@@ -82,7 +84,7 @@ const Dashboard = () => {
               <div className="grid grid-cols-3 lg:grid-cols-5 gap-4 w-full">
                 {isLoading ? (
                   Array.from({ length: 3 }).map((_, index) => (
-                    <DashboardWorkspaceCardSkeleton key={index} />
+                    <ColoredCardSkeleton key={index} />
                   ))
                 ) : workspaces.length === 0 ? (
                   <span className="text-center text-sm col-span-full text-muted-foreground">
@@ -90,9 +92,19 @@ const Dashboard = () => {
                   </span>
                 ) : (
                   workspaces.map((workspace) => (
-                    <DashboardWorkspaceCard
+                    <ColoredCard
                       key={workspace.id}
-                      workspace={workspace}
+                      title={workspace.name}
+                      color={workspace.colorHex ?? defaultWorkspaceColor}
+                      to={ROUTES.AUTHENTICATED.BOARD(workspace.id)}
+                      titleClassName="truncate max-w-[100px]"
+                      className="hover:bg-muted"
+                      headerIcon={
+                        <WorkspaceVisibilityIcon
+                          visibility={workspace.visibility}
+                          className="h-5 w-5"
+                        />
+                      }
                     />
                   ))
                 )}

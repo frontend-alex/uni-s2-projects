@@ -1,8 +1,10 @@
-import { Plus } from "lucide-react";
+import { Clock, Plus } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 
 import { defaultDocumentColor } from "@/consts/consts";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import ColoredCard from "@/components/cards/colored-card";
 
 import {
   Carousel,
@@ -13,7 +15,7 @@ import type { Document } from "@/types/workspace";
 import { useApiMutation } from "@/hooks/hook";
 import { API } from "@/lib/config";
 import { useCurrentWorkspace } from "@/hooks/workspace/use-current-workspace";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/lib/router-paths";
 import { toast } from "sonner";
 
@@ -38,7 +40,10 @@ const CreateDocCarousel = ({ documents }: { documents: Document[] }) => {
     "POST",
     API.ENDPOINTS.DOCUMENTS.CREATE,
     {
-      invalidateQueries: [["workspace-documents", currentWorkspaceId], ["workspace", currentWorkspaceId]],
+      invalidateQueries: [
+        ["workspace-documents", currentWorkspaceId],
+        ["workspace", currentWorkspaceId],
+      ],
       onSuccess: (data) => {
         if (data.data)
           navigate(
@@ -79,28 +84,21 @@ const CreateDocCarousel = ({ documents }: { documents: Document[] }) => {
 
           return (
             <CarouselItem key={index} className="basis-1/3 lg:basis-1/5">
-              <Link
+              <ColoredCard
+                title={document.title ?? "Untitled"}
+                color={color}
+                titleClassName="truncate max-w-[100px]"
                 to={ROUTES.AUTHENTICATED.DOCUMENT(
                   document.id,
                   currentWorkspaceId
                 )}
               >
-                <Card className="cursor-pointer hover:bg-accent transition-colors aspect-square overflow-hidden pb-0">
-                  <CardContent className="flex h-full">
-                    <span className="font-semibold">{document.title}</span>
-                  </CardContent>
-                  <CardFooter className="p-0 mb-0 relative mt-auto">
-                    <span
-                      style={{ "--dynamic-bg": color } as React.CSSProperties}
-                      className="absolute left-1/2 -translate-x-1/2 bg-[var(--dynamic-bg)] w-[60px] rounded-full h-[40px] rounded-b-md"
-                    ></span>
-                    <span
-                      style={{ "--dynamic-bg": color } as React.CSSProperties}
-                      className="bg-[var(--dynamic-bg)] w-full h-[10px] rounded-b-md"
-                    ></span>
-                  </CardFooter>
-                </Card>
-              </Link>
+                <span className="font-semibold flex items-center gap-2 text-xs text-muted-foreground">
+                  <Clock className="h-4 w-4" /> 
+                  Last edited {" "}
+                  {formatDistanceToNow(new Date(document.updatedAt || document.createdAt), { addSuffix: true })}
+                </span>
+              </ColoredCard>
             </CarouselItem>
           );
         })}

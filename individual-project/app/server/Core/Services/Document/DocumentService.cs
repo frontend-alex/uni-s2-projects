@@ -5,6 +5,7 @@ using System.Linq;
 using Core.DTOs;
 using Core.Enums;
 using Core.Exceptions;
+using Core.Interfaces.repository.Document;
 using Core.Mappers;
 using Core.Models;
 using Core.Utils;
@@ -122,10 +123,8 @@ public class DocumentService {
             if (string.IsNullOrWhiteSpace(colorHex)) {
                 doc.ColorHex = null;
             } else {
-                string? normalized = ColorUtils.NormalizeColorHex(colorHex);
-                if (normalized is null) {
-                    throw AppException.CreateError("INVALID_COLOR_HEX");
-                }
+                string? normalized = ColorUtils.NormalizeColorHex(colorHex)
+                   ?? throw AppException.CreateError("INVALID_COLOR_HEX");
                 doc.ColorHex = normalized;
             }
         }

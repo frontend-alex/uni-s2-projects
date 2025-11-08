@@ -1,4 +1,4 @@
-namespace Infrastructure.Repositories;
+namespace Core.Interfaces.repository.Document;
 
 using Core.Models;
 

@@ -1,6 +1,7 @@
 using Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.SQL;
+using Core.Interfaces.repository.Document;
 
 namespace Infrastructure.Repositories;
 
