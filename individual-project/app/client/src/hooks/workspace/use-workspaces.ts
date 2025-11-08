@@ -1,6 +1,7 @@
-import { useApiQuery } from "@/hooks/hook";
+import { useApiMutation, useApiQuery } from "@/hooks/hook";
 import { API } from "@/lib/config";
 import type { Workspace } from "@/types/workspace";
+import { toast } from "sonner";
 
 export const useUserWorkspaces = () => {
   return useApiQuery<Workspace[]>(
@@ -23,3 +24,18 @@ export const useWorkspace = (workspaceId: number | undefined) => {
   );
 };
 
+export const useUpdateWorkspace = (workspaceId: number) => {
+  return useApiMutation<Workspace>(
+    "PUT",
+    API.ENDPOINTS.WORKSPACE.Id(workspaceId),
+    {
+      invalidateQueries: [["workspace", workspaceId], ["user-workspaces"]],
+      onSuccess: (data) => {
+        toast.success(data.message);
+      },
+      onError: (error) => {
+        toast.error(error.response?.data.message);
+      },
+    }
+  );  
+};

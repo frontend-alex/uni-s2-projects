@@ -36,7 +36,7 @@ const ManageDocumentDropdown = ({
       "DELETE",
       API.ENDPOINTS.DOCUMENTS.Id(Number(documentId)),
       {
-        invalidateQueries: [["workspace", currentWorkspaceId]],
+        invalidateQueries: [["workspace", currentWorkspaceId], ["user-workspaces"]],
         onSuccess: (data) => {
           toast.success(data.message);
           navigate(ROUTES.AUTHENTICATED.BOARD(currentWorkspaceId ));

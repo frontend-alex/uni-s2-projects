@@ -1,0 +1,206 @@
+/* Editor.js Base Styles */
+#editorjs {
+  @apply text-foreground;
+}
+
+.ce-block__content {
+  @apply max-w-full;
+}
+
+/* Content Blocks */
+.ce-paragraph {
+  @apply text-base leading-relaxed my-2 text-foreground;
+}
+
+/* Headers */
+.ce-header {
+  @apply font-bold leading-tight my-4 text-foreground;
+}
+
+h1.ce-header {
+  @apply text-4xl;
+}
+
+h2.ce-header {
+  @apply text-3xl;
+}
+
+h3.ce-header {
+  @apply text-2xl;
+}
+
+h4.ce-header {
+  @apply text-xl;
+}
+
+h5.ce-header {
+  @apply text-lg;
+}
+
+h6.ce-header {
+  @apply text-base;
+}
+
+/* Lists */
+.cdx-list {
+  @apply my-2;
+}
+
+.cdx-list__item {
+  @apply leading-relaxed my-1 text-foreground;
+}
+
+/* Quotes */
+.cdx-quote {
+  @apply border-l-4 border-primary pl-4 italic my-4;
+}
+
+.cdx-quote__text {
+  @apply text-lg text-foreground;
+}
+
+.cdx-quote__caption {
+  @apply text-sm text-muted-foreground mt-2;
+}
+
+/* Code Block */
+.ce-code__textarea {
+  @apply bg-muted text-foreground font-mono text-sm p-4 rounded-md min-h-[100px] w-full border border-border;
+}
+
+/* Link Tool */
+.link-tool {
+  @apply border border-border rounded-md p-4 my-2 bg-card;
+}
+
+.link-tool__content {
+  @apply flex flex-col gap-2;
+}
+
+.link-tool__title {
+  @apply font-semibold text-foreground;
+}
+
+.link-tool__description {
+  @apply text-sm text-muted-foreground;
+}
+
+.link-tool__anchor {
+  @apply text-xs text-primary underline;
+}
+
+/* Inline Tools */
+mark.cdx-marker {
+  @apply bg-yellow-200 dark:bg-yellow-700/50;
+}
+
+u {
+  @apply underline;
+}
+
+/* Editor Toolbar (Plus and Settings Buttons) */
+.ce-toolbar__actions {
+  @apply right-0;
+}
+
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn {
+  @apply text-foreground hover:bg-accent transition-colors;
+}
+
+.ce-toolbar__plus:hover,
+.ce-toolbar__settings-btn:hover {
+  @apply bg-accent;
+}
+
+/* Toolbar Content */
+.ce-toolbar__content {
+  @apply max-w-full;
+}
+
+/* Block Settings */
+.ce-settings {
+  @apply bg-card border border-border shadow-lg;
+}
+
+.ce-settings__button {
+  @apply text-foreground hover:bg-accent transition-colors;
+}
+
+.ce-settings__button:hover {
+  @apply bg-accent;
+}
+
+/* Conversion Toolbar */
+.ce-conversion-toolbar {
+  @apply bg-card border border-border shadow-lg;
+}
+
+.ce-conversion-tool {
+  @apply text-foreground hover:bg-accent transition-colors;
+}
+
+.ce-conversion-tool:hover {
+  @apply bg-accent;
+}
+
+.ce-conversion-tool__icon {
+  @apply bg-accent text-foreground;
+}
+
+/* Inline Toolbar */
+.ce-inline-toolbar {
+  @apply bg-card border border-border shadow-lg;
+}
+
+.ce-inline-tool {
+  @apply text-foreground hover:bg-accent transition-colors;
+}
+
+.ce-inline-tool:hover {
+  @apply bg-accent;
+}
+
+.ce-inline-tool-input {
+  @apply bg-background text-foreground border border-border;
+}
+
+/* Popover (for tooltips, etc) */
+.ce-popover {
+  @apply bg-card border border-border shadow-lg;
+}
+
+.ce-popover__item {
+  @apply text-foreground hover:bg-accent transition-colors;
+}
+
+.ce-popover__item:hover {
+  @apply bg-accent;
+}
+
+.ce-popover__item-icon {
+  @apply text-foreground;
+}
+
+/* Block Tunes (Settings Menu) */
+.ce-tune-move-up,
+.ce-tune-move-down,
+.ce-tune-delete {
+  @apply text-foreground hover:bg-accent transition-colors;
+}
+
+/* Placeholder */
+.ce-block .ce-block__content [contenteditable=true][data-placeholder]:empty::before {
+  @apply text-muted-foreground;
+}
+
+/* Selected Block */
+.ce-block--selected .ce-block__content {
+  @apply bg-accent/10;
+}
+
+/* Focused Block */
+.ce-block--focused .ce-block__content {
+  @apply bg-transparent;
+}
+

@@ -64,6 +64,7 @@ export interface Document {
   title?: string;
   kind: DocumentKind;
   yDocId: string;
+  content?: string;
   colorHex?: string;
   createdBy: number;
   isArchived: boolean;

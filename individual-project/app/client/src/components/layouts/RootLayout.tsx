@@ -10,7 +10,7 @@ const RootLayout = () => {
         <AppSidebar />
         <div className="bg-background w-full overflow-hidden">
           <BoardLayout>
-            <div className="p-5 mt-5  h-full overflow-auto max-w-4xl mx-auto">
+            <div className="p-5 mt-5  h-full overflow-auto max-w-5xl mx-auto">
               <Outlet />
             </div>
           </BoardLayout>

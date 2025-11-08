@@ -59,54 +59,49 @@ const CreateDocCarousel = ({ documents }: { documents: Document[] }) => {
       }}
       className="w-full"
     >
-      <CarouselContent>
+      <CarouselContent className="gap-3">
         <CarouselItem className="basis-1/3 lg:basis-1/5">
-          <div className="p-1">
-            <Card
-              className="cursor-pointer hover:bg-accent transition-colors aspect-square border-2 border-accent border-dashed h-[150px] w-[150px]"
-              onClick={() => handleCreateDocument(currentWorkspaceId)}
-            >
-              <CardContent className="flex flex-col h-full items-center justify-center  gap-2">
-                <Plus className="text-muted-foreground" />
-                <span className="text-sm font-medium text-center text-muted-foreground">
-                  Create New Document
-                </span>
-              </CardContent>
-            </Card>
-          </div>
+          <Card
+            className="cursor-pointer hover:bg-accent transition-colors aspect-square border-2 border-accent border-dashed"
+            onClick={() => handleCreateDocument(currentWorkspaceId)}
+          >
+            <CardContent className="flex flex-col h-full items-center justify-center  gap-2">
+              <Plus className="text-muted-foreground" />
+              <span className="text-sm font-medium text-center text-muted-foreground">
+                Create New Document
+              </span>
+            </CardContent>
+          </Card>
         </CarouselItem>
 
         {documents.map((document, index) => {
           const color = document.colorHex ?? defaultDocumentColor;
 
           return (
-            <Link
-              to={ROUTES.AUTHENTICATED.DOCUMENT(
-                document.id,
-                currentWorkspaceId
-              )}
-              key={index}
-            >
-              <CarouselItem className="basis-1/3 lg:basis-1/5">
-                <div className="p-1">
-                  <Card className="cursor-pointer hover:bg-accent transition-colors aspect-square overflow-hidden pb-0 h-[150px] w-[150px]">
-                    <CardContent className="flex h-full">
-                      <span className="font-semibold">{document.title}</span>
-                    </CardContent>
-                    <CardFooter className="p-0 mb-0 relative mt-auto">
-                      <span
-                        style={{ "--dynamic-bg": color } as React.CSSProperties}
-                        className="absolute left-1/2 -translate-x-1/2 bg-[var(--dynamic-bg)] w-[60px] rounded-full h-[40px] rounded-b-md"
-                      ></span>
-                      <span
-                        style={{ "--dynamic-bg": color } as React.CSSProperties}
-                        className="bg-[var(--dynamic-bg)] w-full h-[10px] rounded-b-md"
-                      ></span>
-                    </CardFooter>
-                  </Card>
-                </div>
-              </CarouselItem>
-            </Link>
+            <CarouselItem key={index} className="basis-1/3 lg:basis-1/5">
+              <Link
+                to={ROUTES.AUTHENTICATED.DOCUMENT(
+                  document.id,
+                  currentWorkspaceId
+                )}
+              >
+                <Card className="cursor-pointer hover:bg-accent transition-colors aspect-square overflow-hidden pb-0">
+                  <CardContent className="flex h-full">
+                    <span className="font-semibold">{document.title}</span>
+                  </CardContent>
+                  <CardFooter className="p-0 mb-0 relative mt-auto">
+                    <span
+                      style={{ "--dynamic-bg": color } as React.CSSProperties}
+                      className="absolute left-1/2 -translate-x-1/2 bg-[var(--dynamic-bg)] w-[60px] rounded-full h-[40px] rounded-b-md"
+                    ></span>
+                    <span
+                      style={{ "--dynamic-bg": color } as React.CSSProperties}
+                      className="bg-[var(--dynamic-bg)] w-full h-[10px] rounded-b-md"
+                    ></span>
+                  </CardFooter>
+                </Card>
+              </Link>
+            </CarouselItem>
           );
         })}
       </CarouselContent>
