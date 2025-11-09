@@ -77,7 +77,11 @@ export function WhiteboardContextMenu({
   }, []);
 
   const handleAddNode = useCallback(
-    (type: string) => {
+    (type: string, e?: React.MouseEvent) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       if (onAddNode && rightClickPositionRef.current) {
         const position = screenToFlowPosition({
           x: rightClickPositionRef.current.x,
@@ -86,6 +90,10 @@ export function WhiteboardContextMenu({
         onAddNode(type, position);
         rightClickPositionRef.current = null;
       }
+      // Close context menu by clicking outside
+      setTimeout(() => {
+        document.body.click();
+      }, 0);
     },
     [onAddNode, screenToFlowPosition]
   );
@@ -94,24 +102,40 @@ export function WhiteboardContextMenu({
     if (onDelete) {
       onDelete(selectedNodes, selectedEdges);
     }
+    // Close context menu
+    setTimeout(() => {
+      document.body.click();
+    }, 0);
   }, [onDelete, selectedNodes, selectedEdges]);
 
   const handleDuplicate = useCallback(() => {
     if (onDuplicate && selectedNodes.length > 0) {
       onDuplicate(selectedNodes);
     }
+    // Close context menu
+    setTimeout(() => {
+      document.body.click();
+    }, 0);
   }, [onDuplicate, selectedNodes]);
 
   const handleLock = useCallback(() => {
     if (onLock && selectedNodes.length > 0) {
       onLock(selectedNodes);
     }
+    // Close context menu
+    setTimeout(() => {
+      document.body.click();
+    }, 0);
   }, [onLock, selectedNodes]);
 
   const handleUnlock = useCallback(() => {
     if (onUnlock && selectedNodes.length > 0) {
       onUnlock(selectedNodes);
     }
+    // Close context menu
+    setTimeout(() => {
+      document.body.click();
+    }, 0);
   }, [onUnlock, selectedNodes]);
 
   return (
@@ -130,28 +154,19 @@ export function WhiteboardContextMenu({
           </ContextMenuSubTrigger>
           <ContextMenuSubContent>
             <ContextMenuItem
-              onClick={(e) => {
-                e.preventDefault();
-                handleAddNode('rectangle');
-              }}
+              onClick={(e) => handleAddNode('rectangle', e)}
             >
               <Square className="w-4 h-4" />
               Rectangle
             </ContextMenuItem>
             <ContextMenuItem
-              onClick={(e) => {
-                e.preventDefault();
-                handleAddNode('circle');
-              }}
+              onClick={(e) => handleAddNode('circle', e)}
             >
               <Circle className="w-4 h-4" />
               Circle
             </ContextMenuItem>
             <ContextMenuItem
-              onClick={(e) => {
-                e.preventDefault();
-                handleAddNode('diamond');
-              }}
+              onClick={(e) => handleAddNode('diamond', e)}
             >
               <Diamond className="w-4 h-4" />
               Diamond
@@ -160,30 +175,21 @@ export function WhiteboardContextMenu({
         </ContextMenuSub>
 
         <ContextMenuItem
-          onClick={(e) => {
-            e.preventDefault();
-            handleAddNode('text');
-          }}
+          onClick={(e) => handleAddNode('text', e)}
         >
           <Type className="w-4 h-4" />
           Text
         </ContextMenuItem>
 
         <ContextMenuItem
-          onClick={(e) => {
-            e.preventDefault();
-            handleAddNode('image');
-          }}
+          onClick={(e) => handleAddNode('image', e)}
         >
           <Image className="w-4 h-4" />
           Image
         </ContextMenuItem>
 
         <ContextMenuItem
-          onClick={(e) => {
-            e.preventDefault();
-            handleAddNode('default');
-          }}
+          onClick={(e) => handleAddNode('default', e)}
         >
           <Layers className="w-4 h-4" />
           Default Node
@@ -224,26 +230,29 @@ export function WhiteboardContextMenu({
         <ContextMenuLabel>Edge Type</ContextMenuLabel>
         <ContextMenuRadioGroup
           value={edgeType}
-          onValueChange={onEdgeTypeChange}
+          onValueChange={(value) => {
+            if (onEdgeTypeChange) {
+              onEdgeTypeChange(value);
+            }
+            // Close context menu
+            setTimeout(() => {
+              document.body.click();
+            }, 0);
+          }}
         >
           <ContextMenuRadioItem value="default">
-            <Link className="w-4 h-4" />
             Default
           </ContextMenuRadioItem>
           <ContextMenuRadioItem value="straight">
-            <Link className="w-4 h-4" />
             Straight
           </ContextMenuRadioItem>
           <ContextMenuRadioItem value="step">
-            <Link className="w-4 h-4" />
             Step
           </ContextMenuRadioItem>
           <ContextMenuRadioItem value="smoothstep">
-            <Link className="w-4 h-4" />
             Smooth Step
           </ContextMenuRadioItem>
           <ContextMenuRadioItem value="bezier">
-            <Link className="w-4 h-4" />
             Bezier
           </ContextMenuRadioItem>
         </ContextMenuRadioGroup>
@@ -253,7 +262,15 @@ export function WhiteboardContextMenu({
         <ContextMenuCheckboxItem
           className='gap-3 flex items-center justify-start px-2'
           checked={isRectangleMode}
-          onCheckedChange={onRectangleModeToggle}
+          onCheckedChange={(checked) => {
+            if (onRectangleModeToggle) {
+              onRectangleModeToggle(checked);
+            }
+            // Close context menu
+            setTimeout(() => {
+              document.body.click();
+            }, 0);
+          }}
         >
           <Square className="w-4 h-4" />
           Rectangle Mode
@@ -263,13 +280,29 @@ export function WhiteboardContextMenu({
         <ContextMenuLabel>View</ContextMenuLabel>
         <ContextMenuCheckboxItem
           checked={showGrid}
-          onCheckedChange={onGridToggle}
+          onCheckedChange={(checked) => {
+            if (onGridToggle) {
+              onGridToggle(checked);
+            }
+            // Close context menu
+            setTimeout(() => {
+              document.body.click();
+            }, 0);
+          }}
         >
           Show Grid
         </ContextMenuCheckboxItem>
         <ContextMenuCheckboxItem
           checked={showMinimap}
-          onCheckedChange={onMinimapToggle}
+          onCheckedChange={(checked) => {
+            if (onMinimapToggle) {
+              onMinimapToggle(checked);
+            }
+            // Close context menu
+            setTimeout(() => {
+              document.body.click();
+            }, 0);
+          }}
         >
           Show Minimap
         </ContextMenuCheckboxItem>

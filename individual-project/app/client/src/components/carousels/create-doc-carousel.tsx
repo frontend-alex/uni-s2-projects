@@ -22,17 +22,18 @@ import { toast } from "sonner";
 import { WorkspaceVisibilityIcon } from "../SmallComponents";
 import GlobalDialog from "@/components/dialogs/GlobalDialog";
 import CreateDocument from "@/components/auth/forms/documents/create-document-01";
-import { documentSchema, type DocumentSchemaType } from "@/utils/schemas/document/document.schema";
+import {
+  documentSchema,
+  type DocumentSchemaType,
+} from "@/utils/schemas/document/document.schema";
 import { DocumentKind } from "@/types/workspace";
 
 const CreateDocCarousel = ({ documents }: { documents: Document[] }) => {
   const navigate = useNavigate();
 
   const { currentWorkspaceId } = useCurrentWorkspace();
-  const { mutateAsync: createDocument, isPending: isDocumentPending } = useApiMutation<Document>(
-    "POST",
-    API.ENDPOINTS.DOCUMENTS.CREATE,
-    {
+  const { mutateAsync: createDocument, isPending: isDocumentPending } =
+    useApiMutation<Document>("POST", API.ENDPOINTS.DOCUMENTS.CREATE, {
       invalidateQueries: [
         ["workspace-documents", currentWorkspaceId],
         ["workspace", currentWorkspaceId],
@@ -44,8 +45,7 @@ const CreateDocCarousel = ({ documents }: { documents: Document[] }) => {
           );
         toast.success(data.message);
       },
-    }
-  );
+    });
 
   const form = useForm<DocumentSchemaType>({
     resolver: zodResolver(documentSchema),
@@ -114,12 +114,22 @@ const CreateDocCarousel = ({ documents }: { documents: Document[] }) => {
                 title={document.title ?? "Untitled"}
                 color={color}
                 titleClassName="truncate max-w-[100px]"
-                to={ROUTES.AUTHENTICATED.DOCUMENT(
-                  document.id,
-                  currentWorkspaceId
-                )}
+                to={
+                  document.kind === DocumentKind.DOCUMENT
+                    ? ROUTES.AUTHENTICATED.DOCUMENT(
+                        document.id,
+                        currentWorkspaceId
+                      )
+                    : ROUTES.AUTHENTICATED.WHITEBOARD(
+                        document.id,
+                        currentWorkspaceId
+                      )
+                }
                 headerIcon={
-                  <WorkspaceVisibilityIcon className="size-5" visibility={document.visibility} />
+                  <WorkspaceVisibilityIcon
+                    className="size-5"
+                    visibility={document.visibility}
+                  />
                 }
               >
                 <span className="font-semibold flex items-center gap-2 text-xs text-muted-foreground">

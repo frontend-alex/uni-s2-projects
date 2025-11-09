@@ -24,10 +24,18 @@ import { WhiteboardContextMenu } from './context-menu/WhiteboardContextMenu';
 import { WhiteboardControls } from './controls/WhiteboardControls';
 import { RectangleTool } from './tools/RectangleTool';
 import { AnimatedEdge } from './edges/AnimatedEdge';
-import { NodePropertiesPanel } from './NodePropertiesPanel';
+import { NodeFloatingToolbar } from './NodeFloatingToolbar';
 import { useWhiteboardStorage } from '../hooks/useWhiteboardStorage';
 import { useDocument } from '@/hooks/document/use-document';
 import { useReactFlow } from '@xyflow/react';
+import {
+  WHITEBOARD_CONFIG,
+  isUndoShortcut,
+  isRedoShortcut,
+  isCopyShortcut,
+  isPasteShortcut,
+  isDeleteShortcut,
+} from '../config/whiteboard-config';
 
 import {
   RectangleNode,
@@ -91,6 +99,31 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
   
   const { getNodes, updateNodeData } = useReactFlow();
   
+  // History management - using ref to avoid stale closures
+  const historyRef = useRef<{ nodes: Node[]; edges: Edge[] }[]>([]);
+  const historyIndexRef = useRef(-1);
+  const [, setHistoryUpdate] = useState(0); // Trigger re-render when history changes
+  const isDraggingRef = useRef(false);
+  const dragEndTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const saveToHistory = useCallback((nodes: Node[], edges: Edge[]) => {
+    const newHistory = historyRef.current.slice(0, historyIndexRef.current + 1);
+    newHistory.push({ 
+      nodes: JSON.parse(JSON.stringify(nodes)), 
+      edges: JSON.parse(JSON.stringify(edges)) 
+    });
+    
+    // Limit history size to prevent memory issues
+    while (newHistory.length > WHITEBOARD_CONFIG.history.maxHistorySize) {
+      newHistory.shift();
+      historyIndexRef.current -= 1;
+    }
+    
+    historyIndexRef.current = newHistory.length - 1;
+    historyRef.current = newHistory;
+    setHistoryUpdate((prev) => prev + 1); // Trigger re-render
+  }, []);
+  
   // Callback to trigger save when node data changes
   const handleNodeDataChange = useCallback(() => {
     if (documentId && isInitialized) {
@@ -106,9 +139,29 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
     setNodes((nds) => {
       const updatedNodes = nds.map((node) => {
         if (node.id === nodeId) {
+          const updatedData = { ...node.data, ...data };
+          // For rectangles, update width/height
+          if (node.type === 'rectangle') {
+            return {
+              ...node,
+              data: updatedData,
+              width: data.width || (updatedData as RectangleNodeData).width || node.width || 150,
+              height: data.height || (updatedData as RectangleNodeData).height || node.height || 100,
+            };
+          }
+          // For circles and diamonds, update size and sync width/height
+          if (node.type === 'circle' || node.type === 'diamond') {
+            const size = data.size || (updatedData as CircleNodeData | DiamondNodeData).size || node.width || 100;
+            return {
+              ...node,
+              data: updatedData,
+              width: size,
+              height: size,
+            };
+          }
           return {
             ...node,
-            data: { ...node.data, ...data },
+            data: updatedData,
             width: data.width || node.width,
             height: data.height || node.height,
           };
@@ -117,6 +170,8 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
       });
       // Also update via React Flow's API
       updateNodeData(nodeId, data);
+      // Save to history when node data changes (color, label, etc.)
+      saveToHistory(updatedNodes, edges);
       // Trigger save
       if (documentId && isInitialized) {
         setTimeout(() => {
@@ -125,26 +180,10 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
       }
       return updatedNodes;
     });
-  }, [updateNodeData, setNodes, documentId, isInitialized, save, edges]);
+  }, [updateNodeData, setNodes, documentId, isInitialized, save, edges, saveToHistory]);
 
   // Load document from backend
   const { data: documentResponse } = useDocument(documentId);
-
-  // History management - using ref to avoid stale closures
-  const historyRef = useRef<{ nodes: Node[]; edges: Edge[] }[]>([]);
-  const historyIndexRef = useRef(-1);
-  const [, setHistoryUpdate] = useState(0); // Trigger re-render when history changes
-
-  const saveToHistory = useCallback((nodes: Node[], edges: Edge[]) => {
-    const newHistory = historyRef.current.slice(0, historyIndexRef.current + 1);
-    newHistory.push({ 
-      nodes: JSON.parse(JSON.stringify(nodes)), 
-      edges: JSON.parse(JSON.stringify(edges)) 
-    });
-    historyRef.current = newHistory;
-    historyIndexRef.current = newHistory.length - 1;
-    setHistoryUpdate((prev) => prev + 1); // Trigger re-render
-  }, []);
 
   const undo = useCallback(() => {
     if (historyIndexRef.current > 0) {
@@ -154,6 +193,7 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
         setNodes([...prevState.nodes]);
         setEdges([...prevState.edges]);
         setHistoryUpdate((prev) => prev + 1);
+        // Don't save undo/redo to history - they're navigation, not actions
       }
     }
   }, []);
@@ -166,6 +206,7 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
         setNodes([...nextState.nodes]);
         setEdges([...nextState.edges]);
         setHistoryUpdate((prev) => prev + 1);
+        // Don't save undo/redo to history - they're navigation, not actions
       }
     }
   }, []);
@@ -193,9 +234,31 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
           });
         }
         
-        // Save to history for significant changes (non-select, non-dimensions, non-position)
+        // Track dragging state from position changes
+        const positionChanges = changes.filter((c) => c.type === 'position');
+        if (positionChanges.length > 0) {
+          const positionStart = positionChanges.some((c) => c.dragging === true);
+          const positionEnd = positionChanges.some((c) => c.dragging === false);
+          
+          if (positionStart) {
+            isDraggingRef.current = true;
+          }
+          if (positionEnd) {
+            isDraggingRef.current = false;
+            // Save to history when drag ends
+            if (dragEndTimeoutRef.current) {
+              clearTimeout(dragEndTimeoutRef.current);
+            }
+            dragEndTimeoutRef.current = setTimeout(() => {
+              saveToHistory(newNodes, edges);
+            }, 100);
+          }
+        }
+        
+        // Save to history for significant changes (add, remove, dimensions)
+        // Don't save during drag - wait for drag end
         const significantChanges = changes.filter(
-          (c) => c.type !== 'select' && c.type !== 'dimensions' && c.type !== 'position'
+          (c) => c.type === 'add' || c.type === 'remove' || (c.type === 'dimensions' && !isDraggingRef.current)
         );
         if (significantChanges.length > 0) {
           setTimeout(() => {
@@ -372,7 +435,15 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
             id,
             type: 'rectangle',
             position,
-            data: { label: 'Rectangle', color: '#ffffff' } as RectangleNodeData,
+            data: {
+              label: WHITEBOARD_CONFIG.node.defaults.rectangle.label,
+              name: WHITEBOARD_CONFIG.node.defaults.rectangle.name,
+              color: WHITEBOARD_CONFIG.node.defaults.rectangle.color,
+              width: WHITEBOARD_CONFIG.node.defaults.rectangle.width,
+              height: WHITEBOARD_CONFIG.node.defaults.rectangle.height,
+            } as RectangleNodeData,
+            width: WHITEBOARD_CONFIG.node.defaults.rectangle.width,
+            height: WHITEBOARD_CONFIG.node.defaults.rectangle.height,
           };
           break;
         case 'circle':
@@ -380,7 +451,14 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
             id,
             type: 'circle',
             position,
-            data: { label: 'Circle', color: '#ffffff' } as CircleNodeData,
+            data: {
+              label: WHITEBOARD_CONFIG.node.defaults.circle.label,
+              name: WHITEBOARD_CONFIG.node.defaults.circle.name,
+              color: WHITEBOARD_CONFIG.node.defaults.circle.color,
+              size: WHITEBOARD_CONFIG.node.defaults.circle.size,
+            } as CircleNodeData,
+            width: WHITEBOARD_CONFIG.node.defaults.circle.size,
+            height: WHITEBOARD_CONFIG.node.defaults.circle.size,
           };
           break;
         case 'text':
@@ -404,7 +482,14 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
             id,
             type: 'diamond',
             position,
-            data: { label: 'Diamond', color: '#ffffff' } as DiamondNodeData,
+            data: {
+              label: WHITEBOARD_CONFIG.node.defaults.diamond.label,
+              name: WHITEBOARD_CONFIG.node.defaults.diamond.name,
+              color: WHITEBOARD_CONFIG.node.defaults.diamond.color,
+              size: WHITEBOARD_CONFIG.node.defaults.diamond.size,
+            } as DiamondNodeData,
+            width: WHITEBOARD_CONFIG.node.defaults.diamond.size,
+            height: WHITEBOARD_CONFIG.node.defaults.diamond.size,
           };
           break;
         default:
@@ -470,23 +555,39 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
         return;
       }
       
+      // Undo (Ctrl+Z or Cmd+Z)
+      if (isUndoShortcut(e)) {
+        e.preventDefault();
+        undo();
+        return;
+      }
+      
+      // Redo (Ctrl+Y or Cmd+Y, or Ctrl+Shift+Z or Cmd+Shift+Z)
+      if (isRedoShortcut(e)) {
+        e.preventDefault();
+        redo();
+        return;
+      }
+      
       // Delete selected nodes
-      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedNodes.length > 0) {
+      if (isDeleteShortcut(e) && selectedNodes.length > 0) {
         e.preventDefault();
         onDelete(selectedNodes, selectedEdges);
+        return;
       }
       
       // Copy (Ctrl+C or Cmd+C)
-      if ((e.ctrlKey || e.metaKey) && e.key === 'c' && selectedNodes.length > 0) {
+      if (isCopyShortcut(e) && selectedNodes.length > 0) {
         e.preventDefault();
         copiedNodesRef.current = selectedNodes.map(node => ({
           ...node,
           selected: false,
         }));
+        return;
       }
       
       // Paste (Ctrl+V or Cmd+V)
-      if ((e.ctrlKey || e.metaKey) && e.key === 'v' && copiedNodesRef.current.length > 0) {
+      if (isPasteShortcut(e) && copiedNodesRef.current.length > 0) {
         e.preventDefault();
         const offset = 50;
         const newNodes = copiedNodesRef.current.map((node, index) => ({
@@ -514,7 +615,7 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedNodes, selectedEdges, onDelete, setNodes, edges, saveToHistory, documentId, isInitialized, save]);
+  }, [selectedNodes, selectedEdges, onDelete, setNodes, edges, saveToHistory, documentId, isInitialized, save, undo, redo]);
 
   const onDuplicate = useCallback(
     (nodesToDuplicate: Node[]) => {
@@ -638,11 +739,14 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
         type: 'rectangle',
         position: node.position,
         data: {
-          label: 'Rectangle',
+          label: '',
+          name: '',
           color: '#ffffff',
           width: node.width,
           height: node.height,
         } as RectangleNodeData,
+        width: node.width,
+        height: node.height,
       };
 
       setNodes((nds) => {
@@ -671,10 +775,41 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
         try {
           const parsed = JSON.parse(documentResponse.data.content);
           if (parsed.nodes && parsed.edges) {
-            setNodes(parsed.nodes || []);
+            // Ensure nodes have width/height from data
+            const nodesWithDimensions = (parsed.nodes || []).map((node: Node) => {
+              const nodeData = { ...(node.data || {}) } as RectangleNodeData | CircleNodeData | DiamondNodeData;
+              // Ensure label/name exist (default to empty string)
+              if (nodeData.label === undefined && nodeData.name === undefined) {
+                nodeData.label = '';
+                nodeData.name = '';
+              } else if (nodeData.label === undefined) {
+                nodeData.label = nodeData.name ?? '';
+              } else if (nodeData.name === undefined) {
+                nodeData.name = nodeData.label ?? '';
+              }
+              
+              if (node.type === 'rectangle') {
+                return {
+                  ...node,
+                  data: nodeData,
+                  width: (nodeData as RectangleNodeData).width || node.width || 150,
+                  height: (nodeData as RectangleNodeData).height || node.height || 100,
+                };
+              } else if (node.type === 'circle' || node.type === 'diamond') {
+                const size = (nodeData as CircleNodeData | DiamondNodeData).size || node.width || 100;
+                return {
+                  ...node,
+                  data: nodeData,
+                  width: size,
+                  height: size,
+                };
+              }
+              return { ...node, data: nodeData };
+            });
+            setNodes(nodesWithDimensions);
             setEdges(parsed.edges || []);
             setIsInitialized(true);
-            saveToHistory(parsed.nodes || [], parsed.edges || []);
+            saveToHistory(nodesWithDimensions, parsed.edges || []);
             return;
           }
         } catch (error) {
@@ -685,10 +820,41 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
       // Fallback to localStorage
       const localData = loadFromLocalStorage();
       if (localData && localData.nodes && localData.edges) {
-        setNodes(localData.nodes);
+        // Ensure nodes have width/height from data
+        const nodesWithDimensions = localData.nodes.map((node: Node) => {
+          const nodeData = { ...(node.data || {}) } as RectangleNodeData | CircleNodeData | DiamondNodeData;
+          // Ensure label/name exist (default to empty string)
+          if (nodeData.label === undefined && nodeData.name === undefined) {
+            nodeData.label = '';
+            nodeData.name = '';
+          } else if (nodeData.label === undefined) {
+            nodeData.label = nodeData.name ?? '';
+          } else if (nodeData.name === undefined) {
+            nodeData.name = nodeData.label ?? '';
+          }
+          
+          if (node.type === 'rectangle') {
+            return {
+              ...node,
+              data: nodeData,
+              width: (nodeData as RectangleNodeData).width || node.width || 150,
+              height: (nodeData as RectangleNodeData).height || node.height || 100,
+            };
+          } else if (node.type === 'circle' || node.type === 'diamond') {
+            const size = (nodeData as CircleNodeData | DiamondNodeData).size || node.width || 100;
+            return {
+              ...node,
+              data: nodeData,
+              width: size,
+              height: size,
+            };
+          }
+          return { ...node, data: nodeData };
+        });
+        setNodes(nodesWithDimensions);
         setEdges(localData.edges);
         setIsInitialized(true);
-        saveToHistory(localData.nodes, localData.edges);
+        saveToHistory(nodesWithDimensions, localData.edges);
       } else {
         // No data found, start fresh
         setIsInitialized(true);
@@ -742,6 +908,17 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
             nodesDraggable={!isRectangleMode}
             nodesConnectable={!isRectangleMode}
             elementsSelectable={!isRectangleMode}
+            onNodeDragStart={() => {
+              isDraggingRef.current = true;
+            }}
+            onNodeDragStop={() => {
+              isDraggingRef.current = false;
+              // Save to history when drag stops
+              setTimeout(() => {
+                const currentNodes = getNodes();
+                saveToHistory(currentNodes, edges);
+              }, 100);
+            }}
           >
             <WhiteboardControls
               showMiniMap={showMinimap}
@@ -751,7 +928,7 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
             />
             {isRectangleMode && <RectangleTool onComplete={handleRectangleComplete} />}
             {selectedNodes.length > 0 && (
-              <NodePropertiesPanel
+              <NodeFloatingToolbar
                 selectedNodes={selectedNodes}
                 onUpdateNode={handleUpdateNode}
               />
