@@ -1,18 +1,53 @@
+/**
+ * Image Node Component
+ * 
+ * A node type for displaying images on the whiteboard.
+ * Shows a placeholder icon when no image source is provided.
+ * 
+ * @module whiteboard/components/nodes/ImageNode
+ */
+
 import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import type { NodeProps } from '@xyflow/react';
 import { cn } from '@/lib/utils';
 import { Image as ImageIcon } from 'lucide-react';
 
+/**
+ * Data structure for ImageNode
+ */
 export type ImageNodeData = {
+  /** Image source URL */
   src?: string;
+  /** Alt text for the image */
   alt?: string;
+  /** Image width in pixels */
   width?: number;
+  /** Image height in pixels */
   height?: number;
 };
 
+/**
+ * Image Node Component
+ * 
+ * Displays an image or a placeholder if no source is provided.
+ * Supports custom width and height.
+ * 
+ * @param props - Node props from React Flow
+ * @returns Image node component
+ * 
+ * @example
+ * ```tsx
+ * <ImageNode
+ *   data={{ src: 'https://example.com/image.jpg', alt: 'Example' }}
+ *   selected={false}
+ *   id="image-1"
+ * />
+ * ```
+ */
 function ImageNode({ data, selected }: NodeProps) {
   const nodeData = data as ImageNodeData;
+  
   return (
     <div
       className={cn(
@@ -44,4 +79,3 @@ function ImageNode({ data, selected }: NodeProps) {
 }
 
 export default memo(ImageNode);
-

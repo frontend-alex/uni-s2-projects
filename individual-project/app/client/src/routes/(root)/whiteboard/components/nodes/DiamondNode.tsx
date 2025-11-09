@@ -25,10 +25,8 @@ function DiamondNode({ data, selected, id, width, height, onDataChange }: Diamon
   const [label, setLabel] = useState(nodeData.label ?? nodeData.name ?? '');
   const [name, setName] = useState(nodeData.name ?? nodeData.label ?? '');
   
-  // Use React Flow's width/height if available, otherwise use size from data
   const nodeSize = width || height || nodeData.size || 100;
 
-  // Sync label and name with node data when it changes externally
   useEffect(() => {
     const newLabel = nodeData.label ?? nodeData.name ?? '';
     setLabel(newLabel);
@@ -102,12 +100,11 @@ function DiamondNode({ data, selected, id, width, height, onDataChange }: Diamon
   return (
     <div className="relative">
       {/* External name label - positioned above the resizer */}
-      {selected && (
         <div
           className="absolute"
           style={{
             top: -28,
-            right: 0,
+            left: 0,
             zIndex: 1000,
             pointerEvents: 'auto',
           }}
@@ -140,7 +137,6 @@ function DiamondNode({ data, selected, id, width, height, onDataChange }: Diamon
             </div>
           )}
         </div>
-      )}
       <div
         className={cn(
           'flex items-center justify-center relative diamond-node',
@@ -157,7 +153,7 @@ function DiamondNode({ data, selected, id, width, height, onDataChange }: Diamon
           minHeight={WHITEBOARD_CONFIG.resizer.minHeight}
           isVisible={selected}
           keepAspectRatio={true}
-          onResizeEnd={(event, params) => {
+          onResizeEnd={(_event, params) => {
               // For diamonds, keep width and height the same (use width as size)
               const newSize = params.width;
               const updatedData = {

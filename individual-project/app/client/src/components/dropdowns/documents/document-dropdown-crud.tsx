@@ -12,9 +12,18 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EllipsisVerticalIcon, Settings, Trash } from "lucide-react";
+import {
+  Download,
+  EllipsisVerticalIcon,
+  FileText,
+  Settings,
+  Trash,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DeleteDialog from "@/components/dialogs/DeleteDialog";
 import { cn } from "@/lib/utils";
@@ -65,11 +74,28 @@ const ManageDocumentDropdown = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>Manage Document</DropdownMenuLabel>
-        <DropdownMenuSeparator />
+
         <DropdownMenuItem>
           <Settings />
           <span>Settings</span>
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger className="w-full gap-2">
+            <Download className="text-stone-400 size-5" />
+            <span>Export</span>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuItem>
+              <FileText />
+              <span>PDF</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <FileText />
+              <span>Word</span>
+            </DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <DeleteDialog

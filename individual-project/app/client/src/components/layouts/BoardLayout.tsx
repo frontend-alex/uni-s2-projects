@@ -22,7 +22,10 @@ const BoardLayout = ({ children }: { children: React.ReactNode }) => {
     `${ROUTES.BASE.APP}/workspace`
   );
 
-  const isDocumentRoute = location.pathname.includes("/document/");
+  const isDocumentRoute =
+    location.pathname.includes("/document/") ||
+    location.pathname.includes("/whiteboard/");
+
 
   return (
     <div className="flex flex-col h-full w-full">
@@ -40,7 +43,11 @@ const BoardLayout = ({ children }: { children: React.ReactNode }) => {
                 <Pin className="size-4" />
               </Button>
               <Suspense fallback={<ManageWorkspaceDropdownSkeleton />}>
-                {isDocumentRoute ? <LazyManageDocumentDropdown/> : <LazyManageWorkspaceDropdown />}
+                {isDocumentRoute ? (
+                  <LazyManageDocumentDropdown />
+                ) : (
+                  <LazyManageWorkspaceDropdown />
+                )}
               </Suspense>
               <div className="h-6 w-px bg-accent" />
             </>

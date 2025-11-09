@@ -153,7 +153,7 @@ function RectangleNode({ data, selected, id, width, height, onDataChange }: Rect
           minWidth={WHITEBOARD_CONFIG.resizer.minWidth}
           minHeight={WHITEBOARD_CONFIG.resizer.minHeight}
           isVisible={selected}
-          onResizeEnd={(event, params) => {
+          onResizeEnd={(_event, params) => {
               const updatedData = {
                 ...nodeData,
                 width: params.width,

@@ -1,14 +1,46 @@
+/**
+ * Default Node Component
+ * 
+ * A simple default node type for the whiteboard.
+ * Used as a fallback when no specific node type is specified.
+ * 
+ * @module whiteboard/components/nodes/DefaultNode
+ */
+
 import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import type { NodeProps } from '@xyflow/react';
 import { cn } from '@/lib/utils';
 
+/**
+ * Data structure for DefaultNode
+ */
 export type DefaultNodeData = {
+  /** Label text displayed in the node */
   label?: string;
 };
 
+/**
+ * Default Node Component
+ * 
+ * A simple node that displays a label.
+ * Used as a fallback for unknown node types.
+ * 
+ * @param props - Node props from React Flow
+ * @returns Default node component
+ * 
+ * @example
+ * ```tsx
+ * <DefaultNode
+ *   data={{ label: 'Default Node' }}
+ *   selected={false}
+ *   id="node-1"
+ * />
+ * ```
+ */
 function DefaultNode({ data, selected }: NodeProps) {
   const nodeData = data as DefaultNodeData;
+  
   return (
     <div
       className={cn(
@@ -26,4 +58,3 @@ function DefaultNode({ data, selected }: NodeProps) {
 }
 
 export default memo(DefaultNode);
-

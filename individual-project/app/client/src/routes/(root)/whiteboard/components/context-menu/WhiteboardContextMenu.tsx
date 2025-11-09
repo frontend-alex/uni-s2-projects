@@ -1,5 +1,4 @@
 import { useCallback, useRef } from 'react';
-import { useReactFlow } from '@xyflow/react';
 import type { Node, Edge } from '@xyflow/react';
 import {
   ContextMenu,
@@ -23,10 +22,11 @@ import {
   Diamond,
   Copy,
   Trash2,
-  Link,
   Layers,
   Lock,
   Unlock,
+  ArrowUp,
+  ArrowDown,
 } from 'lucide-react';
 
 interface WhiteboardContextMenuProps {
@@ -38,6 +38,8 @@ interface WhiteboardContextMenuProps {
   onDuplicate?: (nodes: Node[]) => void;
   onLock?: (nodes: Node[]) => void;
   onUnlock?: (nodes: Node[]) => void;
+  onBringToFront?: (nodes: Node[]) => void;
+  onSendToBack?: (nodes: Node[]) => void;
   edgeType?: string;
   onEdgeTypeChange?: (type: string) => void;
   showGrid?: boolean;
@@ -46,6 +48,7 @@ interface WhiteboardContextMenuProps {
   onMinimapToggle?: (show: boolean) => void;
   isRectangleMode?: boolean;
   onRectangleModeToggle?: (enabled: boolean) => void;
+  screenToFlowPosition?: (position: { x: number; y: number }) => { x: number; y: number };
 }
 
 export function WhiteboardContextMenu({
@@ -57,6 +60,8 @@ export function WhiteboardContextMenu({
   onDuplicate,
   onLock,
   onUnlock,
+  onBringToFront,
+  onSendToBack,
   edgeType = 'default',
   onEdgeTypeChange,
   showGrid = true,
@@ -65,8 +70,8 @@ export function WhiteboardContextMenu({
   onMinimapToggle,
   isRectangleMode = false,
   onRectangleModeToggle,
+  screenToFlowPosition,
 }: WhiteboardContextMenuProps) {
-  const { screenToFlowPosition } = useReactFlow();
   const hasSelection = selectedNodes.length > 0 || selectedEdges.length > 0;
   const rightClickPositionRef = useRef<{ x: number; y: number } | null>(null);
 
@@ -82,7 +87,7 @@ export function WhiteboardContextMenu({
         e.preventDefault();
         e.stopPropagation();
       }
-      if (onAddNode && rightClickPositionRef.current) {
+      if (onAddNode && rightClickPositionRef.current && screenToFlowPosition) {
         const position = screenToFlowPosition({
           x: rightClickPositionRef.current.x,
           y: rightClickPositionRef.current.y,
@@ -137,6 +142,26 @@ export function WhiteboardContextMenu({
       document.body.click();
     }, 0);
   }, [onUnlock, selectedNodes]);
+
+  const handleBringToFront = useCallback(() => {
+    if (onBringToFront && selectedNodes.length > 0) {
+      onBringToFront(selectedNodes);
+    }
+    // Close context menu
+    setTimeout(() => {
+      document.body.click();
+    }, 0);
+  }, [onBringToFront, selectedNodes]);
+
+  const handleSendToBack = useCallback(() => {
+    if (onSendToBack && selectedNodes.length > 0) {
+      onSendToBack(selectedNodes);
+    }
+    // Close context menu
+    setTimeout(() => {
+      document.body.click();
+    }, 0);
+  }, [onSendToBack, selectedNodes]);
 
   return (
     <ContextMenu>
@@ -223,6 +248,20 @@ export function WhiteboardContextMenu({
                 </>
               )}
             </ContextMenuItem>
+            {selectedNodes.length > 0 && (
+              <>
+                <ContextMenuSeparator />
+                <ContextMenuLabel>Layer</ContextMenuLabel>
+                <ContextMenuItem onClick={handleBringToFront}>
+                  <ArrowUp className="w-4 h-4" />
+                  Bring to Front
+                </ContextMenuItem>
+                <ContextMenuItem onClick={handleSendToBack}>
+                  <ArrowDown className="w-4 h-4" />
+                  Send to Back
+                </ContextMenuItem>
+              </>
+            )}
           </>
         )}
 
