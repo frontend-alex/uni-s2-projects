@@ -124,7 +124,7 @@ export function createNode(
         position,
         data: {
           label: defaults.label,
-          name: defaults.name,
+          name: 'Rectangle Node',
           color: defaults.color,
           width: defaults.width,
           height: defaults.height,
@@ -142,7 +142,7 @@ export function createNode(
         position,
         data: {
           label: defaults.label,
-          name: defaults.name,
+          name: 'Circle Node',
           color: defaults.color,
           size: defaults.size,
         } as CircleNodeData,
@@ -159,7 +159,7 @@ export function createNode(
         position,
         data: {
           label: defaults.label,
-          name: defaults.name,
+          name: 'Diamond Node',
           color: defaults.color,
           size: defaults.size,
         } as DiamondNodeData,
@@ -189,7 +189,7 @@ export function createNode(
         id: nodeId,
         type: 'default',
         position,
-        data: { label: 'Node' },
+        data: { label: 'Node', name: 'Node' },
       };
   }
 }

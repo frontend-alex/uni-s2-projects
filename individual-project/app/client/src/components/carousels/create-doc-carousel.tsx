@@ -41,7 +41,9 @@ const CreateDocCarousel = ({ documents }: { documents: Document[] }) => {
       onSuccess: (data) => {
         if (data.data)
           navigate(
-            ROUTES.AUTHENTICATED.DOCUMENT(data.data.id, currentWorkspaceId)
+            data.data.kind === DocumentKind.DOCUMENT
+              ? ROUTES.AUTHENTICATED.DOCUMENT(data.data.id, currentWorkspaceId)
+              : ROUTES.AUTHENTICATED.WHITEBOARD(data.data.id, currentWorkspaceId)
           );
         toast.success(data.message);
       },
