@@ -357,23 +357,6 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
       setNodes((nds) => {
         const newNodes = applyNodeChanges(changes, nds);
         
-        // Bring selected nodes to front (z-index) - move to end of array
-        // Don't update selectedNodes state here - let onSelectionChange handle it
-        const selectionChanges = changes.filter((c) => c.type === 'select' && c.selected && 'id' in c);
-        if (selectionChanges.length > 0) {
-          selectionChanges.forEach((change) => {
-            if (change.type === 'select' && 'id' in change) {
-              const nodeIndex = newNodes.findIndex((n) => n.id === change.id);
-              if (nodeIndex !== -1 && nodeIndex < newNodes.length - 1) {
-                // Move selected node to end (front) of array
-                const node = newNodes[nodeIndex];
-                newNodes.splice(nodeIndex, 1);
-                newNodes.push(node as Node);
-              }
-            }
-          });
-        }
-        
         // Track dragging state from position changes
         const positionChanges = changes.filter((c) => c.type === 'position');
         if (positionChanges.length > 0) {
