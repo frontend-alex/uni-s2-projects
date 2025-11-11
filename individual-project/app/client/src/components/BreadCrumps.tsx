@@ -256,7 +256,7 @@ const BreadCrumps = () => {
       </div>
 
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-0 text-sm" aria-label="Breadcrumb">
+      <nav className="hidden md:flex items-center gap-0 text-sm" aria-label="Breadcrumb">
         {breadcrumbItems.map((item, index) => {
           const isLast = index === breadcrumbItems.length - 1;
           const isDocumentItem = item.isDocument && documentId && currentDocument;

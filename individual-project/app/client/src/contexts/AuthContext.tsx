@@ -6,7 +6,8 @@ import { API } from "@/lib/config";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useApiMutation, useApiQuery } from "@/hooks/hook";
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext, useMemo, useEffect, useRef } from "react";
+import { startSignalRConnection, stopSignalRConnection } from "@/lib/signalr";
 
 type AuthContextType = {
   user: User | null;
@@ -23,6 +24,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const signalRConnectedRef = useRef(false);
 
   const { data, isLoading, error, refetch } = useApiQuery<User>(
     ["auth", "me"],
@@ -33,6 +35,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       enabled: true,
     }
   );
+
+  // Connect to SignalR when user is authenticated
+  useEffect(() => {
+    const connectSignalR = async () => {
+      const isAuthenticated = Boolean(data?.data) && !error;
+      
+      if (isAuthenticated && !signalRConnectedRef.current) {
+        try {
+          await startSignalRConnection();
+          signalRConnectedRef.current = true;
+        } catch (error) {
+          signalRConnectedRef.current = false;
+        }
+      } else if (!isAuthenticated && signalRConnectedRef.current) {
+        try {
+          await stopSignalRConnection();
+          signalRConnectedRef.current = false;
+        } catch (error) {
+        }
+      }
+    };
+
+    if (!isLoading) {
+      connectSignalR();
+    }
+
+    return () => {
+      if (signalRConnectedRef.current) {
+        stopSignalRConnection().catch(toast.error);
+        signalRConnectedRef.current = false;
+      }
+    };
+  }, [data, error, isLoading]);
 
   const { mutateAsync: logoutMutation } = useApiMutation(
     "POST",

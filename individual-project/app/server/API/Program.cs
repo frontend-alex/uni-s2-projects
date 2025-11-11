@@ -60,17 +60,16 @@ builder.Services.AddScoped<DocumentService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<OtpService>();
 
-// Swagger
 builder.Services.AddSwaggerServices();
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
-// Dev-only HTTPS redirect can break preflight if FE uses http.
 if (!app.Environment.IsDevelopment()) {
     app.UseHttpsRedirection();
 }
 
-// Global error handling should not short-circuit OPTIONS.
 app.UseMiddleware<ErrorHandler>();
 
 // Routing first
@@ -86,6 +85,8 @@ app.UseAuthorization();
 if (app.Environment.IsDevelopment()) {
     app.UseSwaggerServices(app.Environment);
 }
+
+app.MapHub<API.Hubs.AppHub>("/hubs/app");
 
 // Endpoints
 app.MapControllers();

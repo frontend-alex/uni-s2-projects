@@ -48,9 +48,32 @@ public static class SecurityExtensions {
                 // Read JWT from cookie when Authorization header isn't present
                 options.Events = new JwtBearerEvents {
                     OnMessageReceived = ctx => {
-                        if (string.IsNullOrEmpty(ctx.Token) &&
-                            ctx.Request.Cookies.TryGetValue("access_token", out var cookie)) {
-                            ctx.Token = cookie;
+                        // For SignalR, check access_token in query string or cookie
+                        if (ctx.Request.Path.StartsWithSegments("/hubs"))
+                        {
+                            // Try to get token from query string (SignalR WebSocket connection)
+                            var accessToken = ctx.Request.Query["access_token"].ToString();
+                            if (!string.IsNullOrEmpty(accessToken))
+                            {
+                                ctx.Token = accessToken;
+                                return Task.CompletedTask;
+                            }
+
+                            // Fallback to cookie
+                            if (ctx.Request.Cookies.TryGetValue("access_token", out var cookie))
+                            {
+                                ctx.Token = cookie;
+                                return Task.CompletedTask;
+                            }
+                        }
+                        else
+                        {
+                            // For regular HTTP requests, check cookie when Authorization header isn't present
+                            if (string.IsNullOrEmpty(ctx.Token) &&
+                                ctx.Request.Cookies.TryGetValue("access_token", out var cookie))
+                            {
+                                ctx.Token = cookie;
+                            }
                         }
                         return Task.CompletedTask;
                     }
