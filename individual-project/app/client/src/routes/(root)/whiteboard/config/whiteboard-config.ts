@@ -330,3 +330,29 @@ export function isDeleteShortcut(event: KeyboardEvent): boolean {
     !event.shiftKey
   );
 }
+
+/**
+ * Check if the select all shortcut is pressed.
+ * 
+ * Supports both Ctrl+A (Windows/Linux) and Cmd+A (Mac).
+ * 
+ * @param event - Keyboard event to check
+ * @returns True if select all shortcut is pressed, false otherwise
+ * 
+ * @example
+ * ```typescript
+ * if (isSelectAllShortcut(event)) {
+ *   e.preventDefault();
+ *   selectAllNodes();
+ * }
+ * ```
+ */
+export function isSelectAllShortcut(event: KeyboardEvent): boolean {
+  const modifier = getModifierKey(event);
+  return (
+    (modifier === 'ctrl' ? event.ctrlKey : event.metaKey) &&
+    (event.key === 'a' || event.key === 'A') &&
+    !event.shiftKey &&
+    !event.altKey
+  );
+}

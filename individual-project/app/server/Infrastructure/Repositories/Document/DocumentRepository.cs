@@ -41,6 +41,7 @@ public class DocumentRepository : IDocumentRepository {
     }
 
     public async Task<Document> UpdateAsync(Document document) {
+        document.UpdatedAt = DateTime.UtcNow;
         _context.Documents.Update(document);
         await _context.SaveChangesAsync();
         return document;

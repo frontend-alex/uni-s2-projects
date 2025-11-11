@@ -44,6 +44,7 @@ import {
   isCopyShortcut,
   isPasteShortcut,
   isDeleteShortcut,
+  isSelectAllShortcut,
 } from '../config/whiteboard-config';
 import { createNode, ensureNodeDimensions, cloneNodesAndEdges } from '../utils/node-utils';
 
@@ -742,12 +743,33 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
           }
           return updatedNodes;
         });
+        return;
+      }
+      
+      // Select All (Ctrl+A or Cmd+A)
+      if (isSelectAllShortcut(e)) {
+        e.preventDefault();
+        // Select all nodes by updating their selected property
+        setNodes((nds) => {
+          return nds.map((node) => ({
+            ...node,
+            selected: true,
+          }));
+        });
+        // Also update edges to be selected (optional)
+        setEdges((eds) => {
+          return eds.map((edge) => ({
+            ...edge,
+            selected: true,
+          }));
+        });
+        return;
       }
     };
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedNodes, selectedEdges, onDelete, setNodes, edges, saveToHistory, documentId, isInitialized, save, undo, redo]);
+  }, [selectedNodes, selectedEdges, onDelete, setNodes, setEdges, edges, saveToHistory, documentId, isInitialized, save, undo, redo]);
 
   /**
    * Duplicate selected nodes.
@@ -987,9 +1009,15 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
   }, [isInitialized]);
 
   // Memoize node types to prevent recreation on every render
+  // Use ref to store the callback to avoid recreating nodeTypes when callback changes
+  const onDataChangeRef = useRef(handleNodeDataChange);
+  useEffect(() => {
+    onDataChangeRef.current = handleNodeDataChange;
+  }, [handleNodeDataChange]);
+  
   const nodeTypes = useMemo(
-    () => createNodeTypes(handleNodeDataChange),
-    [handleNodeDataChange]
+    () => createNodeTypes(() => onDataChangeRef.current()),
+    [] // Empty dependency array - callback is accessed via ref
   );
 
   return (
@@ -1054,7 +1082,7 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
             // Note: This enables both panning (when no selection box) and box selection
             selectionOnDrag={true}
             // Multi-select: Ctrl/Cmd + click to add nodes to selection
-            multiSelectionKeyCode="Control"
+            multiSelectionKeyCode={["Control", "Meta"]}
             // Reduce re-renders
             elevateNodesOnSelect={false}
           >

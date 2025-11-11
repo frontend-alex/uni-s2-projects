@@ -5,6 +5,7 @@ import { useWorkspace } from "@/hooks/workspace/use-workspaces";
 import { GridBoxSkeleton as CreateDocCrouselSkeleton } from "@/components/skeletons/grid-box-skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent } from "@radix-ui/react-tabs";
+import DocumentCardRow from "@/components/cards/document-card-row";
 
 const LazyCreateDocCarousel = lazy(
   () => import("@/components/carousels/create-doc-carousel")
@@ -35,7 +36,7 @@ const Workspace = () => {
           <TabsTrigger value="carousel">
             <GalleryHorizontalEnd />
           </TabsTrigger>
-        </TabsList>
+        </TabsList> 
       </div>
       <TabsContent value="carousel">
         <Suspense fallback={<CreateDocCrouselSkeleton />}>
@@ -43,7 +44,9 @@ const Workspace = () => {
         </Suspense>
       </TabsContent>
       <TabsContent value="row">
-        <div>Row View Coming Soon!</div>
+        {workspace?.data?.documents?.map((document) => (
+          <DocumentCardRow key={document.id} document={document} />
+        ))}
       </TabsContent>
     </Tabs>
   );

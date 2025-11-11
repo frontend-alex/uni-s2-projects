@@ -74,8 +74,8 @@ export interface Document {
 }
 
 export enum DocumentKind {
-  DOCUMENT = 0,
-  WHITEBOARD = 1,
+  DOCUMENT = "Document",
+  WHITEBOARD = "Whiteboard",
 }
 
 export interface User {

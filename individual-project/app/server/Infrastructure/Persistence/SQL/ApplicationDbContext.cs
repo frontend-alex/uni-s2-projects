@@ -121,8 +121,19 @@ public class ApplicationDbContext : DbContext {
             entity.Property(e => e.Content).HasColumnType("nvarchar(max)");
             entity.Property(e => e.IsArchived).IsRequired().HasDefaultValue(false);
             entity.Property(e => e.Visibility).IsRequired().HasConversion<string>();
-            entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("SYSUTCDATETIME()");
-            entity.Property(e => e.UpdatedAt).IsRequired().HasDefaultValueSql("SYSUTCDATETIME()");
+            entity.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasDefaultValueSql("SYSUTCDATETIME()")
+                .HasConversion(
+                    v => v.ToUniversalTime(), // Store: ensure UTC
+                    v => DateTime.SpecifyKind(v, DateTimeKind.Utc) // Read: mark as UTC (database stores UTC)
+                );
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("SYSUTCDATETIME()")
+                .HasConversion(
+                    v => v.HasValue ? v.Value.ToUniversalTime() : (DateTime?)null, // Store: ensure UTC
+                    v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : null // Read: mark as UTC (database stores UTC)
+                );
 
             entity.HasOne(e => e.Workspace)
                 .WithMany(w => w.Documents)

@@ -228,7 +228,13 @@ function DefaultNode({ data, selected, id, width, height, onDataChange, shapeOve
                 e.stopPropagation();
                 setIsEditingName(true);
               }}
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                // Allow Ctrl/Cmd+Click to bubble up for multi-selection
+                if (e.ctrlKey || e.metaKey) {
+                  return;
+                }
+                e.stopPropagation();
+              }}
               style={{ fontSize: '11px' }}
               title={name || `${shapeDisplayName} Node`}
             >
@@ -254,6 +260,12 @@ function DefaultNode({ data, selected, id, width, height, onDataChange, shapeOve
         }}
       >
         {/* Resizer - only show when selected */}
+        {/* 
+          Note: NodeResizer from React Flow may emit browser warnings about non-passive touchstart 
+          event listeners. These warnings are harmless and expected - the resizer needs to prevent 
+          default touch behavior to function correctly, so it cannot use passive event listeners.
+          These warnings do not affect functionality and can be safely ignored.
+        */}
         {selected && (
           <NodeResizer
             minWidth={WHITEBOARD_CONFIG.resizer.minWidth}
@@ -282,9 +294,24 @@ function DefaultNode({ data, selected, id, width, height, onDataChange, shapeOve
           ) : (
             <div
               className="text-center text-sm cursor-text w-full px-2 min-h-[20px] flex items-center justify-center"
-              onDoubleClick={handleDoubleClick}
-              onClick={(e) => e.stopPropagation()}
-              onMouseDown={(e) => e.stopPropagation()}
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+                handleDoubleClick();
+              }}
+              onClick={(e) => {
+                // Allow Ctrl/Cmd+Click to bubble up for multi-selection
+                if (e.ctrlKey || e.metaKey) {
+                  return;
+                }
+                e.stopPropagation();
+              }}
+              onMouseDown={(e) => {
+                // Allow Ctrl/Cmd+MouseDown to bubble up for multi-selection
+                if (e.ctrlKey || e.metaKey) {
+                  return;
+                }
+                e.stopPropagation();
+              }}
               style={{ minHeight: '1.5em', pointerEvents: 'auto' }}
             >
               {label || <span className="opacity-0 select-none pointer-events-none">.</span>}

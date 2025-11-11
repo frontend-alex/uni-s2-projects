@@ -1,25 +1,17 @@
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
 import { lazy, Suspense, useMemo } from "react";
-import { DropdownSkeleton as UserDropdownSkeleton } from "@/components/skeletons/dropdown-skeleton";
-import { ROUTES } from "@/lib/router-paths";
-import { SidebarGroupRenderer } from "./flexible-sidebar-link";
-import { FileText, LayoutDashboard, Folder, Square } from "lucide-react";
-import { DocumentKind } from "@/types/workspace";
-import {
-  useUserWorkspaces,
-  useWorkspace,
-} from "@/hooks/workspace/use-workspaces";
+
 import { useLocation, useParams } from "react-router-dom";
-import { ButtonSkeleton as ManageWorkspaceDropdownSkeleton } from "@/components/skeletons/button-skeleton";
+import { FileText, Folder, LayoutDashboard, Square } from "lucide-react";
+
+import { ROUTES } from "@/lib/router-paths";
+import { DocumentKind } from "@/types/workspace";
 import { defaultWorkspaceColor } from "@/consts/consts";
+import { useUserWorkspaces, useWorkspace } from "@/hooks/workspace/use-workspaces";
+import { DropdownSkeleton as UserDropdownSkeleton } from "@/components/skeletons/dropdown-skeleton";
+import { ButtonSkeleton as ManageWorkspaceDropdownSkeleton } from "@/components/skeletons/button-skeleton";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+
+import { SidebarGroupRenderer } from "./flexible-sidebar-link";
 
 const LazyUserDropdown = lazy(
   () => import("@/components/dropdowns/user-dropdown")
@@ -38,6 +30,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation();
   const pathname = location.pathname;
 
+  // Check if we're on a workspace-specific route (workspace page, document, or whiteboard)
+  // All these routes start with /app/v1/workspace/:workspaceId
   const isWorkspaceRoute = pathname.startsWith(`${ROUTES.BASE.APP}/workspace`);
   const showAllWorkspaces = !isWorkspaceRoute;
 
@@ -48,6 +42,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const workspace = workspaceResponse?.data;
   const allWorkspaces = allWorkspacesResponse?.data || [];
+
 
   const generalGroup = useMemo(
     () => ({

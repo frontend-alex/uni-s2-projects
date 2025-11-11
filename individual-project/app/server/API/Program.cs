@@ -24,6 +24,9 @@ builder.Services.AddControllers()
     .AddJsonOptions(o => {
         o.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
         o.JsonSerializerOptions.WriteIndented = true;
+        // DateTime serialization: Since EF ValueConverter ensures DateTime.Kind = Utc,
+        // System.Text.Json will automatically serialize with 'Z' suffix by default
+        o.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
     
 builder.Services.AddEndpointsApiExplorer();

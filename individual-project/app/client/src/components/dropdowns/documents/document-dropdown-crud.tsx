@@ -5,6 +5,7 @@ import { ROUTES } from "@/lib/router-paths";
 import type { Workspace } from "@/types/workspace";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { useDocumentImportExport } from "@/hooks/document";
 
 import {
   DropdownMenu,
@@ -23,6 +24,8 @@ import {
   FileText,
   Settings,
   Trash,
+  FileType,
+  Upload,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DeleteDialog from "@/components/dialogs/DeleteDialog";
@@ -45,6 +48,20 @@ const ManageDocumentDropdown = ({
 
   const { documentId } = useParams<{ documentId: string }>();
   const { currentWorkspaceId } = useCurrentWorkspace();
+
+  const {
+    fileInputRef,
+    triggerImport,
+    handleFileInputChange,
+    exportWhiteboardPDF,
+    exportDocumentPDF,
+    exportDocumentWord,
+    canImport,
+    canExportWhiteboard,
+    canExportDocument,
+  } = useDocumentImportExport({
+    documentId: Number(documentId),
+  });
 
   const { mutateAsync: deleteWorkspace, isPending: isDeletingWorkspace } =
     useApiMutation<Workspace>(
@@ -80,20 +97,50 @@ const ManageDocumentDropdown = ({
           <span>Settings</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
+        {canImport && (
+          <>
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                triggerImport();
+              }}
+            >
+              <Upload className="text-stone-400 size-5" />
+              <span>Import</span>
+            </DropdownMenuItem>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.docx,.doc,.md,.markdown,.txt,.readme"
+              className="hidden"
+              onChange={handleFileInputChange}
+            />
+            <DropdownMenuSeparator />
+          </>
+        )}
         <DropdownMenuSub>
           <DropdownMenuSubTrigger className="w-full gap-2">
             <Download className="text-stone-400 size-5" />
             <span>Export</span>
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuItem>
-              <FileText />
-              <span>PDF</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <FileText />
-              <span>Word</span>
-            </DropdownMenuItem>
+            {canExportWhiteboard ? (
+              <DropdownMenuItem onClick={() => exportWhiteboardPDF()}>
+                <FileText />
+                <span>PDF</span>
+              </DropdownMenuItem>
+            ) : canExportDocument ? (
+              <>
+                <DropdownMenuItem onClick={() => exportDocumentPDF()}>
+                  <FileText />
+                  <span>PDF</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => exportDocumentWord()}>
+                  <FileType />
+                  <span>Word</span>
+                </DropdownMenuItem>
+              </>
+            ) : null}
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
