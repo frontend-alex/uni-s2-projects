@@ -1,6 +1,6 @@
 import { useCallback, useRef } from "react";
 import { toast } from "sonner";
-import { useDocument, useUpdateDocument } from "./use-document";
+import { useDocument, useUpdateDocument } from "@/routes/(root)/document/hooks/use-document";
 import { DocumentKind } from "@/types/workspace";
 import {
   exportWhiteboardToPDF,

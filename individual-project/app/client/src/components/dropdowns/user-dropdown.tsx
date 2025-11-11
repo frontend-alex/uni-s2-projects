@@ -13,7 +13,7 @@ import { getUserInitials } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useCurrentWorkspace } from "@/hooks/workspace/use-current-workspace";
+import { useCurrentWorkspace } from "@/routes/(root)/workspace/hooks/use-current-workspace";
 import {
   DropdownMenu,
   DropdownMenuContent,

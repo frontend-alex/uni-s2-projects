@@ -1,3 +1,4 @@
+import { DocumentKind } from "@/types/workspace";
 
 export const BASE_PATHS = {
   APP: '/app/v1',
@@ -20,8 +21,12 @@ export const AUTHENTICATED_ROUTES = {
   PROFILE: `${BASE_PATHS.APP}/profile`,
   SETTINGS: `${BASE_PATHS.APP}/settings`,
   DASHBOARD: `${BASE_PATHS.APP}/dashboard`,
-  DOCUMENT: (documentId: string | number, workspaceId: string | number) => `${BASE_PATHS.APP}/workspace/${workspaceId}/document/${documentId}`,
-  WHITEBOARD: (documentId: string | number, workspaceId: string | number) => `${BASE_PATHS.APP}/workspace/${workspaceId}/whiteboard/${documentId}`,
+  DOCUMENT: (workspaceId: string | number, documentId: string | number, kind: DocumentKind) => {
+    if (kind === DocumentKind.WHITEBOARD) {
+      return `${BASE_PATHS.APP}/workspace/${workspaceId}/whiteboard/${documentId}`;
+    }
+    return `${BASE_PATHS.APP}/workspace/${workspaceId}/document/${documentId}`;
+  },
 } as const;
 
 export const ROUTE_HELPERS = {

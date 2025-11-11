@@ -13,6 +13,7 @@ export const useDocument = (documentId: number | undefined) => {
   );
 };
 
+
 export const useUpdateDocument = (documentId: number) => {
   return useApiMutation<Document>(
     "PUT",

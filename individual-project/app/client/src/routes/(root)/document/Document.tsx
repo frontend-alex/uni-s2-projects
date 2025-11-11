@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useDocument, useUpdateDocument } from "@/hooks/document/use-document";
+import { useDocument, useUpdateDocument } from "@/routes/(root)/document/hooks/use-document";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EditorJSEditor, type OutputData } from "@/components/editors/editorjs-editor";
-import { useAutoSave } from "@/hooks/useAutoSave";
+import { useAutoSave } from "@/hooks/use-auto-save";
 
 const Document = () => {
   const { documentId } = useParams<{ documentId: string }>();

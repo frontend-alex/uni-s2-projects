@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useApiMutation } from "@/hooks/hook";
-import { useCurrentWorkspace } from "@/hooks/workspace/use-current-workspace";
+import { useCurrentWorkspace } from "@/routes/(root)/workspace/hooks/use-current-workspace";
 import { API } from "@/lib/config";
 import { ROUTES } from "@/lib/router-paths";
 import { cn } from "@/lib/utils";

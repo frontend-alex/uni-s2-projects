@@ -36,7 +36,7 @@ import { RectangleTool } from './tools/RectangleTool';
 import { NodeFloatingToolbar } from './NodeFloatingToolbar';
 import { AnimatedEdge } from './edges/AnimatedEdge';
 import { useWhiteboardStorage } from '../hooks/useWhiteboardStorage';
-import { useDocument } from '@/hooks/document/use-document';
+import { useDocument } from '@/routes/(root)/document/hooks/use-document';
 import {
   WHITEBOARD_CONFIG,
   isUndoShortcut,

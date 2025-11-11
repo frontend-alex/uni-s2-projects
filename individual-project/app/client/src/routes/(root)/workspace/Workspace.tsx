@@ -1,14 +1,19 @@
-import { FilePlus, GalleryHorizontalEnd, Rows3 } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { useParams } from "react-router-dom";
-import { useWorkspace } from "@/hooks/workspace/use-workspaces";
-import { GridBoxSkeleton as CreateDocCrouselSkeleton } from "@/components/skeletons/grid-box-skeleton";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent } from "@radix-ui/react-tabs";
-import DocumentCardRow from "@/components/cards/document-card-row";
+import { useWorkspace } from "@/routes/(root)/workspace/hooks/use-workspaces";
+import { FilePlus, GalleryHorizontalEnd, Rows3 } from "lucide-react";
+import { MappedSkeleton } from "@/components/skeletons/mapped-skeleton";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import CreateDocumentCard from "./components/add-document-card";
+import { usePersistentState } from "@/hooks/use-persistance";
 
 const LazyCreateDocCarousel = lazy(
   () => import("@/components/carousels/create-doc-carousel")
+);
+
+const LazyDocumentRowCard = lazy(
+  () => import("@/components/cards/document-card-row")
 );
 
 const Workspace = () => {
@@ -18,8 +23,17 @@ const Workspace = () => {
     workspaceId ? Number(workspaceId) : undefined
   );
 
+  const [activeTab, setActiveTab] = usePersistentState(
+    "workspace-tab",
+    "carousel"
+  );
+
   return (
-    <Tabs className="flex flex-col gap-5" defaultValue="carousel">
+    <Tabs
+      className="flex flex-col gap-5"
+      value={activeTab}
+      onValueChange={setActiveTab}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <FilePlus />
@@ -36,17 +50,22 @@ const Workspace = () => {
           <TabsTrigger value="carousel">
             <GalleryHorizontalEnd />
           </TabsTrigger>
-        </TabsList> 
+        </TabsList>
       </div>
       <TabsContent value="carousel">
-        <Suspense fallback={<CreateDocCrouselSkeleton />}>
+        <Suspense fallback={<MappedSkeleton />}>
           <LazyCreateDocCarousel documents={workspace?.data?.documents ?? []} />
         </Suspense>
       </TabsContent>
       <TabsContent value="row">
-        {workspace?.data?.documents?.map((document) => (
-          <DocumentCardRow key={document.id} document={document} />
-        ))}
+        <Suspense fallback={<MappedSkeleton direction="vertical" />}>
+          <div className="flex flex-col gap-3">
+            <CreateDocumentCard variant="row" />
+            {workspace?.data?.documents?.map((document) => (
+              <LazyDocumentRowCard key={document.id} document={document} />
+            ))}
+          </div>
+        </Suspense>
       </TabsContent>
     </Tabs>
   );

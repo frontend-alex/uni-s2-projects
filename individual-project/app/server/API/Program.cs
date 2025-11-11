@@ -24,8 +24,6 @@ builder.Services.AddControllers()
     .AddJsonOptions(o => {
         o.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
         o.JsonSerializerOptions.WriteIndented = true;
-        // DateTime serialization: Since EF ValueConverter ensures DateTime.Kind = Utc,
-        // System.Text.Json will automatically serialize with 'Z' suffix by default
         o.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
     
@@ -35,11 +33,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSecurityServices(builder.Configuration);
 
 // DbContext
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options => {
     options.UseSqlServer(
         Environment.GetEnvironmentVariable("CONNECTION_STRING")
-        ?? builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+        ?? builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.ConfigureWarnings(warnings => 
+        warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+});
 
 Console.WriteLine("Using connection string: "
     + (Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -90,10 +90,10 @@ if (app.Environment.IsDevelopment()) {
 // Endpoints
 app.MapControllers();
 
-// Ensure DB created
+// Apply migrations
 using (var scope = app.Services.CreateScope()) {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    context.Database.EnsureCreated();
+    context.Database.Migrate();
 }
 
 app.Run();

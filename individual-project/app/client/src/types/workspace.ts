@@ -1,6 +1,6 @@
 export enum WorkspaceVisibility {
-    PRIVATE = 0,
-    PUBLIC = 1,
+  PRIVATE = "PRIVATE",
+  PUBLIC = "PUBLIC",
 }
 
 export enum UserWorkspaceRole {

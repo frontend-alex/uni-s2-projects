@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useDocument } from "@/hooks/document/use-document";
+import { useDocument } from "@/routes/(root)/document/hooks/use-document";
 import { Skeleton } from "@/components/ui/skeleton";
 import { WhiteboardCanvas } from "./components/WhiteboardCanvas";
 

@@ -1,15 +1,18 @@
-import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { useWorkspace } from "@/hooks/workspace/use-workspaces";
-import { useUpdateDocument } from "@/hooks/document/use-document";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "./ui/button";
-import { getCurrentRoute, ROUTES } from "@/lib/router-paths";
+import { useEffect, useState } from "react";
+
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { Input } from "./ui/input";
-import { BreadCrumpSkeleton } from "./skeletons/breadcrumps-skeleton";
-import { WorkspaceVisibilityIcon } from "./SmallComponents";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+
 import { WorkspaceVisibility } from "@/types/workspace";
+import { getCurrentRoute, ROUTES } from "@/lib/router-paths";
+import { useWorkspace } from "@/routes/(root)/workspace/hooks/use-workspaces";
+import { useUpdateDocument } from "@/routes/(root)/document/hooks/use-document";
+
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { WorkspaceVisibilityIcon } from "./SmallComponents";
+import { BreadCrumpSkeleton } from "./skeletons/breadcrumps-skeleton";
 
 const BreadCrumps = () => {
   const navigate = useNavigate();
@@ -68,21 +71,9 @@ const BreadCrumps = () => {
     }
   };
 
-  const handleVisibilityToggle = async () => {
-    if (!documentId || !currentDocument) return;
-
-    const newVisibility =
-      currentDocument.visibility === WorkspaceVisibility.PUBLIC
-        ? WorkspaceVisibility.PRIVATE
-        : WorkspaceVisibility.PUBLIC;
-
-    try {
-      await updateDocument({
-        visibility: newVisibility,
-      });
-    } catch (error) {
-      console.error("Failed to update visibility:", error);
-    }
+  const handleVisibilityToggle = async (newVisibility: WorkspaceVisibility) => {
+    const backendVisibility = newVisibility === WorkspaceVisibility.PRIVATE ? "Private" : "Public";
+    await updateDocument({ visibility: backendVisibility as any });
   };
 
   if (isLoading) return <BreadCrumpSkeleton />;
@@ -155,9 +146,10 @@ const BreadCrumps = () => {
               </Button>
             )}
             <WorkspaceVisibilityIcon
-              className="size-5 ml-1 cursor-pointer"
+              className="size-5 ml-1"
               visibility={currentDocument?.visibility}
-              onClick={handleVisibilityToggle}
+              onToggle={handleVisibilityToggle}
+              clickable={true}
             />
           </>
         )}

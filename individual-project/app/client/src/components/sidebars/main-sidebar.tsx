@@ -6,7 +6,7 @@ import { FileText, Folder, LayoutDashboard, Square } from "lucide-react";
 import { ROUTES } from "@/lib/router-paths";
 import { DocumentKind } from "@/types/workspace";
 import { defaultWorkspaceColor } from "@/consts/consts";
-import { useUserWorkspaces, useWorkspace } from "@/hooks/workspace/use-workspaces";
+import { useUserWorkspaces, useWorkspace } from "@/routes/(root)/workspace/hooks/use-workspaces";
 import { DropdownSkeleton as UserDropdownSkeleton } from "@/components/skeletons/dropdown-skeleton";
 import { ButtonSkeleton as ManageWorkspaceDropdownSkeleton } from "@/components/skeletons/button-skeleton";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
@@ -66,10 +66,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       const documentItems = (ws.documents || [])
         .filter((doc) => doc.title)
         .map((doc) => {
-          const documentUrl =
-            doc.kind === DocumentKind.DOCUMENT
-              ? ROUTES.AUTHENTICATED.DOCUMENT(doc.id, ws.id)
-              : ROUTES.AUTHENTICATED.WHITEBOARD(doc.id, ws.id);
+          // Use unified document route - DocumentKind check is centralized in the route function
+          const documentUrl = ROUTES.AUTHENTICATED.DOCUMENT(ws.id, doc.id, doc.kind);
           return {
             title: doc.title!,
             url: documentUrl,
@@ -94,10 +92,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         (document) => document.title && document.kind === DocumentKind.DOCUMENT
       )
       .map((document) => {
-        const documentUrl =
-          document.kind === DocumentKind.DOCUMENT
-            ? ROUTES.AUTHENTICATED.DOCUMENT(document.id, workspace.id)
-            : ROUTES.AUTHENTICATED.WHITEBOARD(document.id, workspace.id);
+        // Use unified document route - DocumentKind check is centralized in the route function
+        const documentUrl = ROUTES.AUTHENTICATED.DOCUMENT(workspace.id, document.id, document.kind);
         return {
           title: document.title!,
           url: documentUrl,
@@ -114,10 +110,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           document.title && document.kind === DocumentKind.WHITEBOARD
       )
       .map((document) => {
-        const whiteboardUrl =
-          document.kind === DocumentKind.WHITEBOARD
-            ? ROUTES.AUTHENTICATED.WHITEBOARD(document.id, workspace.id)
-            : ROUTES.AUTHENTICATED.DOCUMENT(document.id, workspace.id);
+        // Use unified document route - DocumentKind check is centralized in the route function
+        const whiteboardUrl = ROUTES.AUTHENTICATED.DOCUMENT(workspace.id, document.id, document.kind);
         return {
           title: document.title!,
           url: whiteboardUrl,

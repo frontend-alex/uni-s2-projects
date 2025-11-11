@@ -8,7 +8,7 @@ import { useApiMutation } from "@/hooks/hook";
 import { Button } from "@/components/ui/button";
 import { defaultWorkspaceColor } from "@/consts/consts";
 import GlobalDialog from "@/components/dialogs/GlobalDialog";
-import { useUserWorkspaces } from "@/hooks/workspace/use-workspaces";
+import { useUserWorkspaces } from "@/routes/(root)/workspace/hooks/use-workspaces";
 import { type Workspace, WorkspaceVisibility } from "@/types/workspace";
 import WorkspaceForm from "@/components/auth/forms/workspace/workspace-form-01";
 import type { WorkspaceSchemaType } from "@/utils/schemas/workspace/workspace.schema";

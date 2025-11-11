@@ -13,8 +13,8 @@
 
 import { useCallback, useMemo } from 'react';
 import type { Node, Edge } from '@xyflow/react';
-import { useUpdateDocument } from '@/hooks/document/use-document';
-import { useAutoSave } from '@/hooks/useAutoSave';
+import { useUpdateDocument } from '@/routes/(root)/document/hooks/use-document';
+import { useAutoSave } from '@/hooks/use-auto-save';
 
 /**
  * Whiteboard data structure stored in localStorage

@@ -10,7 +10,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/collapsible";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { usePersistentState } from "@/hooks/use-persistance";
 
 type SidebarSubItem = {
   title: string;
@@ -40,7 +41,7 @@ function CollapsibleNavItem({ item }: { item: SidebarItem }) {
   // Render as regular link if it has a url and no sub-items
   const hasSubItems = item.items && item.items.length > 0;
   const shouldRenderAsLink = item.url && !hasSubItems;
-  
+
   if (shouldRenderAsLink && item.url) {
     return (
       <SidebarMenuItem>
@@ -60,34 +61,23 @@ function CollapsibleNavItem({ item }: { item: SidebarItem }) {
     );
   }
 
-  const storageKey = `sidebar-${item.title.toLowerCase().replace(/\s+/g, "-")}`;
-
-  const [isOpen, setIsOpen] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem(storageKey);
-      return saved ? JSON.parse(saved) : item.isActive || false;
-    }
-    return item.isActive || false;
-  });
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(storageKey, JSON.stringify(isOpen));
-    }
-  }, [isOpen, storageKey]);
+  const [isOpen, setIsOpen] = usePersistentState<boolean>(
+    `sidebar-${item.title.toLowerCase().replace(/\s+/g, "-")}`,
+    item.isActive || false
+  );
 
   useEffect(() => {
     if (item.isActive) {
       setIsOpen(true);
     }
-  }, [item.isActive]);
+  }, [item.isActive, setIsOpen]);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} asChild>
       <SidebarMenuItem>
         <CollapsibleTrigger asChild>
           <SidebarMenuButton tooltip={item.title}>
-            <item.icon 
+            <item.icon
               className=""
               style={item.colorHex ? { color: item.colorHex } : undefined}
             />
@@ -111,10 +101,17 @@ function CollapsibleNavItem({ item }: { item: SidebarItem }) {
                         "bg-accent text-accent-foreground hover:bg-accent"
                     )}
                   >
-                    <NavLink to={subItem.url} className="flex items-center gap-2">
+                    <NavLink
+                      to={subItem.url}
+                      className="flex items-center gap-2"
+                    >
                       {subItem.icon && (
-                        <subItem.icon 
-                          style={subItem.colorHex ? { color: subItem.colorHex } : undefined}
+                        <subItem.icon
+                          style={
+                            subItem.colorHex
+                              ? { color: subItem.colorHex }
+                              : undefined
+                          }
                         />
                       )}
                       <span>{subItem.title}</span>

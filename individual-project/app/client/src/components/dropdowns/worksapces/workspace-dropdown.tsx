@@ -9,10 +9,10 @@ import { useApiMutation } from "@/hooks/hook";
 import { defaultWorkspaceColor } from "@/consts/consts";
 import { Button } from "@/components/ui/button";
 import GlobalDialog from "@/components/dialogs/GlobalDialog";
-import { useUserWorkspaces } from "@/hooks/workspace/use-workspaces";
+import { useUserWorkspaces } from "@/routes/(root)/workspace/hooks/use-workspaces";
 import { WorkspaceVisibilityIcon } from "@/components/SmallComponents";
 import { type Workspace, WorkspaceVisibility } from "@/types/workspace";
-import { useCurrentWorkspace } from "@/hooks/workspace/use-current-workspace";
+import { useCurrentWorkspace } from "@/routes/(root)/workspace/hooks/use-current-workspace";
 import WorkspaceForm from "@/components/auth/forms/workspace/workspace-form-01";
 import type { WorkspaceSchemaType } from "@/utils/schemas/workspace/workspace.schema";
 import {

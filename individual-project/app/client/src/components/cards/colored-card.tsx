@@ -42,11 +42,11 @@ const ColoredCard = ({
         <span
           style={{ "--dynamic-bg": color } as React.CSSProperties}
           className="absolute left-1/2 -translate-x-1/2 bg-[var(--dynamic-bg)] w-[60px] rounded-full h-[40px] rounded-b-md"
-        ></span>
+        />
         <span
           style={{ "--dynamic-bg": color } as React.CSSProperties}
           className="bg-[var(--dynamic-bg)] w-full h-[10px] rounded-b-md"
-        ></span>
+        />
       </CardFooter>
     </Card>
   );
