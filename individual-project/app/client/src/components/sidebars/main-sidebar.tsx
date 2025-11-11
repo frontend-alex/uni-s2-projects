@@ -66,7 +66,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       const documentItems = (ws.documents || [])
         .filter((doc) => doc.title)
         .map((doc) => {
-          // Use unified document route - DocumentKind check is centralized in the route function
           const documentUrl = ROUTES.AUTHENTICATED.DOCUMENT(ws.id, doc.id, doc.kind);
           return {
             title: doc.title!,
@@ -92,7 +91,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         (document) => document.title && document.kind === DocumentKind.DOCUMENT
       )
       .map((document) => {
-        // Use unified document route - DocumentKind check is centralized in the route function
         const documentUrl = ROUTES.AUTHENTICATED.DOCUMENT(workspace.id, document.id, document.kind);
         return {
           title: document.title!,
@@ -110,7 +108,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           document.title && document.kind === DocumentKind.WHITEBOARD
       )
       .map((document) => {
-        // Use unified document route - DocumentKind check is centralized in the route function
         const whiteboardUrl = ROUTES.AUTHENTICATED.DOCUMENT(workspace.id, document.id, document.kind);
         return {
           title: document.title!,

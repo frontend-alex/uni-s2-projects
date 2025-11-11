@@ -103,9 +103,8 @@ const WorkspaceDropdown = () => {
               const colors = workspace.colorHex ?? defaultWorkspaceColor;
 
               return (
-                <Link to={ROUTES.AUTHENTICATED.BOARD(workspace.id)}>
+                <Link key={workspace.id} to={ROUTES.AUTHENTICATED.WORKSPACE(workspace.id)}>
                   <DropdownMenuItem
-                    key={workspace.id}
                     className="flex items-center justify-between gap-3 w-full"
                   >
                     <div className="flex items-center gap-3 justify-between w-full">

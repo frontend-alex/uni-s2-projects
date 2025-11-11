@@ -12,10 +12,10 @@ const ProfileSettings = () => {
   });
 
   return (
-    <Card className="bg-red-600/10 border-none shadow-none">
+    <Card className="bg-red-600/10 dark:bg-destructive/20 border-none shadow-none">
       <CardContent>
         <div>
-          <h3 className="font-medium text-lg text-red-600/50">Danger Zone</h3>
+          <h3 className="font-medium text-lg text-red-600/50 dark:text-destructive/50">Danger Zone</h3>
           <p className="text-sm mt-2 text-stone-400 max-w-md">
             Deleting your account is permanent and will remove all your data.
             This action cannot be undone.

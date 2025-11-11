@@ -17,7 +17,7 @@ export const PUBLIC_ROUTES = {
 
 export const AUTHENTICATED_ROUTES = {
   ONBOARDING: '/onboarding',
-  BOARD: (workspaceId: string | number) => `${BASE_PATHS.APP}/workspace/${workspaceId}`,
+  WORKSPACE: (workspaceId: string | number) => `${BASE_PATHS.APP}/workspace/${workspaceId}`,
   PROFILE: `${BASE_PATHS.APP}/profile`,
   SETTINGS: `${BASE_PATHS.APP}/settings`,
   DASHBOARD: `${BASE_PATHS.APP}/dashboard`,
@@ -31,7 +31,7 @@ export const AUTHENTICATED_ROUTES = {
 
 export const ROUTE_HELPERS = {
   getBoardRoute: (workspaceId: string | number) => 
-    AUTHENTICATED_ROUTES.BOARD(workspaceId),
+    AUTHENTICATED_ROUTES.WORKSPACE(workspaceId),
   
   isAuthenticatedRoute: (path: string): boolean => {
     return path.startsWith(BASE_PATHS.APP) || 

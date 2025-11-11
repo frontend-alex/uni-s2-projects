@@ -55,7 +55,7 @@ export function AnimatedEdge({
 
   return (
     <>
-      {/* Base edge (solid stroke) */}
+      {/* Base edge - React Flow handles interaction automatically */}
       <BaseEdge
         id={id}
         path={edgePath}
@@ -66,16 +66,16 @@ export function AnimatedEdge({
           stroke: '#3b82f6',
         }}
       />
-      {/* Animated dashed overlay */}
+      {/* Animated dashed overlay - visual effect only, doesn't interfere with interaction */}
       <path
         d={edgePath}
         fill="none"
         stroke="#3b82f6"
         strokeWidth="2"
-        className="animate-pulse"
         style={{
           strokeDasharray: '5,5',
           animation: 'dash 1s linear infinite',
+          pointerEvents: 'none', // Critical: don't block edge interaction
         }}
       />
       {/* CSS animation definition */}

@@ -56,7 +56,7 @@ const ManageDocumentDropdown = ({
         ],
         onSuccess: (data) => {
           toast.success(data.message);
-          navigate(ROUTES.AUTHENTICATED.BOARD(currentWorkspaceId));
+          navigate(ROUTES.AUTHENTICATED.WORKSPACE(currentWorkspaceId));
         },
         onError: (error) => {
           toast.error(error.response?.data.message);
@@ -73,6 +73,8 @@ const ManageDocumentDropdown = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>Manage Document</DropdownMenuLabel>
+
+        <DropdownMenuSeparator />
 
         <DropdownMenuItem>
           <Settings />
@@ -97,7 +99,6 @@ const ManageDocumentDropdown = ({
               className="hidden"
               onChange={handleFileInputChange}
             />
-            <DropdownMenuSeparator />
           </>
         )}
         <DropdownMenuSub>

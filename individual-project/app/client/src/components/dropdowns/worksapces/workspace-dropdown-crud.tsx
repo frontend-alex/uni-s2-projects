@@ -15,7 +15,7 @@ import { ROUTES } from "@/lib/router-paths";
 import { cn } from "@/lib/utils";
 import type { Workspace } from "@/types/workspace";
 import { EllipsisVerticalIcon, Settings, Trash } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const ManageWorkspaceDropdown = ({
@@ -23,7 +23,13 @@ const ManageWorkspaceDropdown = ({
   variant = "secondary",
 }: {
   className?: string;
-  variant?: "default" | "secondary" | "ghost" | "link" | "destructive" | "outline";
+  variant?:
+    | "default"
+    | "secondary"
+    | "ghost"
+    | "link"
+    | "destructive"
+    | "outline";
 }) => {
   const navigate = useNavigate();
 
@@ -56,10 +62,12 @@ const ManageWorkspaceDropdown = ({
         <DropdownMenuLabel>Manage Workspace</DropdownMenuLabel>
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem>
-          <Settings />
-          <span>Settings</span>
-        </DropdownMenuItem>
+        <Link to={`${ROUTES.AUTHENTICATED.WORKSPACE(currentWorkspaceId)}/edit`}>
+          <DropdownMenuItem>
+            <Settings />
+            <span>Settings</span>
+          </DropdownMenuItem>
+        </Link>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <DeleteDialog

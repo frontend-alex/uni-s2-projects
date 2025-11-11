@@ -96,7 +96,7 @@ const Dashboard = () => {
                       key={workspace.id}
                       title={workspace.name}
                       color={workspace.colorHex ?? defaultWorkspaceColor}
-                      to={ROUTES.AUTHENTICATED.BOARD(workspace.id)}
+                      to={ROUTES.AUTHENTICATED.WORKSPACE(workspace.id)}
                       titleClassName="truncate max-w-[100px]"
                       className="hover:bg-muted"
                       headerIcon={

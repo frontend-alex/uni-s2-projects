@@ -1,4 +1,4 @@
-import {
+  import {
   Form,
   FormControl,
   FormField,
@@ -91,7 +91,7 @@ const WorkspaceForm = ({ workspaceForm, isPending }: WorkspaceFormProps) => {
                             )}
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent className="bg-accent">
+                        <TooltipContent>
                           <p className="text-sm text-stone-400">
                             {vis === WorkspaceVisibility.PUBLIC
                               ? "Anyone with a link can view this workspace."

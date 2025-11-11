@@ -8,12 +8,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { DocumentKind } from "@/types/workspace";
+import { DocumentKind, WorkspaceVisibility } from "@/types/workspace";
 import type { DocumentFormProps } from "@/types/types";
-import { FileText, Square } from "lucide-react";
+import { FileText, Lock, LockOpen, Square } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const CreateDocument = ({ documentForm, isPending }: DocumentFormProps) => {
   const kind = documentForm.watch("kind");
+  const vis = documentForm.watch("visibility");
 
   const toggleKind = () => {
     documentForm.setValue(
@@ -25,29 +27,84 @@ const CreateDocument = ({ documentForm, isPending }: DocumentFormProps) => {
     );
   };
 
+  const toggleVisibility = () => {
+    documentForm.setValue(
+      "visibility",
+      vis === WorkspaceVisibility.PUBLIC
+        ? WorkspaceVisibility.PRIVATE
+        : WorkspaceVisibility.PUBLIC,
+      { shouldDirty: true, shouldValidate: true }
+    );
+  };
+
   return (
     <div>
       <Form {...documentForm}>
         <div className="space-y-4">
-          <div>
-            <Label
-              htmlFor="document-title"
-              className="text-sm font-medium text-stone-400 mb-2"
-            >
-              Document Title
-            </Label>
+          <div className="flex items-end gap-2">
+            <div className="flex flex-col w-full">
+              <Label
+                htmlFor="document-title"
+                className="text-sm font-medium text-stone-400 mb-2"
+              >
+                Document Title
+              </Label>
+              <FormField
+                control={documentForm.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        className="input no-ring"
+                        placeholder="e.g., Meeting Notes, Project Plan"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={documentForm.control}
-              name="title"
-              render={({ field }) => (
+              name="visibility"
+              render={() => (
                 <FormItem>
-                  <FormControl>
-                    <Input
-                      className="input no-ring"
-                      placeholder="e.g., Meeting Notes, Project Plan"
-                      {...field}
-                    />
-                  </FormControl>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        type="button"
+                        variant={
+                          vis === WorkspaceVisibility.PUBLIC
+                            ? "secondary"
+                            : "default"
+                        }
+                        onClick={toggleVisibility}
+                        disabled={isPending}
+                        className="shrink-0"
+                      >
+                        {vis === WorkspaceVisibility.PUBLIC ? (
+                          <>
+                            <LockOpen className="mr-2 h-4 w-4" />
+                            Public
+                          </>
+                        ) : (
+                          <>
+                            <Lock className="mr-2 h-4 w-4" />
+                            Private
+                          </>
+                        )}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-sm text-stone-400">
+                        {vis === WorkspaceVisibility.PUBLIC
+                          ? "Anyone with a link can view this workspace."
+                          : "Only invited members can access this workspace."}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
                   <FormMessage />
                 </FormItem>
               )}
@@ -71,9 +128,7 @@ const CreateDocument = ({ documentForm, isPending }: DocumentFormProps) => {
                       <Button
                         type="button"
                         variant={
-                          kind === DocumentKind.DOCUMENT
-                            ? "default"
-                            : "outline"
+                          kind === DocumentKind.DOCUMENT ? "default" : "outline"
                         }
                         onClick={toggleKind}
                         disabled={isPending}

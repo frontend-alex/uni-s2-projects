@@ -11,7 +11,7 @@ import {
   documentSchema,
   type DocumentSchemaType,
 } from "@/utils/schemas/document/document.schema";
-import { DocumentKind, type Document } from "@/types/workspace";
+import { DocumentKind, WorkspaceVisibility, type Document } from "@/types/workspace";
 import { API } from "@/lib/config";
 import { useApiMutation } from "@/hooks/hook";
 import { useCurrentWorkspace } from "@/routes/(root)/workspace/hooks/use-current-workspace";
@@ -58,15 +58,12 @@ const CreateDocumentCard = ({
       workspaceId: currentWorkspaceId || 0,
       title: "",
       kind: DocumentKind.DOCUMENT,
+      visibility: WorkspaceVisibility.PRIVATE as WorkspaceVisibility,
     },
   });
 
   const handleCreateDocument = async (data: DocumentSchemaType) => {
-    await createDocument({
-      workspaceId: data.workspaceId,
-      title: data.title,
-      kind: data.kind,
-    });
+    await createDocument(data);
   };
 
   return (

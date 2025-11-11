@@ -48,24 +48,20 @@ export function WhiteboardControls({
         <Background
           gap={16}
           size={1}
+          className='bg-red-600'
           variant={BackgroundVariant.Dots}
         />
       )}
       
       {/* Zoom and pan controls */}
       <Controls
-        className="bg-background border rounded-lg shadow-lg"
+        className="border rounded-lg shadow-lg"
       />
 
       {/* Minimap for navigation */}
       {showMiniMap && (
         <MiniMap
-          nodeColor={(node) => {
-            if (node.selected) return '#3b82f6';
-            return '#94a3b8';
-          }}
-          maskColor="rgba(0, 0, 0, 0.1)"
-          className="bg-background border rounded-lg shadow-lg"
+          className="border rounded-lg shadow-lg"
         />
       )}
     </>

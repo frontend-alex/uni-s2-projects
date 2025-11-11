@@ -5,8 +5,8 @@ import { useWorkspace } from "@/routes/(root)/workspace/hooks/use-workspaces";
 import { FilePlus, GalleryHorizontalEnd, Rows3 } from "lucide-react";
 import { MappedSkeleton } from "@/components/skeletons/mapped-skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import CreateDocumentCard from "./components/add-document-card";
 import { usePersistentState } from "@/hooks/use-persistance";
+import CreateDocumentCard from "./components/add-document-card";
 
 const LazyCreateDocCarousel = lazy(
   () => import("@/components/carousels/create-doc-carousel")

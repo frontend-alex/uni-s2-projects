@@ -7,11 +7,12 @@
  * @module whiteboard/components/nodes/DefaultNode
  */
 
-import { memo, useState, useEffect } from 'react';
-import { Handle, Position, useReactFlow, NodeResizer } from '@xyflow/react';
-import type { NodeProps } from '@xyflow/react';
-import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
+import { useTheme } from '@/contexts/ThemeContext';
+import { cn } from '@/lib/utils';
+import type { NodeProps } from '@xyflow/react';
+import { Handle, NodeResizer, Position, useReactFlow } from '@xyflow/react';
+import { memo, useEffect, useState } from 'react';
 import { WHITEBOARD_CONFIG } from '../../config/whiteboard-config';
 
 /**
@@ -63,6 +64,32 @@ interface DefaultNodeProps extends NodeProps {
  * @returns Default node component
  */
 function DefaultNode({ data, selected, id, width, height, onDataChange, shapeOverride }: DefaultNodeProps) {
+
+  const { theme } = useTheme();
+  
+  // Resolve theme - if "system", check the actual system theme
+  const [resolvedTheme, setResolvedTheme] = useState<'dark' | 'light'>(() => {
+    if (theme === 'system') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return theme === 'dark' ? 'dark' : 'light';
+  });
+  
+  // Update resolved theme when theme changes or system theme changes
+  useEffect(() => {
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const updateTheme = () => {
+        setResolvedTheme(mediaQuery.matches ? 'dark' : 'light');
+      };
+      updateTheme();
+      mediaQuery.addEventListener('change', updateTheme);
+      return () => mediaQuery.removeEventListener('change', updateTheme);
+    } else {
+      setResolvedTheme(theme === 'dark' ? 'dark' : 'light');
+    }
+  }, [theme]);
+
   const nodeData = data as DefaultNodeData;
   const { updateNodeData } = useReactFlow();
   const [isEditing, setIsEditing] = useState(false);
@@ -182,20 +209,57 @@ function DefaultNode({ data, selected, id, width, height, onDataChange, shapeOve
   };
 
   // Style values
-  const backgroundColor = nodeData.color || '#ffffff';
-  const strokeWidth = nodeData.strokeWidth || 2;
-  const strokeColor = nodeData.strokeColor || (selected ? '#3b82f6' : '#d1d5db');
+  // If node has explicit custom color, use it. Otherwise, use theme-based color.
+  // This allows nodes with custom colors to keep them, while theme-based nodes update when theme changes.
+  const hasCustomColor = nodeData.color && nodeData.color.trim() !== '';
+  const hasCustomBorderColor = nodeData.strokeColor && nodeData.strokeColor.trim() !== '';
+  
+  const strokeWidth = nodeData.strokeWidth || 1;
   
   // Base classes for the container
   // For diamond, we don't use border classes since we use SVG for border
   const containerClasses = cn(
-    'shadow-lg flex items-center justify-center bg-white relative',
+    'shadow-lg flex items-center justify-center relative',
     !isDiamond && 'border-2',
     isCircle && 'rounded-full',
     (isRectangle || shape === 'default') && 'rounded-md',
     isRectangle && 'min-w-[150px] min-h-[100px]',
-    !isDiamond && (selected ? 'border-blue-500' : 'border-gray-300')
+    // Use theme-based background: accent for dark (muted gray), card for light
+    !hasCustomColor && (resolvedTheme === 'dark' ? 'bg-accent' : 'bg-card'),
+    // Border will be set via inline style to use accent color
   );
+  
+  // Inline styles - only apply when custom colors are set or for diamond border
+  const containerStyle: React.CSSProperties = {
+    width: nodeWidth,
+    height: nodeHeight,
+  };
+  
+  // Apply custom background color if set
+  if (hasCustomColor) {
+    containerStyle.backgroundColor = nodeData.color;
+  }
+  
+  if (!isDiamond) {
+    containerStyle.borderWidth = strokeWidth;
+    if (hasCustomBorderColor) {
+      containerStyle.borderColor = nodeData.strokeColor;
+    } else if (selected) {
+      containerStyle.borderColor = 'transparent';
+    } else {
+      containerStyle.borderColor = 'var(--border)';
+    }
+  }
+  
+  // Diamond uses clipPath
+  if (isDiamond) {
+    containerStyle.clipPath = 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)';
+  }
+  
+  // Get border color for diamond SVG (uses theme border color or custom)
+  const diamondBorderColor = hasCustomBorderColor 
+    ? nodeData.strokeColor 
+    : (selected ? 'transparent' : 'var(--border)');
 
   return (
     <div className="relative">
@@ -246,18 +310,7 @@ function DefaultNode({ data, selected, id, width, height, onDataChange, shapeOve
       {/* Main node container */}
       <div
         className={containerClasses}
-        style={{
-          backgroundColor,
-          width: nodeWidth,
-          height: nodeHeight,
-          ...(!isDiamond && {
-            borderWidth: strokeWidth,
-            borderColor: strokeColor,
-          }),
-          ...(isDiamond && {
-            clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)',
-          }),
-        }}
+        style={containerStyle}
       >
         {/* Resizer - only show when selected */}
         {/* 
@@ -330,7 +383,7 @@ function DefaultNode({ data, selected, id, width, height, onDataChange, shapeOve
             <polygon
               points={`${nodeWidth / 2},0 ${nodeWidth},${nodeHeight / 2} ${nodeWidth / 2},${nodeHeight} 0,${nodeHeight / 2}`}
               fill="none"
-              stroke={strokeColor}
+              stroke={diamondBorderColor}
               strokeWidth={strokeWidth}
               strokeLinejoin="miter"
             />

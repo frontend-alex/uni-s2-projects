@@ -63,7 +63,7 @@ const BoardLayout = ({ children }: { children: React.ReactNode }) => {
           </Button>
         </div>
       </div>
-      <div className={`flex-1 min-h-0`}>{children}</div>
+      <div className={`flex-1 items-center min-h-0`}>{children}</div>
     </div>
   );
 };

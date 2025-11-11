@@ -532,6 +532,7 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
     return true;
   }, []);
 
+
   /**
    * Update selected edges when edge type changes (real-time, no delete/recreate).
    * 
@@ -1058,6 +1059,8 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
             nodesDraggable={!isRectangleMode}
             nodesConnectable={!isRectangleMode}
             elementsSelectable={!isRectangleMode}
+            // Edges are updatable and selectable by default in React Flow
+            // We just need to ensure they render properly
             onNodeDragStart={() => {
               isDraggingRef.current = true;
             }}
@@ -1070,20 +1073,24 @@ function WhiteboardCanvasInner({ documentId }: WhiteboardCanvasProps) {
               }, 100);
             }}
             // Performance optimizations for React Flow
-            onlyRenderVisibleElements={true}
+            // Disable onlyRenderVisibleElements to ensure edges always render,
+            // even when their source/target nodes are outside the viewport.
+            // This fixes the issue where edges don't appear until scrolling.
+            onlyRenderVisibleElements={false}
             minZoom={0.1}
             maxZoom={4}
             defaultViewport={{ x: 0, y: 0, zoom: 1 }}
-            // Panning: Left mouse button on empty canvas pans, space+drag also pans
-            // Drag on nodes = move nodes, drag on empty canvas = pan
+            // Ensure edges are always rendered and interactive
+            elevateEdgesOnSelect={true}
+            // Panning: Left-click drag on empty canvas pans, but React Flow automatically
+            // handles edge/node selection/interaction without interfering with panning
             panOnDrag={true}
             panOnScroll={true}
             // Box selection: Enable box selection with mouse drag on empty canvas
-            // Note: This enables both panning (when no selection box) and box selection
-            selectionOnDrag={true}
+            selectionOnDrag={!isRectangleMode}
             // Multi-select: Ctrl/Cmd + click to add nodes to selection
             multiSelectionKeyCode={["Control", "Meta"]}
-            // Reduce re-renders
+            // Reduce re-renders but keep edges interactive
             elevateNodesOnSelect={false}
           >
             <WhiteboardControls

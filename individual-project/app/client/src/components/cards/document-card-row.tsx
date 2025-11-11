@@ -9,7 +9,8 @@ const DocumentCardRow = ({ document }: { document: Document }) => {
   return (
     <Link 
       to={ROUTES.AUTHENTICATED.DOCUMENT(document.workspaceId, document.id, document.kind)} 
-      className="flex items-center gap-3 justify-between hover:bg-accent pr-2 cursor-pointer rounded-md trnansition-colors"
+      style={{  "--dynamic-bg": document.colorHex } as React.CSSProperties}
+      className="flex items-center gap-3 justify-between hover:bg-[var(--dynamic-bg)]/10 pr-2 cursor-pointer rounded-md trnansition-colors"
     >
       <div className="flex items-center gap-3">
         <span
