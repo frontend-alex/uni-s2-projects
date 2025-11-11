@@ -1,10 +1,11 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import { ROUTES } from "@/lib/router-paths";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { BreadCrumpSkeleton } from "../skeletons/breadcrumps-skeleton";
 import { Bell, Pin, Search, UserRoundPlus } from "lucide-react";
 import { ButtonSkeleton as ManageWorkspaceDropdownSkeleton } from "../skeletons/button-skeleton";
+import { CommandMenu } from "../CommandMenu";
 
 const LazyBreadCrumps = lazy(() => import("@/components/BreadCrumps"));
 
@@ -18,6 +19,7 @@ const LazyManageDocumentDropdown = lazy(
 
 const BoardLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
+  const [commandMenuOpen, setCommandMenuOpen] = useState(false);
   const isBoardRoute = location.pathname.startsWith(
     `${ROUTES.BASE.APP}/workspace`
   );
@@ -25,6 +27,19 @@ const BoardLayout = ({ children }: { children: React.ReactNode }) => {
   const isDocumentRoute =
     location.pathname.includes("/document/") ||
     location.pathname.includes("/whiteboard/");
+
+  // Keyboard shortcut: Cmd+K or Ctrl+K to open command menu
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setCommandMenuOpen((open) => !open);
+      }
+    };
+
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, []);
 
 
   return (
@@ -58,11 +73,16 @@ const BoardLayout = ({ children }: { children: React.ReactNode }) => {
             </Button>
             <span className="absolute -top-1 animate-pulse -right-1 bg-red-500 text-white text-xs rounded-full size-3 " />
           </div>
-          <Button size="icon" variant={"secondary"}>
+          <Button 
+            size="icon" 
+            variant={"secondary"}
+            onClick={() => setCommandMenuOpen(true)}
+          >
             <Search className="size-4" />
           </Button>
         </div>
       </div>
+      <CommandMenu open={commandMenuOpen} onOpenChange={setCommandMenuOpen} />
       <div className={`flex-1 items-center min-h-0`}>{children}</div>
     </div>
   );
